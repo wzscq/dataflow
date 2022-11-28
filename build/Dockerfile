@@ -3,6 +3,6 @@ RUN set -eux &&sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/
 RUN apk add nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 ADD ./package/web /web
-ADD ./package/service/matchflow /services/matchflow/matchflow
+ADD ./package/service/dataflow /services/dataflow/dataflow
 copy entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["sh","entrypoint.sh"]

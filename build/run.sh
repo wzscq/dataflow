@@ -1,1 +1,1 @@
-docker run -d --name matchflow -p8080:80 -v /root/matchflow/apps:/services/matchflow/apps -v /root/matchflow/conf:/services/matchflow/conf wangzhsh/matchflow:0.1.0 
+docker run -d --name dataflow -p8080:80 -v /root/dataflow/apps:/services/dataflow/apps -v /root/dataflow/conf:/services/dataflow/conf wangzhsh/dataflow:0.1.0 

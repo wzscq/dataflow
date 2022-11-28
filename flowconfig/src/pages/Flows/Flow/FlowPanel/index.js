@@ -54,7 +54,7 @@ export default function FlowPanel(){
     const getId=()=>{
         let idx=nodes.length;
         while(true){
-            const nodeID="matchflownode_"+idx;
+            const nodeID="dataflownode_"+idx;
             const node=nodes.find(item=>item.id===nodeID);
             if(!node){
                 return nodeID;

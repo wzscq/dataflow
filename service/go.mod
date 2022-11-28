@@ -1,4 +1,4 @@
-module buoyancyinfo.com/matchflow
+module buoyancyinfo.com/dataflow
 
 go 1.18
 

@@ -1,7 +1,7 @@
 package data
 
 import (
-	"buoyancyinfo.com/matchflow/common"
+	"buoyancyinfo.com/dataflow/common"
 )
 
 type QueryManyToMany struct {
