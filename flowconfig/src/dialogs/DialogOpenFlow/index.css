@@ -1,0 +1,22 @@
+.ant-list-bordered.ant-list-sm .ant-list-item {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.dialog-bottom-bar {
+    height:20px;
+    width:100%;
+    margin-top: 10px;
+}
+
+.dialog-header-bar {
+    height:20px;
+    width:100%;
+    margin-top: -20px;
+    margin-bottom: 10px;
+}
+
+.flow-list {
+    max-height: 200px;
+    overflow-y: auto;
+}

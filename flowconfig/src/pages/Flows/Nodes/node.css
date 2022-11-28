@@ -1,0 +1,96 @@
+.react-flow__node-createMatchResult,
+.react-flow__node-splitExtraQuantity,
+.react-flow__node-numberCompare,
+.react-flow__node-dataTransform,
+.react-flow__node-groupTransform,
+.react-flow__node-dataTransfer,
+.react-flow__node-debug,
+.react-flow__node-log,
+.react-flow__node-query,
+.react-flow__node-requestQuery,
+.react-flow__node-relatedQuery,
+.react-flow__node-fieldGroup,
+.react-flow__node-numericGroup,
+.react-flow__node-match,
+.react-flow__node-verifyMatch,
+.react-flow__node-verifyValue,
+.react-flow__node-filter,
+.react-flow__node-delay,
+.react-flow__node-saveMatched,
+.react-flow__node-saveNotMatched,
+.react-flow__node-start,
+.react-flow__node-end,
+.react-flow__node-form,
+.react-flow__node-save,
+.react-flow__node-ebProcessing {
+    background: cadetblue;
+    border: 2px solid #AAA;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 11px;
+    padding: 5px;
+    text-align: center;
+    width: auto;
+    min-width: 100px;
+    filter: invert(10%);
+}
+
+.react-flow__node-createMatchResult.selectable.selected,
+.react-flow__node-splitExtraQuantity.selectable.selected,
+.react-flow__node-numberCompare.selectable.selected,
+.react-flow__node-dataTransform.selectable.selected,
+.react-flow__node-groupTransform.selectable.selected,
+.react-flow__node-dataTransfer.selectable.selected,
+.react-flow__node-log.selectable.selected,
+.react-flow__node-debug.selectable.selected,
+.react-flow__node-query.selectable.selected,
+.react-flow__node-requestQuery.selectable.selected,
+.react-flow__node-relatedQuery.selectable.selected,
+.react-flow__node-fieldGroup.selectable.selected,
+.react-flow__node-numericGroup.selectable.selected,
+.react-flow__node-match.selectable.selected,
+.react-flow__node-verifyMatch.selectable.selected,
+.react-flow__node-verifyValue.selectable.selected,
+.react-flow__node-filter.selectable.selected,
+.react-flow__node-delay.selectable.selected,
+.react-flow__node-saveMatched.selectable.selected,
+.react-flow__node-saveNotMatched.selectable.selected,
+.react-flow__node-start.selectable.selected,
+.react-flow__node-end.selectable.selected,
+.react-flow__node-form.selectable.selected,
+.react-flow__node-save.selectable.selected,
+.react-flow__node-ebProcessing.selectable.selected {
+    box-shadow: 0 0 0 1px #1a192b;
+    border: 1px solid #AAA;
+    filter: invert(0%);
+}
+
+.react-flow__node-createMatchResult.selectable:hover,
+.react-flow__node-splitExtraQuantity.selectable:hover,
+.react-flow__node-numberCompare.selectable:hover,
+.react-flow__node-dataTransform.selectable:hover,
+.react-flow__node-groupTransform.selectable:hover,
+.react-flow__node-dataTransfer.selectable:hover,
+.react-flow__node-debug.selectable:hover,
+.react-flow__node-log.selectable:hover,
+.react-flow__node-query.selectable:hover,
+.react-flow__node-requestQuery.selectable:hover,
+.react-flow__node-relatedQuery.selectable:hover,
+.react-flow__node-fieldGroup.selectable:hover,
+.react-flow__node-numericGroup.selectable:hover,
+.react-flow__node-match.selectable:hover,
+.react-flow__node-verifyMatch.selectable:hover,
+.react-flow__node-verifyValue.selectable:hover,
+.react-flow__node-filter.selectable:hover,
+.react-flow__node-delay.selectable:hover,
+.react-flow__node-saveMatched.selectable:hover,
+.react-flow__node-saveNotMatched.selectable:hover,
+.react-flow__node-start.selectable:hover,
+.react-flow__node-end.selectable:hover,
+.react-flow__node-form.selectable:hover,
+.react-flow__node-save.selectable:hover,
+.react-flow__node-ebProcessing.selectable:hover {
+    box-shadow: 0 0 0 1px #1a192b;
+    border: 1px solid #AAA;
+    filter: invert(0%);
+}

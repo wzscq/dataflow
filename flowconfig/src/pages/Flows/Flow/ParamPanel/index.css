@@ -1,0 +1,110 @@
+.param-panel {
+    overflow-y: auto;
+    max-height: 100%;
+    font-family: "Roboto Slab";
+    font-size: 10px;
+}
+
+.param-panel-row {
+    border-bottom: 1px solid #DDD;
+    margin-right: 0 !important;
+    padding: 0px !important;
+}
+
+.param-panel-row-label {
+    text-align: left;
+    padding: 4px;
+    text-indent: 25px;
+    line-height: 16px;
+    border-right: 1px solid #DDD;
+    background-color: #FFFFFF;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.level-1 {
+    text-indent: 45px;
+}
+
+.level-2 {
+    text-indent: 65px;
+}
+
+.level-3 {
+    text-indent: 85px;
+}
+
+.level-4 {
+    text-indent: 105px;
+}
+
+.param-panel-row-inputwithbutton,
+.param-panel-row-input {
+    padding: 2px !important;
+}
+
+.param-panel-row-inputwithbutton .button,
+.param-panel-row-input .button {
+    float:  right;
+    margin-top: 2px;
+    margin-right: 2px;
+    height: 16px;
+    width: 16px;
+    font-size: 12px;
+}
+
+.param-panel-row-title {
+    text-align: left;
+    padding: 5px;
+    padding-left: 24px !important;
+    line-height: 16px;
+    border-right: 1px solid #DDD;
+    background-color: #EEEEEE;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.param-panel-row-input .ant-select,
+.param-panel-row-input .ant-input {
+    border: 0;
+    line-height: 20px;
+    font-size: 12px;
+    padding: 0px;
+    width: 100%;
+}
+
+.param-panel-row-inputwithbutton .ant-input,
+.param-panel-row-inputwithbutton .ant-select
+{
+    border: 0;
+    line-height: 20px;
+    padding: 0px;
+    float: left;
+    width: calc(100% - 25px);
+}
+
+.param-panel-row-input .ant-select .ant-select-selector,
+.param-panel-row-inputwithbutton .ant-select .ant-select-selector
+{
+    border: 0;
+}
+
+.param-panel-row-label-2 .button,
+.param-panel-row-label-1 .button,
+.param-panel-row-label .button {
+    border: 0;
+    height: 16px;
+    width: 16px;
+    font-size: 12px;
+    display: inline;
+    text-indent: -16px;
+}
+
+.param-panel .ant-input-number{
+    width: 100%;
+    border: 0;
+}

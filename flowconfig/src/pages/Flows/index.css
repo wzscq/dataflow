@@ -1,0 +1,5 @@
+.flow-content {
+    width: 100vw;
+    height: calc(100vh - 68px);
+    position: relative;
+}
