@@ -6,7 +6,7 @@ import EBProcessingStepModelItem from './EBProcessingStepModelItem';
 
 const { Option } = Select;
 
-export default function EBProcessingStepItem({node,stepIndex}){
+export default function EBProcessingStepItem({node,stepIndex,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowStep=()=>{
@@ -54,20 +54,20 @@ export default function EBProcessingStepItem({node,stepIndex}){
 
     const models=stepItem.models.map((item,index)=>{
         console.log("step index :",index,item);
-        return (<EBProcessingStepModelItem modelIndex={index} key={index} node={node} stepIndex={stepIndex}/>)
+        return (<EBProcessingStepModelItem labelWidth={labelWidth} modelIndex={index} key={index} node={node} stepIndex={stepIndex}/>)
     });
 
     const stepItemControl=(
     <>
         <Row className="param-panel-row" style={{display:showSteps&&showStep?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Writeoff Type</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Writeoff Type</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={stepItem.writeoffType} onChange={(e)=>onWriteoffTypeChange(e.target.value)}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Mono Negative</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Mono Negative</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={stepItem.monoNegativeWriteoffMethod} size='small' onChange={onMonoNegativeWriteoffMethodChange}>
                     <Option key='0'>Writeoff Negative Value</Option>
                     <Option key='1'>Writeoff Positive Value</Option>
@@ -77,13 +77,13 @@ export default function EBProcessingStepItem({node,stepIndex}){
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep?"flex":"none"}} gutter={24}>
-          <Col className="param-panel-row-label level-2" span={10}>
+          <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>
@@ -93,13 +93,13 @@ export default function EBProcessingStepItem({node,stepIndex}){
     return (
       <>  
         <Row className="param-panel-row" style={{display:showSteps?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-1" span={10}>
+            <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowStep}>
                 {showStep?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Step {stepIndex}</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onDelStep} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>

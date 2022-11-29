@@ -8,7 +8,7 @@ import TransfromModelItem from './TransformModelItem';
 
 const {Option}=Select;
 
-export default function DataTransformParams({node}){
+export default function DataTransformParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModels=useCallback(
@@ -36,14 +36,14 @@ export default function DataTransformParams({node}){
 
     const models=node.data?.models?.map((item,index)=>{
       console.log("models index :",index,item);
-      return (<TransfromModelItem key={index} node={node} modelIndex={index}/>)
+      return (<TransfromModelItem key={index} node={node} modelIndex={index} labelWidth={labelWidth}/>)
     });
 
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-            <Col className="param-panel-row-label" span={10}>Output</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>Output</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={node.data.outputType} size='small' onChange={setOutputType}>
                     <Option key='all'>All</Option>
                     <Option key='modified'>Modified</Option>
@@ -51,13 +51,13 @@ export default function DataTransformParams({node}){
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

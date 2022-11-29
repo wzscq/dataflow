@@ -10,11 +10,17 @@ import (
     "log"
     "time"
     "runtime"
+    "os"
 )
 
 func main() {
+    confFile:="conf/conf.json"
+    if len(os.Args)>1 {
+        confFile=os.Args[1]
+        log.Println(confFile)
+    }
     //初始化配置
-    conf:=common.InitConfig()
+    conf:=common.InitConfig(confFile)
     //设置启动线程数量
     runtime.GOMAXPROCS(conf.Runtime.GoMaxProcs)
 

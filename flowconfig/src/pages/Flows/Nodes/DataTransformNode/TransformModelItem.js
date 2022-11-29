@@ -4,7 +4,7 @@ import { PlusOutlined,PlusSquareOutlined,MinusOutlined,MinusSquareOutlined,Align
 import { updateNodeData } from '../../../../redux/flowSlice';
 import {openDialog} from '../../../../redux/dialogSlice';
 
-export default function TransferModelItem({node,modelIndex}){
+export default function TransferModelItem({node,modelIndex,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModel=()=>{
@@ -77,26 +77,26 @@ export default function TransferModelItem({node,modelIndex}){
         return (
             <>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showFields?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-3" span={10}>
+                <Col className="param-panel-row-label level-3" style={{width:labelWidth}}>
                     <div className='button' onClick={()=>setShowField(index,!showField)}>
                         {showField?<MinusSquareOutlined />:<PlusSquareOutlined />}
                     </div>
                     <span>Field {index}</span>
                 </Col>
-                <Col className="param-panel-row-inputwithbutton" span={14}>
+                <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <span>{item.targetField}</span>
                     <Button className="button"  onClick={()=>onDelField(index)} size='small' icon={<MinusOutlined />} />
                 </Col>
             </Row>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showFields&&showField?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-4" span={10}>Field</Col>
-                <Col className="param-panel-row-input" span={14}>
+                <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Field</Col>
+                <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Input value={item.field} onChange={(e)=>onFieldChange(index,{...item,field:e.target.value})}/>
                 </Col>
             </Row>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showFields&&showField?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-4" span={10}>Function Script</Col>
-                <Col className="param-panel-row-inputwithbutton" span={14}>
+                <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Function Script</Col>
+                <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Input disabled={true} value={item.funcScript?.name}/>
                     <Button className="button"  onClick={()=>{onEditScript(index)}} size='small' icon={<AlignCenterOutlined />} />
                 </Col>
@@ -108,19 +108,19 @@ export default function TransferModelItem({node,modelIndex}){
     const modelItemControl=(
     <>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Model ID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Model ID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={modelItem.modelID} onChange={onModelIDChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowFields}>
                     {showFields?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Fields</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onAddField} size='small' icon={<PlusOutlined />} />
             </Col>
         </Row>
@@ -130,13 +130,13 @@ export default function TransferModelItem({node,modelIndex}){
     return (
       <>  
         <Row className="param-panel-row" style={{display:showModels?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-1" span={10}>
+            <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowModel}>
                 {showModel?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Model {modelIndex}</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onDelModel} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>

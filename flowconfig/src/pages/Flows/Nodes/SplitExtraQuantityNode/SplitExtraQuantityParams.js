@@ -6,7 +6,7 @@ import { updateNodeData } from '../../../../redux/flowSlice';
 
 const { Option } = Select;
 
-export default function SplitExtraQuantityParams({node}){
+export default function SplitExtraQuantityParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModels=()=>{
@@ -37,31 +37,31 @@ export default function SplitExtraQuantityParams({node}){
     const models=node.data.models?.map((item,index)=>{
       return (<>
         <Row className="param-panel-row" style={{display:showModels?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-1" span={10}>
+            <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                 <div className='button' onClick={()=>onModelChange(index,{...item,__showModel:!item.__showModel})}>
                     {item.__showModel?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 Model {index}
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={()=>onDelModel(index)} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&item.__showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>ModelID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>ModelID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={item.modelID} onChange={(e)=>onModelChange(index,{...item,modelID:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&item.__showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Field</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Field</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={item.field} onChange={(e)=>onModelChange(index,{...item,field:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&item.__showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Side</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Side</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={item.side} size='small' onChange={(value)=>onModelChange(index,{...item,side:value})}>
                     <Option key='left'>Left</Option>
                     <Option key='right'>Right</Option>
@@ -74,13 +74,13 @@ export default function SplitExtraQuantityParams({node}){
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddMatchModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { updateNodeData } from '../../../../redux/flowSlice';
 
-export default function VerifyMatchNodeParams({node}){
+export default function VerifyMatchNodeParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const onNodeDataChange=(data)=>{
@@ -35,25 +35,25 @@ export default function VerifyMatchNodeParams({node}){
         return (
             <>
                 <Row className="param-panel-row" style={{display:showRules?"flex":"none"}} gutter={24}>
-                    <Col className="param-panel-row-label level-1" span={10}>
+                    <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                         <div className='button' onClick={()=>onNodeRuleChange(index,{...item,__showRule:!item.__showRule})}>
                             {item.__showRule?<MinusSquareOutlined />:<PlusSquareOutlined />}
                         </div>
                         <span>Rule {index}</span>
                     </Col>
-                    <Col className="param-panel-row-input" span={14}>
+                    <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                         <Button className="button"  onClick={()=>onDelRule(index)} size='small' icon={<MinusOutlined />} />
                     </Col>
                 </Row>
                 <Row className="param-panel-row" style={{display:showRules&&item.__showRule?"flex":"none"}}  gutter={24}>
-                    <Col className="param-panel-row-label level-2" span={10}>Model ID</Col>
-                    <Col className="param-panel-row-input" span={14}>
+                    <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Model ID</Col>
+                    <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                         <Input value={item.modelID} onChange={(e)=>onNodeRuleChange(index,{...item,modelID:e.target.value})}/>
                     </Col>
                 </Row>
                 <Row className="param-panel-row" style={{display:showRules&&item.__showRule?"flex":"none"}}  gutter={24}>
-                    <Col className="param-panel-row-label level-2" span={10}>Message</Col>
-                    <Col className="param-panel-row-input" span={14}>
+                    <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Message</Col>
+                    <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                         <Input value={item.message} onChange={(e)=>onNodeRuleChange(index,{...item,message:e.target.value})}/>
                     </Col>
                 </Row>
@@ -64,31 +64,31 @@ export default function VerifyMatchNodeParams({node}){
     return (
       <>
         <Row className="param-panel-row"  gutter={24}>
-            <Col className="param-panel-row-label" span={10}>verifyID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>verifyID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data.verifyID} onChange={(e)=>onNodeDataChange({...node.data,verifyID:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row"  gutter={24}>
-            <Col className="param-panel-row-label" span={10}>Failure Result</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>Failure Result</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data.failureResult} onChange={(e)=>onNodeDataChange({...node.data,failureResult:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row"  gutter={24}>
-            <Col className="param-panel-row-label" span={10}>Successful Result</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>Successful Result</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data.successfulResult} onChange={(e)=>onNodeDataChange({...node.data,successfulResult:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={(e)=>onNodeDataChange({...node.data,__showRules:!showRules})}>
               {showRules?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Rules</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddRule} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

@@ -6,7 +6,7 @@ import {openDialog} from '../../../../redux/dialogSlice';
 
 const { Option } = Select;
 
-export default function RequestQueryModelItem({node,modelIndex}){
+export default function RequestQueryModelItem({node,modelIndex,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModel=()=>{
@@ -107,8 +107,8 @@ export default function RequestQueryModelItem({node,modelIndex}){
     const fields=modelItem.fields?.map((item,index)=>{
         return (
         <Row className="param-panel-row" style={{display:showModels&&showModel&&showFields?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-3" span={10}>Field {index}</Col>
-            <Col className="param-panel-row-inputwithbutton" span={14}>
+            <Col className="param-panel-row-label level-3" style={{width:labelWidth}}>Field {index}</Col>
+            <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={item.field} onChange={(e)=>onFieldChange(index,e.target.value)}/>
                 <Button className="button"  onClick={()=>onDelField(index)} size='small' icon={<MinusOutlined />} />
             </Col>
@@ -120,25 +120,25 @@ export default function RequestQueryModelItem({node,modelIndex}){
         const {__showSorter,field,order}=item;
         return (<>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showSorter?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-3" span={10}>
+                <Col className="param-panel-row-label level-3" style={{width:labelWidth}}>
                     <div className='button' onClick={()=>onSorterChange(index,{...item,__showSorter:!__showSorter})}>
                         {__showSorter?<MinusSquareOutlined />:<PlusSquareOutlined />}
                     </div>
                     <span>Sorter {index}</span>
                 </Col>
-                <Col className="param-panel-row-inputwithbutton" span={14}>
+                <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Button className="button"  onClick={()=>onDelSorter(index)} size='small' icon={<MinusOutlined />} />
                 </Col>
             </Row>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showSorter&&__showSorter?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-4" span={10}>Field</Col>
-                <Col className="param-panel-row-input" span={14}>
+                <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Field</Col>
+                <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Input value={field} onChange={(e)=>onSorterChange(index,{...item,field:e.target.value})}/>
                 </Col>
             </Row>
             <Row className="param-panel-row" style={{display:showModels&&showModel&&showSorter&&__showSorter?"flex":"none"}} gutter={24}>
-                <Col className="param-panel-row-label level-4" span={10}>Order</Col>
-                <Col className="param-panel-row-input" span={14}>
+                <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Order</Col>
+                <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Select value={order} size='small' onChange={(value)=>onSorterChange(index,{...item,order:value})}>
                         <Option key='asc'>ASC</Option>
                         <Option key='desc'>DESC</Option>
@@ -152,38 +152,38 @@ export default function RequestQueryModelItem({node,modelIndex}){
     const modelItemControl=(
     <>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Model ID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Model ID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={modelItem.modelID} onChange={onModelIDChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowFields}>
                     {showFields?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Fields</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onAddField} size='small' icon={<PlusOutlined />} />
             </Col>
         </Row>
         {fields}
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Filter</Col>
-            <Col className="param-panel-row-inputwithbutton" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Filter</Col>
+            <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input disabled={true} value={JSON.stringify(modelItem.filter)} onChange={onFilterChange}/>
                 <Button className="button"  onClick={onSetFilter} size='small' icon={<AlignCenterOutlined />} />
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowSorter}>
                     {showSorter?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Sorter</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onAddSorter} size='small' icon={<PlusOutlined />} />
             </Col>
         </Row>
@@ -193,13 +193,13 @@ export default function RequestQueryModelItem({node,modelIndex}){
     return (
       <>  
         <Row className="param-panel-row" style={{display:showModels?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-1" span={10}>
+            <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowModel}>
                 {showModel?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Model {modelIndex}</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onDelModel} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>

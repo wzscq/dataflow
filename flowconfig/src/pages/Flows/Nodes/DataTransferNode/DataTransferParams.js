@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { updateNodeData } from '../../../../redux/flowSlice';
 import TransferSourceModelItem from './TransferSourceModelItem';
 
-export default function DataTransferParams({node}){
+export default function DataTransferParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModels=useCallback(
@@ -38,31 +38,31 @@ export default function DataTransferParams({node}){
 
     const models=node.data?.sourceModels?.map((item,index)=>{
       console.log("models index :",index,item);
-      return (<TransferSourceModelItem key={index} node={node} modelIndex={index}/>)
+      return (<TransferSourceModelItem key={index} node={node} labelWidth={labelWidth} modelIndex={index}/>)
     });
 
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-            <Col className="param-panel-row-label level" span={10}>Target Model</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level" style={{width:labelWidth}}>Target Model</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data?.targetModelID} onChange={onModelIDChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-            <Col className="param-panel-row-label level" span={10}>Batch Number Field</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level" style={{width:labelWidth}}>Batch Number Field</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data?.batchNumberField} onChange={onBatchNumberFieldChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showSourceModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Source Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

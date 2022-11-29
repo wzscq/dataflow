@@ -5,7 +5,7 @@ import { updateNodeData } from '../../../../redux/flowSlice';
 
 const { Option } = Select;
 
-export default function EBProcessingStepModelItem({node,stepIndex,modelIndex}){
+export default function EBProcessingStepModelItem({node,stepIndex,modelIndex,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModel=()=>{
@@ -66,25 +66,25 @@ export default function EBProcessingStepModelItem({node,stepIndex,modelIndex}){
     return (
       <>  
         <Row className="param-panel-row" style={{display:showSteps&&showStep&&showModels?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-3" span={10}>
+            <Col className="param-panel-row-label level-3" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowModel}>
                 {showModel?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Model {modelIndex}</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onDelModel} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep&&showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-4" span={10}>Model ID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Model ID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={modelItem.modelID} onChange={onModelIDChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep&&showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-4" span={10}>Side</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Side</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={modelItem.side} size='small' onChange={onSideChange}>
                     <Option key='left'>Left</Option>
                     <Option key='right'>Right</Option>
@@ -92,8 +92,8 @@ export default function EBProcessingStepModelItem({node,stepIndex,modelIndex}){
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep&&showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-4" span={10}>Is Ajust</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Is Ajust</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={modelItem.ajust} size='small' onChange={onAjustChange}>
                     <Option key='0'>no</Option>
                     <Option key='1'>yes</Option>
@@ -101,8 +101,8 @@ export default function EBProcessingStepModelItem({node,stepIndex,modelIndex}){
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showSteps&&showStep&&showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-4" span={10}>Zero Stop</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-4" style={{width:labelWidth}}>Zero Stop</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Select value={modelItem.zeroStop} size='small' onChange={onZeroStopChange}>
                     <Option key='0'>no</Option>
                     <Option key='1'>yes</Option>

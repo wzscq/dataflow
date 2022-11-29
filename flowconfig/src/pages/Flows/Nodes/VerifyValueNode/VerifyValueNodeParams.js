@@ -5,7 +5,7 @@ import { PlusSquareOutlined,PlusOutlined,MinusSquareOutlined } from '@ant-design
 import { updateNodeData } from '../../../../redux/flowSlice';
 import VerifyValueItem from './VerifyValueItem';
 
-export default function VerifyValueNodeParams({node}){
+export default function VerifyValueNodeParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowItems=()=>{
@@ -23,19 +23,19 @@ export default function VerifyValueNodeParams({node}){
 
     const items=node.data?.items?.map((item,index)=>{
       console.log("models index :",index,item);
-      return (<VerifyValueItem key={index} node={node} itemIndex={index}/>)
+      return (<VerifyValueItem labelWidth={labelWidth} key={index} node={node} itemIndex={index}/>)
     });
 
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowItems}>
               {showItems?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddItem} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

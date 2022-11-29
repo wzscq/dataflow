@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import {updateNodeData} from '../../../../redux/flowSlice';
 
-export default function CommonParam({node}){
+export default function CommonParam({node,labelWidth}){
     const dispatch=useDispatch();
 
     const onLabelChange=useCallback(
@@ -25,14 +25,14 @@ export default function CommonParam({node}){
                 <Col className="param-panel-row-title" span={24}>{node.type} Node: {node.id} </Col>
             </Row>
             <Row className="param-panel-row" gutter={24}>
-                <Col className="param-panel-row-label" span={10}>Label</Col>
-                <Col className="param-panel-row-input" span={14}>
+                <Col className="param-panel-row-label" style={{width:labelWidth}}>Label</Col>
+                <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Input value={node.data.label} onChange={onLabelChange}/>
                 </Col>
             </Row>
             <Row className="param-panel-row" gutter={24}>
-                <Col className="param-panel-row-label" span={10}>Priority</Col>
-                <Col className="param-panel-row-input" span={14}>
+                <Col className="param-panel-row-label" style={{width:labelWidth}}>Priority</Col>
+                <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <InputNumber size='small' value={node.data.priority} onChange={onPriorityChange}/>
                 </Col>
             </Row>

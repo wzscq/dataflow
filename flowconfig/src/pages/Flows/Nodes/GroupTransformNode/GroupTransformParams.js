@@ -45,7 +45,7 @@ g_Index:读写参数，处理批次内序号，初始值为1，在同一批次�
 
 */`
 
-export default function DataTransformParams({node}){
+export default function DataTransformParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const onEditScript=()=>{
@@ -55,8 +55,8 @@ export default function DataTransformParams({node}){
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-            <Col className="param-panel-row-label" span={10}>Function Script</Col>
-            <Col className="param-panel-row-inputwithbutton" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>Function Script</Col>
+            <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input disabled={true} value={node.data.funcScript?.name}/>
                 <Button className="button"  onClick={()=>{onEditScript()}} size='small' icon={<AlignCenterOutlined />} />
             </Col>

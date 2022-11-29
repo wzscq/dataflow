@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { updateNodeData } from '../../../../redux/flowSlice';
 import NumberCompareModelItem from './NumberCompareModelItem';
 
-export default function VerifyValueNodeParams({node}){
+export default function VerifyValueNodeParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const onNodeDataChange=(data)=>{
@@ -34,31 +34,31 @@ export default function VerifyValueNodeParams({node}){
 
     const models=node.data?.models?.map((item,index)=>{
       console.log("models index :",index,item);
-      return (<NumberCompareModelItem key={index} node={node} modelIndex={index}/>)
+      return (<NumberCompareModelItem labelWidth={labelWidth} key={index} node={node} modelIndex={index}/>)
     });
 
     return (
       <>
         <Row className="param-panel-row"  gutter={24}>
-            <Col className="param-panel-row-label" span={10}>verifyID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>verifyID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data.verifyID} onChange={(e)=>onNodeDataChange({...node.data,verifyID:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-            <Col className="param-panel-row-label" span={10}>Tolerance</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label" style={{width:labelWidth}}>Tolerance</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={node.data?.tolerance} onChange={(e)=>onNodeDataChange({...node.data,tolerance:e.target.value})}/>
             </Col>
         </Row>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

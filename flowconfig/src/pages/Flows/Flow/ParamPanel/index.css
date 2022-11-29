@@ -5,6 +5,26 @@
     font-size: 10px;
 }
 
+.param-panel-content {
+    height: fit-content;
+    position: relative;
+}
+
+.param-panel-split {
+    position: absolute;
+    width: 5px;
+    height: 100%;
+    top: 0;
+    left: 150px;
+    background: transparent;
+    border-left: 0px dotted gray;
+    cursor: col-resize;
+}
+
+.param-panel-split:hover{
+    border-left: 1px dotted gray;
+}
+
 .param-panel-row {
     border-bottom: 1px solid #DDD;
     margin-right: 0 !important;

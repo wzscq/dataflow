@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { updateNodeData } from '../../../../redux/flowSlice';
 import QueryModelItem from './QueryModelItem';
 
-export default function QueryNodeParams({node}){
+export default function QueryNodeParams({node,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModels=useCallback(
@@ -30,19 +30,19 @@ export default function QueryNodeParams({node}){
 
     const models=node.data?.models?.map((item,index)=>{
       console.log("models index :",index,item);
-      return (<QueryModelItem key={index} node={node} modelIndex={index}/>)
+      return (<QueryModelItem labelWidth={labelWidth} key={index} node={node} modelIndex={index}/>)
     });
 
     return (
       <>
         <Row className="param-panel-row" gutter={24}>
-          <Col className="param-panel-row-label" span={10}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
             <div className='button' onClick={setShowModels}>
               {showModels?<MinusSquareOutlined />:<PlusSquareOutlined />}
             </div>
             <span>Models</span>
           </Col>
-          <Col className="param-panel-row-input" span={14}>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
             <Button onClick={onAddModel} className='button' size='small' icon={<PlusOutlined />} />
           </Col>
         </Row>

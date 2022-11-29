@@ -3,7 +3,7 @@ import {Row,Col,Button,Input} from 'antd';
 import { PlusOutlined,PlusSquareOutlined,MinusOutlined,MinusSquareOutlined } from '@ant-design/icons';
 import { updateNodeData } from '../../../../redux/flowSlice';
 
-export default function GroupModelItem({node,modelIndex}){
+export default function GroupModelItem({node,modelIndex,labelWidth}){
     const dispatch=useDispatch();
 
     const setShowModel=()=>{
@@ -62,8 +62,8 @@ export default function GroupModelItem({node,modelIndex}){
     const fields=modelItem.fields?.map((item,index)=>{
         return (
         <Row className="param-panel-row" style={{display:showModels&&showModel&&showFields?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-3" span={10}>Field {index}</Col>
-            <Col className="param-panel-row-inputwithbutton" span={14}>
+            <Col className="param-panel-row-label level-3" style={{width:labelWidth}}>Field {index}</Col>
+            <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={item.field} onChange={(e)=>onFieldChange(index,e.target.value)}/>
                 <Button className="button"  onClick={()=>onDelField(index)} size='small' icon={<MinusOutlined />} />
             </Col>
@@ -74,19 +74,19 @@ export default function GroupModelItem({node,modelIndex}){
     const modelItemControl=(
     <>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>Model ID</Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>Model ID</Col>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Input value={modelItem.modelID} onChange={onModelIDChange}/>
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showModels&&showModel?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-2" span={10}>
+            <Col className="param-panel-row-label level-2" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowFields}>
                     {showFields?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Fields</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onAddField} size='small' icon={<PlusOutlined />} />
             </Col>
         </Row>
@@ -96,13 +96,13 @@ export default function GroupModelItem({node,modelIndex}){
     return (
       <>  
         <Row className="param-panel-row" style={{display:showModels?"flex":"none"}} gutter={24}>
-            <Col className="param-panel-row-label level-1" span={10}>
+            <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>
                 <div className='button' onClick={setShowModel}>
                 {showModel?<MinusSquareOutlined />:<PlusSquareOutlined />}
                 </div>
                 <span>Model {modelIndex}</span>
             </Col>
-            <Col className="param-panel-row-input" span={14}>
+            <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                 <Button className="button"  onClick={onDelModel} size='small' icon={<MinusOutlined />} />
             </Col>
         </Row>

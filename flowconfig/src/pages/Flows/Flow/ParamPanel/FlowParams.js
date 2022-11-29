@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 import {openDialog} from '../../../../redux/dialogSlice';
 
-export default function FlowParam({flow}){
+export default function FlowParam({flow,labelWidth}){
     const dispatch = useDispatch();
 
     const onEditDescription=()=>{
@@ -17,8 +17,8 @@ export default function FlowParam({flow}){
                 <Col className="param-panel-row-title" span={24}>Flow: {flow.id} </Col>
             </Row>
             <Row className="param-panel-row" gutter={24}>
-                <Col className="param-panel-row-label" span={10}>Description</Col>
-                <Col className="param-panel-row-inputwithbutton" span={14}>
+                <Col className="param-panel-row-label" style={{width:labelWidth}}>Description</Col>
+                <Col className="param-panel-row-inputwithbutton" style={{width:'calc(100% - '+labelWidth+'px)'}}>
                     <Input disabled={true} value={flow.description}/>
                     <Button className="button"  onClick={onEditDescription} size='small' icon={<AlignCenterOutlined />} />
                 </Col>
