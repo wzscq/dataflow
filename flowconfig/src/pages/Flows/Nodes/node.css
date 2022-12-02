@@ -1,3 +1,4 @@
+.react-flow__node-esi,
 .react-flow__node-createMatchResult,
 .react-flow__node-splitExtraQuantity,
 .react-flow__node-numberCompare,
@@ -35,6 +36,7 @@
     filter: invert(10%);
 }
 
+.react-flow__node-esi.selectable.selected,
 .react-flow__node-createMatchResult.selectable.selected,
 .react-flow__node-splitExtraQuantity.selectable.selected,
 .react-flow__node-numberCompare.selectable.selected,
@@ -65,6 +67,7 @@
     filter: invert(0%);
 }
 
+.react-flow__node-esi.selectable:hover,
 .react-flow__node-createMatchResult.selectable:hover,
 .react-flow__node-splitExtraQuantity.selectable:hover,
 .react-flow__node-numberCompare.selectable:hover,

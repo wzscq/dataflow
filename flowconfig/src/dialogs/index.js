@@ -7,6 +7,7 @@ import DialogDebugInfoDetail from '../pages/Flows/Nodes/DebugNode/DialogDebugInf
 import DialogFuncScript from '../pages/Flows/Nodes/DataTransformNode/DialogFuncScript';
 import DialogFilter from '../pages/Flows/Nodes/QueryNode/DialogFilter';
 import DialogFlowDescription from '../pages/Flows/Flow/ParamPanel/DialogFlowDescription';
+import DialogESITestData from '../pages/Flows/Nodes/ESINode/DialogESITestData';
 
 import './index.css';
 
@@ -16,7 +17,8 @@ const dialogRepository={
     debugInfoDetail:DialogDebugInfoDetail,
     funcScript:DialogFuncScript,
     queryFilter:DialogFilter,
-    flowDescription:DialogFlowDescription
+    flowDescription:DialogFlowDescription,
+    setESITestData:DialogESITestData
 };
 
 export default function Dialog(){

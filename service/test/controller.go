@@ -3,8 +3,8 @@ package test
 import (
 	"log"
 	"github.com/gin-gonic/gin"
-	"buoyancyinfo.com/dataflow/common"
-	"buoyancyinfo.com/dataflow/data"
+	"dataflow/common"
+	"dataflow/data"
 	"net/http"
 	"math/rand"
 	"fmt"

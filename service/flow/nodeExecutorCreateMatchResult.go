@@ -2,8 +2,8 @@ package flow
 
 import (
     "time"
-	"buoyancyinfo.com/dataflow/common"
-	"buoyancyinfo.com/dataflow/data"
+	"dataflow/common"
+	"dataflow/data"
 	"log"
 	"encoding/json"
 	"strconv"

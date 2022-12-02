@@ -1,8 +1,8 @@
 package flow
 
 import (
-	"buoyancyinfo.com/dataflow/common"
-	"buoyancyinfo.com/dataflow/data"
+	"dataflow/common"
+	"dataflow/data"
 	"log"
 )
 

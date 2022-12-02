@@ -1,7 +1,7 @@
 package data
 
 import (
-	"buoyancyinfo.com/dataflow/common"
+	"dataflow/common"
 	"database/sql"
 	"log"
 )

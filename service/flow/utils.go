@@ -1,7 +1,7 @@
 package flow
 
 import (
-    "buoyancyinfo.com/dataflow/common"
+    "dataflow/common"
 	"log"
 	"strconv"
 )

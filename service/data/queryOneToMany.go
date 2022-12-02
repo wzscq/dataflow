@@ -2,7 +2,7 @@ package data
 
 import (
 	"log"
-	"buoyancyinfo.com/dataflow/common"
+	"dataflow/common"
 )
 
 type QueryOneToMany struct {

@@ -22,6 +22,7 @@ import {DataTransferNode,DataTransferParams} from './DataTransferNode';
 import {DataTransformNode,DataTransformParams} from './DataTransformNode';
 import {GroupTransformNode,GroupTransformParams} from './GroupTransformNode';
 import {SplitExtraQuantityNode,SplitExtraQuantityParams} from './SplitExtraQuantityNode';
+import {ESINode,ESINodeParams} from './ESINode';
 
 export const nodeTypes={
     start:StartNode,
@@ -47,7 +48,8 @@ export const nodeTypes={
 	dataTransfer:DataTransferNode,
 	dataTransform:DataTransformNode,
 	groupTransform:GroupTransformNode,
-	splitExtraQuantity:SplitExtraQuantityNode
+	splitExtraQuantity:SplitExtraQuantityNode,
+	esi:ESINode
 }
 
 export const nodeParams={
@@ -74,5 +76,6 @@ export const nodeParams={
 	dataTransfer:DataTransferParams,
 	dataTransform:DataTransformParams,
 	groupTransform:GroupTransformParams,
-	splitExtraQuantity:SplitExtraQuantityParams
+	splitExtraQuantity:SplitExtraQuantityParams,
+	esi:ESINodeParams
 }

@@ -8,6 +8,7 @@ const controls=[
     {type: 'query',label: 'Query Data'},
     {type: 'requestQuery',label:'Request Query'},
     {type: 'relatedQuery',label:'Related Query'},
+    {type: 'esi',label: 'ESI'},
 	{type: 'fieldGroup',label: 'Group By Fields'},
     {type: 'numericGroup',label: 'Group By Numeric Field'},
     {type: 'splitExtraQuantity',label: 'Split extra quantity'},

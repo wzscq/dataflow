@@ -1,8 +1,8 @@
 package flow
 
 import (
-	"buoyancyinfo.com/dataflow/data"
-	"buoyancyinfo.com/dataflow/common"
+	"dataflow/data"
+	"dataflow/common"
 )
 
 const (
@@ -30,6 +30,7 @@ const (
 	NODE_GROUP_TRANSFORM = "groupTransform"
 	NODE_SPLIT_EXTQUANTITY= "splitExtraQuantity"
 	NODE_CREATE_MATCH_RESULT="createMatchResult"
+	NODE_ESI = "esi"
 )
 
 type nodeExecutor interface {
@@ -137,6 +138,10 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_CREATE_MATCH_RESULT {
 		return &nodeExecutorCreateMatchResult{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_ESI {
+		return &nodeExecutorESI{
 			NodeConf:*node,
 		}
 	}

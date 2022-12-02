@@ -30,7 +30,9 @@ const (
 	ResultNoRelatedModel=10000022
 	ResultNoRelatedField=10000023
 	ResultNotSupportedFieldType=10000024
+	ResultBase64DecodeError=10000028
 	ResultNotDeleteData=10000036
+	ResultLoadExcelFileError=10000040
 
 	ResultWrongRequest = 90000001
 	ResultOpenFileError = 90000002
@@ -108,6 +110,11 @@ var errMsg = map[int]CommonRsp{
 		Message:"执行查询语句时发生错误，请与管理员联系处理",
 		Error:true,
 	},
+	ResultBase64DecodeError:CommonRsp{
+		ErrorCode:ResultBase64DecodeError,
+		Message:"保存文件时文件内容Base64解码失败，请与管理员联系处理",
+		Error:true,
+	},
 	ResultNoIDWhenUpdate:CommonRsp{
 		ErrorCode:ResultNoIDWhenUpdate,
 		Message:"更新或删除数据请求中缺少ID字段，请与管理员联系处理",
@@ -156,6 +163,11 @@ var errMsg = map[int]CommonRsp{
 	ResultNoRelatedField:CommonRsp{
 		ErrorCode:ResultNoRelatedField,
 		Message:"一对多关联字段中没有配置对应的关联字段，请与管理员联系处理",
+		Error:true,
+	},
+	ResultLoadExcelFileError:CommonRsp{
+		ErrorCode:ResultLoadExcelFileError,
+		Message:"加载Excel文件失败，您选择的Excel文件格式不正确或文件损坏，请选择正确文件并重新尝试",
 		Error:true,
 	},
 	ResultWrongRequest:CommonRsp{
