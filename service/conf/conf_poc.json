@@ -1,0 +1,29 @@
+{
+    "redis":{
+        "server":"192.168.1.144:6379",
+        "tokenExpired":"6000s",
+        "password":"4576_Iee0787"
+    },
+    "mysql":{
+        "server":"1.15.91.60:3306",
+        "password":"4576_Iee0787",
+        "user":"root",
+        "dbName":"delivery_recon",
+        "connMaxLifetime":60,
+        "maxOpenConns":10,
+        "maxIdleConns":10
+    },
+    "mqtt":{
+        "broker":"1.15.91.60",
+        "port":1983,
+        "wsPort":9101,
+        "user":"mosquitto",
+        "password":"123456"
+    },
+    "service":{
+        "port":"localhost:9900"
+    },
+    "runtime":{
+        "goMaxProcs":10
+    }
+}

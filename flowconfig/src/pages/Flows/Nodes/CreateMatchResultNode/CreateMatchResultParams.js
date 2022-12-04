@@ -72,6 +72,7 @@ export default function CreateMatchResultParams({node,labelWidth}){
                         <Select value={item.aggregation} size='small' onChange={(value)=>onGroupFieldChange(index,{...item,aggregation:value})}>
                             <Option key='first'>first</Option>
                             <Option key='sum'>sum</Option>
+                            <Option key='count'>count</Option>
                         </Select>
                     </Col>
                 </Row>

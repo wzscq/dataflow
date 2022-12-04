@@ -114,6 +114,28 @@ func (nodeExecutor *nodeExecutorCreateMatchResult)aggregationSum(
 	groupRow[groupField.Field]=fmt.Sprint(newVal)
 }
 
+func (nodeExecutor *nodeExecutorCreateMatchResult)aggregationCount(
+	groupRow,modelRow map[string]interface{},
+	groupField *groupModelField,
+	index int){
+	
+	//获取之前的数据
+	preVal,ok:=groupRow[groupField.Field]
+	if !ok {
+		log.Println("nodeExecutorSaveMatched aggregationCount source field "+groupField.Field+" not found")
+		preVal="0"
+	}
+	spreVal,_:=preVal.(string)
+	preValInt64,err:=strconv.ParseInt(spreVal,10,64)
+	if err !=nil {
+		log.Println("nodeExecutorSaveMatched aggregationCount can not convert aggregeted value to int64")
+		return
+	}
+	
+	newVal:=preValInt64+1
+	groupRow[groupField.Field]=fmt.Sprint(newVal)
+}
+
 func (nodeExecutor *nodeExecutorCreateMatchResult)aggragation(
 	groupRow,modelRow map[string]interface{},
 	groupField *groupModelField,
@@ -123,6 +145,8 @@ func (nodeExecutor *nodeExecutorCreateMatchResult)aggragation(
 		nodeExecutor.aggregationFirst(groupRow,modelRow,groupField,index)
 	} else if groupField.Aggregation == AGGREGATION_SUM {
 		nodeExecutor.aggregationSum(groupRow,modelRow,groupField,index)
+	} else if groupField.Aggregation == AGGREGATION_COUNT {
+		nodeExecutor.aggregationCount(groupRow,modelRow,groupField,index)
 	}
 }
 
