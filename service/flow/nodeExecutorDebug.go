@@ -88,7 +88,7 @@ func (nodeExecutor *nodeExecutorDebug)getSendData(data *flowReqRsp)(*flowReqRsp)
 							Total:len(*modelData.List),
 						}
 						for rowIdx,dataRow:=range(*modelData.List){
-							if rowIdx<5 {
+							if rowIdx<100 {
 								(*sendModelData.List)=append((*sendModelData.List),dataRow)
 							} else {
 								break

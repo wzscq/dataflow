@@ -14,7 +14,7 @@
         "maxIdleConns":10
     },
     "mqtt":{
-        "broker":"1.15.91.60",
+        "broker":"121.36.192.249",
         "port":1983,
         "wsPort":9101,
         "user":"mosquitto",

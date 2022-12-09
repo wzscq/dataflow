@@ -76,7 +76,7 @@ func (repo *DefatultDataRepository)rowsToMap(rows *sql.Rows)([]map[string]interf
 }
 
 func (repo *DefatultDataRepository)query(sql string)([]map[string]interface{},error){
-	//log.Println(sql)
+	log.Println(sql)
 	rows, err := repo.DB.Query(sql)
 	if err != nil {
 		log.Println(err)
