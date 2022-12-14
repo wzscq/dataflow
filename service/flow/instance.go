@@ -105,9 +105,12 @@ func (flow *flowInstance)getFllowingNodes(id string,flowRep* flowReqRsp)(*[]*ins
 }
 
 func (flow *flowInstance)getNextNode(currentNode *instanceNode,flowRep* flowReqRsp)(*instanceNode){
-	//先检查当前节点是否有后续节点，如果有则优先执行后续节点
-	fllowingNodes:=flow.getFllowingNodes(currentNode.ID,flowRep)
-	flow.WaitingNodes=append(flow.WaitingNodes,(*fllowingNodes)...)
+	//如果当前节点返回要求继续执行，先检查当前节点是否有后续节点，如果有则优先执行后续节点
+	if flowRep.GoOn==true {
+		fllowingNodes:=flow.getFllowingNodes(currentNode.ID,flowRep)
+		flow.WaitingNodes=append(flow.WaitingNodes,(*fllowingNodes)...)
+	}
+	
 	nodeCount:=len(flow.WaitingNodes)
 	if nodeCount>0 {
 		return flow.WaitingNodes[nodeCount-1]

@@ -33,6 +33,7 @@ const (
 	ResultBase64DecodeError=10000028
 	ResultNotDeleteData=10000036
 	ResultLoadExcelFileError=10000040
+	ResultESIFileAlreadyImported=10000041
 
 	ResultWrongRequest = 90000001
 	ResultOpenFileError = 90000002
@@ -65,6 +66,11 @@ const (
 )
 
 var errMsg = map[int]CommonRsp{
+	ResultESIFileAlreadyImported:CommonRsp{
+		ErrorCode:ResultESIFileAlreadyImported,
+		Message:"您选择的文件和已经导入的文件名称相同，不能重复导入相同的文件",
+		Error:true,
+	},
 	ResultSuccess:CommonRsp{
 		ErrorCode:ResultSuccess,
 		Message:"操作成功",

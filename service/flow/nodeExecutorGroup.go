@@ -207,6 +207,7 @@ func (nodeExecutor *nodeExecutorGroup)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 	flowData:=[]flowDataItem{}
 	//按字段分组逻辑，这里不考虑容差，将容差字段分组单独做一个节点类型处理

@@ -150,6 +150,15 @@ export default function ESINodeParams({node,labelWidth}){
             </Col>
         </Row>
         <Row className="param-panel-row" style={{display:showOptions?"flex":"none"}} gutter={24}>
+          <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>Prevent Same File</Col>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
+            <Select value={options.preventSameFile===true?"true":"false"} size='small' onChange={(value)=>onOptionChange({...options,preventSameFile:value==="true"?true:false})}>
+                <Option key={"false"}>No</Option>
+                <Option key={"true"}>Yes</Option>
+            </Select>
+          </Col>
+        </Row>
+        <Row className="param-panel-row" style={{display:showOptions?"flex":"none"}} gutter={24}>
           <Col className="param-panel-row-label level-1" style={{width:labelWidth}}>GenerateRowID</Col>
           <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
               <Select value={options.generateRowID===true?"true":"false"} size='small' onChange={(value)=>onOptionChange({...options,generateRowID:value==="true"?true:false})}>

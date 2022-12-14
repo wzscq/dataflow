@@ -31,6 +31,7 @@ const (
 	NODE_SPLIT_EXTQUANTITY= "splitExtraQuantity"
 	NODE_CREATE_MATCH_RESULT="createMatchResult"
 	NODE_ESI = "esi"
+	NODE_CRV_REQUEST = "CRVRequest"
 )
 
 type nodeExecutor interface {
@@ -142,6 +143,11 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_ESI {
 		return &nodeExecutorESI{
+			NodeConf:*node,
+			DataRepository:dataRepo,
+		}
+	} else if node.Type == NODE_CRV_REQUEST {
+		return &nodeExecutorCRVRequest{
 			NodeConf:*node,
 		}
 	}

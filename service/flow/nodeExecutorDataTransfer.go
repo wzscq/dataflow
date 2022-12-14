@@ -156,6 +156,7 @@ func (nodeExecutor *nodeExecutorDataTransfer)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 
 	//生成处理批次号

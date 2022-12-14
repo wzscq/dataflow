@@ -23,6 +23,7 @@ import {DataTransformNode,DataTransformParams} from './DataTransformNode';
 import {GroupTransformNode,GroupTransformParams} from './GroupTransformNode';
 import {SplitExtraQuantityNode,SplitExtraQuantityParams} from './SplitExtraQuantityNode';
 import {ESINode,ESINodeParams} from './ESINode';
+import {CRVRequestNode,CRVRequestNodeParams} from './CRVRequestNode';
 
 export const nodeTypes={
     start:StartNode,
@@ -49,7 +50,8 @@ export const nodeTypes={
 	dataTransform:DataTransformNode,
 	groupTransform:GroupTransformNode,
 	splitExtraQuantity:SplitExtraQuantityNode,
-	esi:ESINode
+	esi:ESINode,
+	CRVRequest:CRVRequestNode
 }
 
 export const nodeParams={
@@ -77,5 +79,6 @@ export const nodeParams={
 	dataTransform:DataTransformParams,
 	groupTransform:GroupTransformParams,
 	splitExtraQuantity:SplitExtraQuantityParams,
-	esi:ESINodeParams
+	esi:ESINodeParams,
+	CRVRequest:CRVRequestNodeParams
 }

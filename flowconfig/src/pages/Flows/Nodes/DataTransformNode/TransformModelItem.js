@@ -4,6 +4,16 @@ import { PlusOutlined,PlusSquareOutlined,MinusOutlined,MinusSquareOutlined,Align
 import { updateNodeData } from '../../../../redux/flowSlice';
 import {openDialog} from '../../../../redux/dialogSlice';
 
+const initContent=
+`/*
+数据行字段处理函数，可用于生成字段的值，或根据其它字段值计算某个字段的值
+入参如下：
+field:当前处理的字段名称
+row:当前处理的数据行
+返回值：
+直接返回需要处理的字段的值,比如：  return fieldValue;
+*/`
+
 export default function TransferModelItem({node,modelIndex,labelWidth}){
     const dispatch=useDispatch();
 
@@ -64,7 +74,7 @@ export default function TransferModelItem({node,modelIndex,labelWidth}){
     }
 
     const onEditScript=(fieldIndex)=>{
-        dispatch(openDialog({type:'funcScript',title:'Function Script',param:{node:node,modelIndex:modelIndex,fieldIndex:fieldIndex}}));
+        dispatch(openDialog({type:'funcScript',title:'Function Script',param:{node:node,modelIndex:modelIndex,fieldIndex:fieldIndex,initContent}}));
     }
 
     const modelItem=node.data.models[modelIndex];

@@ -50,6 +50,7 @@ type flowReqRsp struct {
 	Filter *map[string]interface{} `json:"filter"`
 	List *[]map[string]interface{} `json:"list"`
 	Total int `json:"total"`
+	GoOn bool  `json:"goOn"`
 	//Fields *[]field `json:"fields"`
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
@@ -115,6 +116,7 @@ func (controller *FlowController)start(c *gin.Context){
 	req.UserID=header.UserID
 	req.AppDB=header.AppDB
 	req.UserRoles=header.UserRoles
+	req.GoOn=true  //这个值设置节点是否继续运行默认为true
 
 	//创建流
 	flowInstance,errorCode:=createInstance(req.AppDB,req.FlowID,req.UserID,req.DebugID,req.FlowConf)

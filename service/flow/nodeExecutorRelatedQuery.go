@@ -228,6 +228,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 
 	params:=map[string]interface{}{

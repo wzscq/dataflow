@@ -97,8 +97,14 @@ func (nodeExecutor *nodeExecutorFilter)run(
 		FlowID:node.Input.FlowID,
 		UserID:node.Input.UserID,
 		AppDB:node.Input.AppDB,
+		GoOn:true,
 	}
 	flowResult.Data=&resultData
+
+	//如果没有数据就不再往下执行了
+	if len(resultData)==0 {
+		flowResult.GoOn=false
+	}
 	
 	endTime:=time.Now().Format("2006-01-02 15:04:05")
 	node.Completed=true

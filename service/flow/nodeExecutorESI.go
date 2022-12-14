@@ -6,10 +6,12 @@ import (
 	"dataflow/esi"
 	"log"
 	"encoding/json"
+	"dataflow/data"
 )
 
 type nodeExecutorESI struct {
 	NodeConf node
+	DataRepository data.DataRepository 
 }
 
 func (nodeExecutor *nodeExecutorESI)getNodeConf()(*esi.ESIModel){
@@ -119,6 +121,24 @@ func (nodeExecutor *nodeExecutorESI)getImportFile(inputRowData *map[string]inter
 	return fileName,fileContent,common.ResultSuccess
 }
 
+func (nodeExecutor *nodeExecutorESI)getRowData(
+	modelID string,
+	data *[]flowDataItem)(*map[string]interface{}){
+		for _,dataItem:=range(*data){
+			 for _,model:=range(dataItem.Models){
+				if *model.ModelID==modelID {
+					if model.List!=nil && len(*model.List)>0 {
+						return &((*model.List)[0])
+					} else {
+						return nil
+					}
+				}
+			 }
+		}
+		
+		return nil
+}
+
 func (nodeExecutor *nodeExecutorESI)run(
 	instance *flowInstance,
 	node,preNode *instanceNode)(*flowReqRsp,*common.CommonError){
@@ -130,6 +150,7 @@ func (nodeExecutor *nodeExecutorESI)run(
 			FlowID:req.FlowID, 
 			UserID:req.UserID,
 			AppDB:req.AppDB,
+			GoOn:true,
 		}
 	
 		params:=map[string]interface{}{
@@ -142,9 +163,9 @@ func (nodeExecutor *nodeExecutorESI)run(
 			req.List=nodeExecutor.loadTestData()
 		}
 
-		//需要页面传入文件信息
-		if req.List==nil || len(*req.List)==0 {
-			log.Printf("nodeExecutorESI run get node config error\n")
+		//需要页面传入文件信息，ESI不再从输入参数中获取数据，而是从data中获取
+		if req.Data==nil || len(*req.Data)==0 {
+			log.Printf("nodeExecutorESI no input data\n")
 			return flowResult,common.CreateError(common.ResultWrongRequest,params)
 		}
 
@@ -155,12 +176,25 @@ func (nodeExecutor *nodeExecutorESI)run(
 			return flowResult,common.CreateError(common.ResultNodeConfigError,params)
 		}
 
+		inputRowData:=nodeExecutor.getRowData(esiModel.ModelID,req.Data)
+		if inputRowData==nil {
+			log.Printf("nodeExecutorESI no input data\n")
+			return flowResult,common.CreateError(common.ResultWrongRequest,params)
+		} 
 		//这里考虑到导入操作
-		inputRowData:=(*req.List)[0]
-		fileName,fileContent,errorCode:=nodeExecutor.getImportFile(&inputRowData)
+		//inputRowData:=(*req.List)[0]
+		fileName,fileContent,errorCode:=nodeExecutor.getImportFile(inputRowData)
 		if errorCode!=common.ResultSuccess {
 			errorCode=common.ResultWrongRequest
 			return flowResult,common.CreateError(errorCode,params)
+		}
+
+		//检查对应的文件名称如果已经导入过则不允许导入
+		if esiModel.Options.PreventSameFile==true {
+			errorCode=nodeExecutor.checkImportFile(req.AppDB,esiModel.ModelID,fileName)
+			if errorCode!=common.ResultSuccess {
+				return flowResult,common.CreateError(errorCode,params)
+			}
 		}
 
 		log.Println(fileName)
@@ -171,7 +205,7 @@ func (nodeExecutor *nodeExecutorESI)run(
 			UserRoles:req.UserRoles,
 			FileName:fileName,
 			FileContent:fileContent,
-			InputRowData:&inputRowData,
+			InputRowData:inputRowData,
 		}
 	
 		result,commonErr:=esiImport.DoImport(esiModel)
@@ -202,4 +236,31 @@ func (nodeExecutor *nodeExecutorESI)run(
 		node.Output=flowResult
 		log.Println("nodeExecutorESI run end")
 		return flowResult,nil
+}
+
+func (nodeExecutor *nodeExecutorESI)checkImportFile(appDB,modelID,fileName string)(int){
+	query:=&data.Query{
+		ModelID:modelID,
+		Pagination: &data.Pagination{
+			Current:1,
+			PageSize:1,
+		},
+		Filter:&map[string]interface{}{
+			esi.CC_IMPORT_FILE:fileName,
+		},
+		Fields:&[]data.Field{
+			data.Field{
+				Field:data.CC_ID,
+			},
+		},
+		AppDB:appDB,
+	}
+	result,err:=query.Execute(nodeExecutor.DataRepository,false)
+	if err!=common.ResultSuccess {
+		return err
+	}
+	if result.Total>0 {
+		return common.ResultESIFileAlreadyImported
+	}
+	return common.ResultSuccess
 }

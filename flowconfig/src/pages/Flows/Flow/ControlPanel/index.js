@@ -6,6 +6,7 @@ const controls=[
     {type: 'start',label: 'Start'},
     {type: 'end',label: 'End'},
     {type: 'query',label: 'Query Data'},
+    {type: 'CRVRequest',label: 'CRV Request'},
     {type: 'requestQuery',label:'Request Query'},
     {type: 'relatedQuery',label:'Related Query'},
     {type: 'esi',label: 'ESI'},

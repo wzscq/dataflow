@@ -241,6 +241,7 @@ func (nodeExecutor *nodeExecutorDataTransform)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 
 	var resultData []flowDataItem

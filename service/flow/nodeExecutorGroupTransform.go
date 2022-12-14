@@ -156,6 +156,7 @@ func (nodeExecutor *nodeExecutorGroupTransform)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 
 	//遍历所有数据模型，对于配置了转换逻辑的模型字段进行处理

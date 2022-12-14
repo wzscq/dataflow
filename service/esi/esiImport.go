@@ -26,6 +26,11 @@ const (
 	EMPTY_VALUE_NO="no"
 )
 
+const (
+	PREVENT_SAME_FILE_YES="yes"
+	PREVENT_SAME_FILE_NO="no"
+)
+
 type DataRowHandler interface {
 	handleRow(row map[string]interface{})(*common.CommonError)
 	onInit()(*common.CommonError)
@@ -45,6 +50,7 @@ type ESIModelField struct {
 type ESIOption struct {
 	GenerateRowID bool `json:"generateRowID"` 
 	MaxHeaderRow int `json:"maxHeaderRow"` 
+	PreventSameFile bool `json:"preventSameFile"`
 }
 
 type ESIModel struct {

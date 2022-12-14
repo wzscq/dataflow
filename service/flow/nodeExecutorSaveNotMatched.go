@@ -101,6 +101,7 @@ func (nodeExecutor *nodeExecutorSaveNotMatched)run(
 		FlowID:req.FlowID, 
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		GoOn:true,
 	}
 
 	//一个分组作为一个独立的事务进行保存
