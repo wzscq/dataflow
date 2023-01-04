@@ -32,6 +32,7 @@ const (
 	NODE_CREATE_MATCH_RESULT="createMatchResult"
 	NODE_ESI = "esi"
 	NODE_CRV_REQUEST = "CRVRequest"
+	NODE_FLOW = "flow"
 )
 
 type nodeExecutor interface {
@@ -148,6 +149,10 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_CRV_REQUEST {
 		return &nodeExecutorCRVRequest{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_FLOW {
+		return &nodeExecutorFlow{
 			NodeConf:*node,
 		}
 	}
