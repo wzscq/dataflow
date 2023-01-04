@@ -4,13 +4,14 @@ import (
 	"dataflow/common"
 	"dataflow/data"
 	"log"
-	"github.com/rs/xid"
+	//"github.com/rs/xid"
 	"fmt"
 )
 
 const (
 	CC_BATCH_NUMBER="import_batch_number"
 	CC_IMPORT_FILE="import_file_name"
+	CC_SHEET_NAME="sheet_name"
 )
 
 type listDataRowHandler struct {
@@ -57,11 +58,11 @@ func (dataHandler *listDataRowHandler)getRowID(batchID string)(string){
 }
 
 func (dataHandler *listDataRowHandler)getBatchID()(string){
-	guid := xid.New().String()
+	guid := GetBatchID()  //xid.New().String()
 	return guid
 }
 
-func (dataHandler *listDataRowHandler)updateRowData(row *map[string]interface{}){
+func (dataHandler *listDataRowHandler)updateRowData(row *map[string]interface{},sheetName string){
 	(*row)[data.SAVE_TYPE_COLUMN]=data.SAVE_CREATE
 	//从表单输入的数据写入导入记录对应字段上
 	for fidx,_:=range(dataHandler.ESIModel.Fields) {
@@ -74,15 +75,16 @@ func (dataHandler *listDataRowHandler)updateRowData(row *map[string]interface{})
 	batchID:=dataHandler.BatchID
 	(*row)[CC_BATCH_NUMBER]=batchID
 	(*row)[CC_IMPORT_FILE]=dataHandler.FileName
+	(*row)[CC_SHEET_NAME]=sheetName
 	if dataHandler.ESIModel.Options.GenerateRowID == true {
 		(*row)[data.CC_ID]=dataHandler.getRowID(batchID)
 	}
 }
 
-func (dataHandler *listDataRowHandler)handleRow(row map[string]interface{})(*common.CommonError){
+func (dataHandler *listDataRowHandler)handleRow(row map[string]interface{},sheetName string)(*common.CommonError){
 	log.Println("listDataRowHandler handleRow start")
 	dataHandler.Count++
-	dataHandler.updateRowData(&row)
+	dataHandler.updateRowData(&row,sheetName)
 	dataHandler.Result=append(dataHandler.Result,row)	
 	log.Println("listDataRowHandler handleRow end")
 	return nil

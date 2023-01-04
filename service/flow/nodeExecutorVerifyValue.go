@@ -114,9 +114,8 @@ func (nodeExecutor *nodeExecutorVerifyValue)getModelValue(
 
 func (nodeExecutor *nodeExecutorVerifyValue)copyDataItem(
 	item,newItem *flowDataItem){
-	
-	newItem.VerifyResult=item.VerifyResult
-	newItem.Models=item.Models
+	newItem.VerifyResult=append(newItem.VerifyResult,item.VerifyResult...)
+	newItem.Models=append(newItem.Models,item.Models...)
 }
 
 func (nodeExecutor *nodeExecutorVerifyValue)getVerifyResult(

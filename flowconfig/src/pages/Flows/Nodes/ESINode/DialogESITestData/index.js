@@ -9,11 +9,11 @@ import './index.css';
 export default function DialogESITestData({dialogIndex}){
   const dispatch = useDispatch();
   const dialogItem=useSelector(state=>state.dialog.dialogs[dialogIndex]);
-  const {node}=dialogItem.param;
-  console.log(node);
+  const {node,modelIndex}=dialogItem.param;
   const initFileList=[];
-  if(node.data?.testData?.esiFile?.list.length>0){
-    const testFile=node.data.testData.esiFile.list[0];
+  const models=[...node.data?.models];
+  if(models[modelIndex]?.testData?.esiFile?.list.length>0){
+    const testFile=models[modelIndex].testData.esiFile.list[0];
     initFileList.push({
       uid:testFile.id,
       name:testFile.name,
@@ -42,7 +42,8 @@ export default function DialogESITestData({dialogIndex}){
         }
       };
     }
-    dispatch(updateNodeData({...node.data,testData:testData}));
+    models[modelIndex]={...models[modelIndex],testData:testData}
+    dispatch(updateNodeData({...node.data,models:models}));
     dispatch(closeDialog());
   }
 

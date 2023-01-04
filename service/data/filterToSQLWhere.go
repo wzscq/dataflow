@@ -255,8 +255,12 @@ func convertFieldValueMap(field string,value map[string]interface{})(string,int)
             str,err=convertFieldOpNormal(" <> ",field,value)
         case Op_gt:
             str,err=convertFieldOpNormal(" > ",field,value)
+        case Op_gte:
+            str,err=convertFieldOpNormal(" >= ",field,value)
         case Op_lt:
             str,err=convertFieldOpNormal(" < ",field,value)
+        case Op_lte:
+            str,err=convertFieldOpNormal(" <= ",field,value)
         case Op_in:
             str,err=convertFieldOpNormal(" in ",field,value)
         case Op_is:

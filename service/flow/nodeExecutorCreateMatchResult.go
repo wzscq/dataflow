@@ -241,8 +241,8 @@ func (nodeExecutor *nodeExecutorCreateMatchResult)getBatchNumber()(string){
 
 func (nodeExecutor *nodeExecutorCreateMatchResult)copyDataItem(
 	item,newItem *flowDataItem){
-	newItem.VerifyResult=item.VerifyResult
-	newItem.Models=item.Models
+	newItem.VerifyResult=append(newItem.VerifyResult,item.VerifyResult...)
+	newItem.Models=append(newItem.Models,item.Models...)
 }
 
 func (nodeExecutor *nodeExecutorCreateMatchResult)run(

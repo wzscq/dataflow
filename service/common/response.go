@@ -63,9 +63,15 @@ const (
 	ResultCreateTransformFunctionError = 90000026
 	ResultNoModelField = 90000027
 	ResultFieldTypeError = 90000028
+	ResultExcelSheetNotExist = 90000029
 )
 
 var errMsg = map[int]CommonRsp{
+	ResultExcelSheetNotExist:CommonRsp{
+		ErrorCode:ResultExcelSheetNotExist,
+		Message:"读取Excel文件时指定的sheet不存在，请确认您选择的Excel文件是否正确",
+		Error:true,
+	},
 	ResultESIFileAlreadyImported:CommonRsp{
 		ErrorCode:ResultESIFileAlreadyImported,
 		Message:"您选择的文件和已经导入的文件名称相同，不能重复导入相同的文件",

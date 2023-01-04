@@ -13,7 +13,7 @@ export default function DialogOpenFlow({dialogIndex}){
     const {flows,openedflows,loaded,pending}=useSelector(state=>state.flow);
     const [selectedItems,setSelectedItems]=useState({});
 
-    const data=flows.filter(flowID=>!openedflows.find(item=>item.id===flowID));
+    const data=flows?.filter(flowID=>!openedflows.find(item=>item.id===flowID));
 
     const onCancel=()=>{
         dispatch(closeDialog());

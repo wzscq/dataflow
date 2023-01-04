@@ -14,7 +14,11 @@ type nodeExecutorESI struct {
 	DataRepository data.DataRepository 
 }
 
-func (nodeExecutor *nodeExecutorESI)getNodeConf()(*esi.ESIModel){
+type ESINodeConf struct {
+	Models []esi.ESIModel `json:"models"`
+}
+
+func (nodeExecutor *nodeExecutorESI)getNodeConf()(*ESINodeConf){
 	mapData,_:=nodeExecutor.NodeConf.Data.(map[string]interface{})
 	jsonStr, err := json.Marshal(mapData)
 	if err != nil {
@@ -22,42 +26,63 @@ func (nodeExecutor *nodeExecutorESI)getNodeConf()(*esi.ESIModel){
 		return nil
 	}
 	log.Println(string(jsonStr))
-	esiMOdel:=&esi.ESIModel{}
-  if err := json.Unmarshal(jsonStr, esiMOdel); err != nil {
+	nodeConf:=&ESINodeConf{}
+  if err := json.Unmarshal(jsonStr, nodeConf); err != nil {
     log.Println(err)
 		return nil
   }
 
-	return esiMOdel
+	return nodeConf
 }
 
-func (nodeExecutor *nodeExecutorESI)loadTestData()(*[]map[string]interface{}){
+func (nodeExecutor *nodeExecutorESI)loadTestData(modelID string,fileField string)(*map[string]interface{}){
 	mapData,_:=nodeExecutor.NodeConf.Data.(map[string]interface{})
-	testData,ok:=mapData["testData"]
+	models,ok:=mapData["models"]
 	if !ok {
 		return nil
 	}
 
-	testDataMap,ok:=testData.(map[string]interface{})
+	modelList,ok:=models.([]interface{})
 	if !ok {
 		return nil
 	}
 
-	list:=[]map[string]interface{}{
-		testDataMap,
+	for _,modelItem:=range(modelList){
+		modelMap,_:=modelItem.(map[string]interface{})
+		tmpModelID,_:=modelMap["modelID"].(string)
+		if tmpModelID==modelID {
+			testDataMap,_:=modelMap["testData"].(map[string]interface{})
+			if len(fileField)==0 {
+				fileField="esiFile"
+			}
+
+			fileValue,ok:=testDataMap[fileField]
+			if !ok {
+				fileValue,ok=testDataMap["esiFile"]
+				if ok {
+					testDataMap[fileField]=fileValue
+				}
+			}
+			return &testDataMap
+		}
 	}
-	return &list
+	
+	return nil
 }
 
-func (nodeExecutor *nodeExecutorESI)getImportFile(inputRowData *map[string]interface{})(string,string,int){
-	fileField,ok:=(*inputRowData)["esiFile"]
+func (nodeExecutor *nodeExecutorESI)getImportFile(inputRowData *map[string]interface{},fileField string)(string,string,int){
+	if len(fileField)==0 {
+		fileField="esiFile"
+	}
+	
+	fileValue,ok:=(*inputRowData)[fileField]
 	if !ok {
 		log.Println("nodeExecutorESI getImportFile end with error:")
 		log.Println("the field esiFile is not found.")
 		return "","",common.ResultWrongRequest
 	}
 
-	fileValueMap,ok:=fileField.(map[string]interface{})
+	fileValueMap,ok:=fileValue.(map[string]interface{})
 	if !ok {
 		log.Println("nodeExecutorESI getImportFile end with error:")
 		log.Println("can not onvert esiFile value to map[stirng]interface{}.")
@@ -139,6 +164,72 @@ func (nodeExecutor *nodeExecutorESI)getRowData(
 		return nil
 }
 
+func (nodeExecutor *nodeExecutorESI)ImportModelSheets(
+	esiModel *esi.ESIModel,
+	req *flowReqRsp,
+	fileName,fileContent string,
+	inputRowData *map[string]interface{})(map[string]interface{},*common.CommonError){
+	esiImport:=&esi.ESImport{
+		AppDB:req.AppDB,
+		ModelID:esiModel.ModelID,
+		UserID:req.UserID,
+		UserRoles:req.UserRoles,
+		FileName:fileName,
+		FileContent:fileContent,
+		InputRowData:inputRowData,
+	}
+
+	return esiImport.DoImport(esiModel)
+}
+
+func (nodeExecutor *nodeExecutorESI)ImportModel(
+	esiModel *esi.ESIModel,
+	req *flowReqRsp,
+	instance *flowInstance)(*modelDataItem,*common.CommonError){
+		inputRowData:=nodeExecutor.getRowData(esiModel.FileModel,req.Data)
+		
+		if inputRowData==nil {
+			log.Printf("nodeExecutorESI no input data\n")
+			return nil,common.CreateError(common.ResultWrongRequest,nil)
+		}
+
+		//这里考虑到导入操作
+		//如果是调试模式，择用测试数据填充List
+		if instance.DebugID!=nil && len(*instance.DebugID)>0 {
+			inputRowData=nodeExecutor.loadTestData(esiModel.ModelID,esiModel.FileField)
+		}
+
+		fileName,fileContent,errorCode:=nodeExecutor.getImportFile(inputRowData,esiModel.FileField)
+		if errorCode!=common.ResultSuccess {
+			errorCode=common.ResultWrongRequest
+			return nil,common.CreateError(errorCode,nil)
+		}
+
+		//检查对应的文件名称如果已经导入过则不允许导入
+		if esiModel.Options.PreventSameFile==true {
+			errorCode=nodeExecutor.checkImportFile(req.AppDB,esiModel.ModelID,fileName)
+			if errorCode!=common.ResultSuccess {
+				return nil,common.CreateError(errorCode,nil)
+			}
+		}
+
+		result,err:=nodeExecutor.ImportModelSheets(esiModel,req,fileName,fileContent,inputRowData)
+		if err!=nil {
+			return nil,err
+		}
+
+		list:=result["list"].([]map[string]interface{})
+		total:=result["count"].(int)
+		
+		modelID:=esiModel.ModelID
+		modelData:=modelDataItem{
+			ModelID:&modelID,
+			List:&list,
+			Total:total,
+		}
+		return &modelData,nil
+}
+
 func (nodeExecutor *nodeExecutorESI)run(
 	instance *flowInstance,
 	node,preNode *instanceNode)(*flowReqRsp,*common.CommonError){
@@ -158,11 +249,6 @@ func (nodeExecutor *nodeExecutorESI)run(
 			"nodeType":NODE_ESI,
 		}
 
-		//如果是调试模式，择用测试数据填充List
-		if instance.DebugID!=nil && len(*instance.DebugID)>0 {
-			req.List=nodeExecutor.loadTestData()
-		}
-
 		//需要页面传入文件信息，ESI不再从输入参数中获取数据，而是从data中获取
 		if req.Data==nil || len(*req.Data)==0 {
 			log.Printf("nodeExecutorESI no input data\n")
@@ -170,62 +256,26 @@ func (nodeExecutor *nodeExecutorESI)run(
 		}
 
 		//加载节点配置
-		esiModel:=nodeExecutor.getNodeConf()
-		if esiModel==nil {
+		nodeConf:=nodeExecutor.getNodeConf()
+		if nodeConf==nil {
 			log.Printf("nodeExecutorESI run get node config error\n")
 			return flowResult,common.CreateError(common.ResultNodeConfigError,params)
 		}
 
-		inputRowData:=nodeExecutor.getRowData(esiModel.ModelID,req.Data)
-		if inputRowData==nil {
-			log.Printf("nodeExecutorESI no input data\n")
-			return flowResult,common.CreateError(common.ResultWrongRequest,params)
-		} 
-		//这里考虑到导入操作
-		//inputRowData:=(*req.List)[0]
-		fileName,fileContent,errorCode:=nodeExecutor.getImportFile(inputRowData)
-		if errorCode!=common.ResultSuccess {
-			errorCode=common.ResultWrongRequest
-			return flowResult,common.CreateError(errorCode,params)
-		}
-
-		//检查对应的文件名称如果已经导入过则不允许导入
-		if esiModel.Options.PreventSameFile==true {
-			errorCode=nodeExecutor.checkImportFile(req.AppDB,esiModel.ModelID,fileName)
-			if errorCode!=common.ResultSuccess {
-				return flowResult,common.CreateError(errorCode,params)
+		modelsData:=[]modelDataItem{}
+		//循环处理每个model
+		//这里允许一次读入多个模型的数据
+		for _,modelItem:=range(nodeConf.Models) {
+			modelData,err:=nodeExecutor.ImportModel(&modelItem,req,instance)
+			if err!=nil {
+				return flowResult,err
 			}
-		}
-
-		log.Println(fileName)
-		esiImport:=&esi.ESImport{
-			AppDB:req.AppDB,
-			ModelID:esiModel.ModelID,
-			UserID:req.UserID,
-			UserRoles:req.UserRoles,
-			FileName:fileName,
-			FileContent:fileContent,
-			InputRowData:inputRowData,
-		}
-	
-		result,commonErr:=esiImport.DoImport(esiModel)
-		if commonErr!=nil {
-			return flowResult,commonErr
-		}
-
-		list:=result["list"].([]map[string]interface{})
-		total:=result["count"].(int)
-		modelData:=modelDataItem{
-			ModelID:&esiModel.ModelID,
-			List:&list,
-			Total:total,
+			modelsData=append(modelsData,*modelData)
 		}
 
 		flowData:=&[]flowDataItem{
 			flowDataItem{
-				Models:[]modelDataItem{
-					modelData,
-				},
+				Models:modelsData,
 			},
 		}
 

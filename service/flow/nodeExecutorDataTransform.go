@@ -59,8 +59,8 @@ func (nodeExecutor *nodeExecutorDataTransform)getNodeConf()(*dataTransformConf){
 
 func (nodeExecutor *nodeExecutorDataTransform)copyDataItem(
 	item,newItem *flowDataItem){
-	newItem.VerifyResult=item.VerifyResult
-	newItem.Models=item.Models
+	newItem.VerifyResult=append(newItem.VerifyResult,item.VerifyResult...)
+	newItem.Models=append(newItem.Models,item.Models...)
 }
 
 func (nodeExecutor *nodeExecutorDataTransform)createTransformFunction(name,body string)(goja.Callable,*common.CommonError){

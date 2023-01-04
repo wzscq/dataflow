@@ -31,8 +31,18 @@ const (
 	PREVENT_SAME_FILE_NO="no"
 )
 
+const (
+	SHEETSELECTOR_OPTIONAL_YES="yes"
+	SHEETSELECTOR_OPTIONAL_NO="no"
+)
+
+const (
+	SHEETSELECTOR_TYPE_INDEX="index"
+	SHEETSELECTOR_TYPE_NAME="name"
+)
+
 type DataRowHandler interface {
-	handleRow(row map[string]interface{})(*common.CommonError)
+	handleRow(row map[string]interface{},sheetName string)(*common.CommonError)
 	onInit()(*common.CommonError)
 	onOver(commit bool)(*common.CommonError)
 }
@@ -53,10 +63,19 @@ type ESIOption struct {
 	PreventSameFile bool `json:"preventSameFile"`
 }
 
+type SheetSelector struct {
+	Type string `json:"type"`
+	Value string `json:"value"`
+	Optional string `json:"optional"`
+}
+
 type ESIModel struct {
 	ModelID string `json:"modelID"`
 	Fields []ESIModelField `json:"fields"`
 	Options ESIOption `json:"options"`
+	SheetSelectors []SheetSelector `json:"sheets"`
+	FileModel string `json:"fileModel"` 
+	FileField string `json:"fileField"`
 }
 
 type ESImport struct {
@@ -88,7 +107,7 @@ func (esi *ESImport)DoImport(esiModel *ESIModel)(map[string]interface{},*common.
 		return nil,err
 	}
 
-	err=parseBase64File(esi.FileName,esi.FileContent,contentHandler,dataRowHandler)
+	err=parseBase64File(esi.FileName,esi.FileContent,contentHandler,dataRowHandler,esiModel.SheetSelectors)
 	if err!=nil {
 		dataRowHandler.onOver(false)
 		return nil,err

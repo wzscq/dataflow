@@ -54,9 +54,8 @@ func (nodeExecutor *nodeExecutorVerifyMatch)getVerifyConf()(*matchVerifyConf){
 
 func (nodeExecutor *nodeExecutorVerifyMatch)copyDataItem(
 	item,newItem *flowDataItem){
-	
-	newItem.VerifyResult=item.VerifyResult
-	newItem.Models=item.Models
+	newItem.VerifyResult=append(newItem.VerifyResult,item.VerifyResult...)
+	newItem.Models=append(newItem.Models,item.Models...)
 }
 
 func (nodeExecutor *nodeExecutorVerifyMatch)verify(verifyConf *matchVerifyConf,dataItem *flowDataItem){
@@ -66,6 +65,7 @@ func (nodeExecutor *nodeExecutorVerifyMatch)verify(verifyConf *matchVerifyConf,d
 		Result:verifyConf.SuccessfulResult,
 		Message:"",
 	}
+	log.Println("start verify")
 	for _,ruleItem:= range (*verifyConf.Rules) {
 		hasRuleModel:=false
 		for _,modelItem:= range (dataItem.Models) {
@@ -82,6 +82,8 @@ func (nodeExecutor *nodeExecutorVerifyMatch)verify(verifyConf *matchVerifyConf,d
 			verifyItem.Message=ruleItem.Message
 		}
 	}
+	log.Println("end verify")
+	log.Println(verifyItem)
 	dataItem.VerifyResult=append(dataItem.VerifyResult,verifyItem)
 }
 
@@ -131,6 +133,6 @@ func (nodeExecutor *nodeExecutorVerifyMatch)run(
 	endTime:=time.Now().Format("2006-01-02 15:04:05")
 	node.Completed=true
 	node.EndTime=&endTime
-	node.Input=flowResult
+	node.Output=flowResult
 	return flowResult,nil
 }

@@ -81,8 +81,8 @@ func (nodeExecutor *nodeExecutorNumberCompare)getModelValue(
 func (nodeExecutor *nodeExecutorNumberCompare)copyDataItem(
 	item,newItem *flowDataItem){
 	
-	newItem.VerifyResult=item.VerifyResult
-	newItem.Models=item.Models
+	newItem.VerifyResult=append(newItem.VerifyResult,item.VerifyResult...)
+	newItem.Models=append(newItem.Models,item.Models...)
 }
 
 func (nodeExecutor *nodeExecutorNumberCompare)compare(
