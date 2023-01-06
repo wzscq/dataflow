@@ -9,9 +9,22 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
+type sendNode struct {
+	ID string `json:"id"`
+	Completed bool `json:"completed"`
+	StartTime string `json:"startTime"`
+	EndTime *string `json:"endTime,omitempty"`
+	UserID string `json:"userID,omitempty"`
+	NodeType string `json:"nodeType,omitempty"`
+	Input *flowReqRsp `json:"input,omitempty"`
+	Output *flowReqRsp `json:"output,omitempty"`
+	Priority int64 `json:"priority,omitempty"`
+	FlowID string `json:"flowID"`
+}
+
 type nodeExecutorDebug struct {
 	NodeConf node
-	Mqtt common.MqttConf
+	Mqtt *common.MqttConf
 }
 
 func (nodeExecutor *nodeExecutorDebug) connectHandler(client mqtt.Client){
@@ -45,7 +58,7 @@ func (nodeExecutor *nodeExecutorDebug)getMqttClient(debugID string)(*mqtt.Client
 	return &client
 }
 
-func (nodeExecutor *nodeExecutorDebug)SendDebugMessage(instance *flowInstance,node *instanceNode){
+func (nodeExecutor *nodeExecutorDebug)SendDebugMessage(instance *flowInstance,node *sendNode){
 	log.Println("SendDebugMessage topic: flowdebug/"+(*instance.DebugID))
 	//打印一下流的实例内容
 	jsonStr, err := json.MarshalIndent(node, "", "    ")
@@ -108,14 +121,15 @@ func (nodeExecutor *nodeExecutorDebug)getSendData(data *flowReqRsp)(*flowReqRsp)
 	return sendData
 }
 
-func (nodeExecutor *nodeExecutorDebug)getSendObject(node *instanceNode)(*instanceNode){
-	sendNode:=&instanceNode{
+func (nodeExecutor *nodeExecutorDebug)getSendObject(node *instanceNode,flowID string)(*sendNode){
+	sendNode:=&sendNode{
 		ID:node.ID,
 		Completed:node.Completed,
 		StartTime:node.StartTime,
 		EndTime:node.EndTime,
 		UserID:node.UserID,
 		NodeType:node.NodeType,
+		FlowID:flowID,
 	}
 
 	if node.Input!=nil {
@@ -134,7 +148,7 @@ func (nodeExecutor *nodeExecutorDebug)run(
 	node,preNode *instanceNode)(*flowReqRsp,*common.CommonError){
 
 	if instance.DebugID!=nil && len(*instance.DebugID)>0 {
-		sendObj:=nodeExecutor.getSendObject(node)
+		sendObj:=nodeExecutor.getSendObject(node,instance.FlowID)
 		nodeExecutor.SendDebugMessage(instance,sendObj)
 	}
 

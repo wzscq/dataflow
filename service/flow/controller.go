@@ -127,7 +127,7 @@ func (controller *FlowController)start(c *gin.Context){
 		return
 	}
 	//执行流
-	result,err:=flowInstance.push(controller.DataRepository,&req,controller.Mqtt)
+	result,err:=flowInstance.push(controller.DataRepository,&req,&controller.Mqtt)
 
 	rsp:=common.CreateResponse(err,result)
 	c.IndentedJSON(http.StatusOK, rsp)

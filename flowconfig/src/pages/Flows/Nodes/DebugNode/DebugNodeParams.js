@@ -6,14 +6,16 @@ import {openDialog} from '../../../../redux/dialogSlice';
 
 export default function DebugNodeParams({node,labelWidth}){
     const dispatch=useDispatch();
-    const debugInfo=useSelector(state=>state.debug.debugMessages.filter(item=>item.id===node.id));
-
+    const flowID=useSelector(state=>state.flow.currentFlow);
+    console.log(flowID);
+    const debugInfo=useSelector(state=>state.debug.debugMessages.filter(item=>item.id===node.id&&item.flowID===flowID));
+    console.log(debugInfo);
     const onNodeDataChange=(data)=>{
         dispatch(updateNodeData(data));
     }
 
     const onDetail=(index)=>{
-        dispatch(openDialog({type:'debugInfoDetail',title:'Debug Info',param:{nodeID:node.id,index:index}}));
+        dispatch(openDialog({type:'debugInfoDetail',title:'Debug Info',param:{nodeID:node.id,index:index,flowID:flowID}}));
     }
 
     const showDebugInfoList=node.data.__showDebugInfoList===false?false:true;

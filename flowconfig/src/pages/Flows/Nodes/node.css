@@ -1,3 +1,4 @@
+.react-flow__node-flow,
 .react-flow__node-CRVRequest,
 .react-flow__node-esi,
 .react-flow__node-createMatchResult,
@@ -37,6 +38,7 @@
     filter: invert(10%);
 }
 
+.react-flow__node-flow.selectable.selected,
 .react-flow__node-CRVRequest.selectable.selected,
 .react-flow__node-esi.selectable.selected,
 .react-flow__node-createMatchResult.selectable.selected,
@@ -69,6 +71,7 @@
     filter: invert(0%);
 }
 
+.react-flow__node-flow.selectable:hover,
 .react-flow__node-CRVRequest.selectable:hover,
 .react-flow__node-esi.selectable:hover,
 .react-flow__node-createMatchResult.selectable:hover,

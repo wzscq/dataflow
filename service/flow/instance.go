@@ -142,7 +142,7 @@ func (flow *flowInstance)getNodeConfig(id string)(node *node){
 func (flow *flowInstance)runNode(
 	dataRepo data.DataRepository,
 	node,preNode *instanceNode,
-	mqtt common.MqttConf)(*flowReqRsp,*common.CommonError){
+	mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
 	//根据节点类型，找到对应的节点，然后执行节点
 	log.Printf("flowInstance runNode id: %s \n",node.ID)
 	nodeCfg:=flow.getNodeConfig(node.ID)
@@ -166,7 +166,7 @@ func (flow *flowInstance)runNode(
 	return executor.run(flow,node,preNode)
 }
 
-func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,mqtt common.MqttConf)(*flowReqRsp,*common.CommonError){
+func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
 	log.Println("start flowInstance push")
 	
 	currentNode:=flow.getCurrentNode()

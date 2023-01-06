@@ -42,7 +42,7 @@ type nodeExecutor interface {
 func getNodeExecutor(
 	node *node,
 	dataRepo data.DataRepository,
-	mqtt common.MqttConf)(nodeExecutor){
+	mqtt *common.MqttConf)(nodeExecutor){
 	if node.Type ==NODE_START {
 		return &nodeExecutorStart{}
 	} else if node.Type == NODE_END {
@@ -154,6 +154,8 @@ func getNodeExecutor(
 	} else if node.Type == NODE_FLOW {
 		return &nodeExecutorFlow{
 			NodeConf:*node,
+			DataRepository:dataRepo,
+			Mqtt:mqtt,
 		}
 	}
 	return nil

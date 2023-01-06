@@ -26,6 +26,7 @@ const controls=[
     {type: 'createMatchResult',label: 'Create Match Result'},
 	{type: 'saveNotMatched',label: 'Update Not Matched Reason'},
     {type: 'save',label: 'Save'},
+    {type: 'flow',label: 'Call Flow'},
     {type: 'delay',label: 'Delay'},
     {type: 'log',label: 'log'},
     {type: 'debug',label: 'Debug'}

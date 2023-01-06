@@ -24,11 +24,12 @@ import {GroupTransformNode,GroupTransformParams} from './GroupTransformNode';
 import {SplitExtraQuantityNode,SplitExtraQuantityParams} from './SplitExtraQuantityNode';
 import {ESINode,ESINodeParams} from './ESINode';
 import {CRVRequestNode,CRVRequestNodeParams} from './CRVRequestNode';
+import {FlowNode,FlowNodeParams} from './FlowNode';
 
 export const nodeTypes={
-    start:StartNode,
-    end:EndNode,
-    query:QueryNode,
+  start:StartNode,
+  end:EndNode,
+  query:QueryNode,
 	requestQuery:RequestQueryNode,
 	relatedQuery:RelatedQueryNode,
 	fieldGroup:GroupNode,
@@ -51,13 +52,14 @@ export const nodeTypes={
 	groupTransform:GroupTransformNode,
 	splitExtraQuantity:SplitExtraQuantityNode,
 	esi:ESINode,
-	CRVRequest:CRVRequestNode
+	CRVRequest:CRVRequestNode,
+	flow:FlowNode
 }
 
 export const nodeParams={
-    start:null,
-    end:null,
-    query:QueryNodeParams,
+  start:null,
+  end:null,
+  query:QueryNodeParams,
 	requestQuery:RequestQueryNodeParams,
 	relatedQuery:RelatedQueryNodeParams,
 	fieldGroup:GroupNodeParams,
@@ -80,5 +82,6 @@ export const nodeParams={
 	groupTransform:GroupTransformParams,
 	splitExtraQuantity:SplitExtraQuantityParams,
 	esi:ESINodeParams,
-	CRVRequest:CRVRequestNodeParams
+	CRVRequest:CRVRequestNodeParams,
+	flow:FlowNodeParams
 }

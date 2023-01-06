@@ -12,8 +12,8 @@ import './index.css';
 export default function DialogDebugInfoDetail({dialogIndex}){
     const dispatch = useDispatch();
     const dialogItem=useSelector(state=>state.dialog.dialogs[dialogIndex]);
-    const {nodeID,index}=dialogItem.param;
-    const debugInfo=useSelector(state=>state.debug.debugMessages.filter(item=>item.id===nodeID)[index]);
+    const {nodeID,index,flowID}=dialogItem.param;
+    const debugInfo=useSelector(state=>state.debug.debugMessages.filter(item=>item.id===nodeID&&item.flowID===flowID)[index]);
 
     const onCancel=()=>{
         dispatch(closeDialog());
