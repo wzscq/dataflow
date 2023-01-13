@@ -63,7 +63,7 @@ const (
 	ResultCreateTransformFunctionError = 90000026
 	ResultNoModelField = 90000027
 	ResultFieldTypeError = 90000028
-	ResultExcelSheetNotExist = 90000029
+	ResultExcelSheetNotExist = 10000042
 )
 
 var errMsg = map[int]CommonRsp{
