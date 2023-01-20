@@ -50,13 +50,14 @@ func replaceFilterVar(
 	userID ,userRoles string){
 	//先将条件转换成json，然后再反序列化回对象
 	jsonStr, err := json.Marshal(filter)
-    if err != nil {
+	if err != nil {
 		log.Println("replaceFilterVar Marshal filter error")
-        log.Println(err)
-    }
+		log.Println(err)
+	}
 
+	log.Println("jsonStr ：",string(jsonStr))
 	filterStr,replaced:=replaceFilterString(string(jsonStr),filterData,userID,userRoles)
-	
+	log.Println("filterStr ：",filterStr)
 	if replaced==true {
 		if err := json.Unmarshal([]byte(filterStr), filter); err != nil {
 			log.Println("replaceFilterVar Unmarshal filter error")

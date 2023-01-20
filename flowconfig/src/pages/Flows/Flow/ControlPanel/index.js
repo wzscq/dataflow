@@ -9,6 +9,8 @@ const controls=[
     {type: 'CRVRequest',label: 'CRV Request'},
     {type: 'requestQuery',label:'Request Query'},
     {type: 'relatedQuery',label:'Related Query'},
+    {type: 'retrunCRVResult',label:'Return CRV Result'},
+    {type: 'CRVForm',label:'CRV Form'},
     {type: 'esi',label: 'ESI'},
 	{type: 'fieldGroup',label: 'Group By Fields'},
     {type: 'numericGroup',label: 'Group By Numeric Field'},

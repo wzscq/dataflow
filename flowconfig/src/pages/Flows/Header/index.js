@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {useSelector,useDispatch} from 'react-redux';
 import {Button,Space,Popconfirm} from 'antd';
 import mqtt from 'mqtt';
@@ -7,12 +8,14 @@ import {
     SaveOutlined,
     CaretRightOutlined,
     ClearOutlined } from '@ant-design/icons';
-import './index.css';
+
 import { setView } from '../../../redux/flowSlice';
 import {openDialog} from '../../../redux/dialogSlice';
-import {addDebugInfo,clearDebugInfo} from '../../../redux/debugSlice';
+import {addDebugInfo,clearDebugInfo,clearOperation} from '../../../redux/debugSlice';
 import { saveFlowConfigAction,deleteFlowAction, startFlowAction,getMqttServer } from '../../../api';
-import { useEffect } from 'react';
+import {FRAME_MESSAGE_TYPE} from '../../../utils/constant';
+
+import './index.css';
 
 var g_MQTTClient=null;
 
@@ -23,10 +26,10 @@ var g_MQTTClient=null;
 };*/
 const topic="flowdebug/";
 
-export default function Header({appID}){
+export default function Header({appID,sendMessageToParent}){
     const dispatch=useDispatch();
     const view=useSelector(state=>state.flow.view);
-    const {pending:isRunning,mqttConf,mqttConfLoaded}=useSelector(state=>state.debug);
+    const {pending:isRunning,mqttConf,mqttConfLoaded,operation}=useSelector(state=>state.debug);
     const currentFlow=useSelector(state=>{
         console.log(state.flow);
         const flows=state.flow.openedflows;
@@ -35,7 +38,7 @@ export default function Header({appID}){
                 return flows[flowIndex];
             }
         }
-    }); 
+    });
 
     const setViewType=()=>{
         dispatch(setView((view==='flow'?'json':'flow')));
@@ -127,7 +130,19 @@ export default function Header({appID}){
         }
     },[mqttConfLoaded,dispatch]);
 
-    useEffect(
+    useEffect(()=>{
+        if(operation!==null){
+            const message={
+                type:FRAME_MESSAGE_TYPE.DO_OPERATION,
+                data:{
+                    operationItem:operation
+                }};
+            sendMessageToParent(message);
+            dispatch(clearOperation());
+        }
+    },[dispatch,operation,sendMessageToParent]);
+
+    /*useEffect(
         ()=>{
             if(isRunning===false&&g_MQTTClient!==null){
                 setTimeout(() => {
@@ -139,7 +154,7 @@ export default function Header({appID}){
             }
         },
         [isRunning]
-    );
+    );*/
 
     const viewLable=(view==='flow'?'Json':'Flow');
 

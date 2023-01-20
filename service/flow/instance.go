@@ -20,16 +20,20 @@ type flowInstance struct {
 	 StartTime string `json:"startTime"`
 	 EndTime *string `json:"endTime,omitempty"`
 	 DebugID *string `json:"debugID,omitempty"`
+	 InstanceRepository FlowInstanceRepository
 }
 
-func (flow *flowInstance)getCurrentNode()(*instanceNode){
+func (flow *flowInstance)getCurrentNode(flowRep* flowReqRsp)(*instanceNode){
 	nodeCount:=len(flow.WaitingNodes)
 	if nodeCount>0 {
-		return flow.WaitingNodes[nodeCount-1]
+		currentNode:=flow.WaitingNodes[nodeCount-1]
+		//将Node的Input替换成最新的请求参数
+		flowRep.Data=currentNode.Input.Data
+		currentNode.Input=flowRep
+		return currentNode
 	}
 	return nil
 }
-
 
 func (flow *flowInstance)sortInstanceNodes(instanceNodes *[]*instanceNode){
 	sort.Slice(*instanceNodes, func (i, j int) bool {
@@ -168,8 +172,13 @@ func (flow *flowInstance)runNode(
 
 func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
 	log.Println("start flowInstance push")
-	
-	currentNode:=flow.getCurrentNode()
+
+	err:=flow.InstanceRepository.loadInstance(flow)
+	if err!=nil {
+		log.Println(err)
+	}
+
+	currentNode:=flow.getCurrentNode(flowRep)
 	if currentNode==nil {
 		currentNode=flow.getStartNode(flowRep)
 	}
@@ -182,6 +191,11 @@ func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,m
 		if err!= nil {
 			return nil,err
 		}
+
+		if result.Over == true {
+			return result,nil
+		}
+
 		//如果执行完，就拿下一个节点继续执行
 		if currentNode.Completed {
 			flow.addCompletedNode(currentNode)
@@ -192,6 +206,12 @@ func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,m
 			//如果没有执行完，说明这个节点是异步节点，直接将结果返回，待后续触发
 			//更新节点状态
 			flow.updateCurrentNode(currentNode)
+			//保存执行调用栈
+			err:=flow.InstanceRepository.saveInstance(flow)
+			if err!=nil {
+				log.Println(err)
+
+			}
 			return result,nil
 		}
 	}

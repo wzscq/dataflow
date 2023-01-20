@@ -111,6 +111,16 @@ func (nodeExecutor *nodeExecutorRequestQuery)updateFilterByQueryFilter(
 	return filter,common.ResultSuccess
 }
 
+func (nodeExecutor *nodeExecutorRequestQuery)updateModelsFilter(
+	input *flowReqRsp,
+	models *[]queryModel)(int){
+	for _,model := range (*models) {
+		log.Println(model.Filter)
+		data.ProcessFilter(model.Filter,nil,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
+	}
+	return common.ResultSuccess
+}
+
 func (nodeExecutor *nodeExecutorRequestQuery)updateModels(
 	input *flowReqRsp,
 	models *[]queryModel)(int){
@@ -162,6 +172,9 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 	if models==nil {
 		return flowResult,common.CreateError(common.ResultNodeConfigError,params)
 	}
+
+	//对model filter 中的变量进行替换
+	nodeExecutor.updateModelsFilter(req,&models)
 
 	//update request filter
 	data.ProcessFilter(req.Filter,req.FilterData,req.UserID,req.UserRoles,req.AppDB,nodeExecutor.DataRepository)

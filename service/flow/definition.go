@@ -81,10 +81,11 @@ func loadFlowConf(appDB,flowID string)(*flowConf,int){
 	return flowConf,common.ResultSuccess
 }
 
-func getInstanceID(appDB,flowID string)(string){
+func getInstanceID(appDB,flowID string)(*string){
 	guid := xid.New().String()
 	nowStr:= time.Now().Format("20060102150405")
-	return appDB+"_"+flowID+"_"+nowStr+"_"+guid
+	instanceID:=appDB+"_"+flowID+"_"+nowStr+"_"+guid
+	return &instanceID
 }
 
 func logInstance(instance *flowInstance){
@@ -116,7 +117,7 @@ func logInstanceNode(instance *flowInstance,node *instanceNode){
 	}
 }
 
-func createInstance(appDB,flowID,userID string,debugID *string,flowCfg *flowConf)(*flowInstance,int){
+func createInstance(appDB,flowID,userID string,instanceID,debugID *string,flowCfg *flowConf,instanceRepository FlowInstanceRepository)(*flowInstance,int){
 	//允许前端直接将配置传递到后端运行，如果没有给则根据flowID从文件加载
 	if flowCfg==nil {
 		var errorCode int
@@ -126,17 +127,20 @@ func createInstance(appDB,flowID,userID string,debugID *string,flowCfg *flowConf
 		}
 	}
 
-	instanceID:=getInstanceID(appDB,flowID)
-
+	if instanceID==nil {
+		instanceID=getInstanceID(appDB,flowID)
+	}
+	
 	instance:=&flowInstance{
 		AppDB:appDB,
 	 	FlowID:flowID,
-	 	InstanceID:instanceID,
+	 	InstanceID:*instanceID,
 	 	UserID:userID,
 	 	FlowConf:flowCfg,
 		Completed:false,
 		DebugID:debugID,
 		StartTime:time.Now().Format("2006-01-02 15:04:05"),
+		InstanceRepository:instanceRepository,
 	}
 	
 	return instance,common.ResultSuccess

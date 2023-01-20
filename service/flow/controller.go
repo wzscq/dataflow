@@ -39,6 +39,8 @@ type CommonHeader struct {
 
 type flowReqRsp struct {
 	FlowID string `json:"flowID"`
+	FlowInstanceID *string `json:"flowInstanceID,omitempty"`
+	Stage *int `json:"stage,omitempty"`
 	DebugID *string `json:"debugID,omitempty"`
 	UserRoles string  `json:"userRoles"`
 	UserID    string  `json:"userID"`
@@ -50,11 +52,13 @@ type flowReqRsp struct {
 	Filter *map[string]interface{} `json:"filter"`
 	List *[]map[string]interface{} `json:"list"`
 	Total int `json:"total"`
-	GoOn bool  `json:"goOn"`
+	GoOn bool   //返回当前节点是否需要继续执行后续节点，默认true，继续执行
+	Over bool   //返回是否终止流的执行，默认false
 	//Fields *[]field `json:"fields"`
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
+	Operation *map[string]interface{} `json:"operation,omitempty"`
 	/**
 	data结构示例：
 	[
@@ -91,6 +95,7 @@ type flowReqRsp struct {
 
 type FlowController struct {
 	DataRepository data.DataRepository
+	InstanceRepository FlowInstanceRepository
 	Mqtt common.MqttConf
 }
 
@@ -117,9 +122,17 @@ func (controller *FlowController)start(c *gin.Context){
 	req.AppDB=header.AppDB
 	req.UserRoles=header.UserRoles
 	req.GoOn=true  //这个值设置节点是否继续运行默认为true
+	req.Over=false 
 
 	//创建流
-	flowInstance,errorCode:=createInstance(req.AppDB,req.FlowID,req.UserID,req.DebugID,req.FlowConf)
+	flowInstance,errorCode:=createInstance(
+		req.AppDB,
+		req.FlowID,
+		req.UserID,
+		req.FlowInstanceID,
+		req.DebugID,
+		req.FlowConf,
+		controller.InstanceRepository)
 	if errorCode!=common.ResultSuccess {
 		rsp:=common.CreateResponse(common.CreateError(errorCode,nil),nil)
 		c.IndentedJSON(http.StatusOK, rsp)

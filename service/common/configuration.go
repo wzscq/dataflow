@@ -10,6 +10,8 @@ type redisConf struct {
 	Server string `json:"server"`
 	TokenExpired string `json:"tokenExpired"`
 	Password string `json:"password"`
+	FlowInstanceDB int `json:"flowInstanceDB"`
+	FlowInstanceExpired string `json:"flowInstanceExpired"`
 }
 
 type mysqlConf struct {

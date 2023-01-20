@@ -49,9 +49,14 @@ func main() {
         conf.Mysql.ConnMaxLifetime,
         conf.Mysql.MaxOpenConns,
         conf.Mysql.MaxIdleConns)
+
+    flowExpired,_:=time.ParseDuration(conf.Redis.FlowInstanceExpired)
+    flowInstanceRepository:=&flow.DefaultFlowInstanceRepository{}
+    flowInstanceRepository.Init(conf.Redis.Server,conf.Redis.FlowInstanceDB,flowExpired,conf.Redis.Password)
 	//初始化流控制器
 	flowController:=&flow.FlowController{
 		DataRepository:dataRepo,
+        InstanceRepository:flowInstanceRepository,
         Mqtt:conf.Mqtt,
 	}
     flowController.Bind(router)

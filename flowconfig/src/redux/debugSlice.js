@@ -8,6 +8,7 @@ const initialState = {
     pending:false,
     debugMessages:[],
     mqttConfLoaded:false,
+    operation:null,
     mqttConf:{
         broker:"121.36.192.249",
         wsPort:9101,
@@ -25,6 +26,9 @@ export const debugSlice = createSlice({
         },
         clearDebugInfo:(state,action)=>{
             state.debugMessages=[];
+        },
+        clearOperation:(state,action)=>{
+            state.operation=null;
         }
     },
     extraReducers: (builder) => {
@@ -41,6 +45,11 @@ export const debugSlice = createSlice({
                     message.error(action.payload.message+"\n"+JSON.stringify(action.payload.params));
                 } else {
                     message.error(action.payload.message);
+                }
+            } else {
+                //如果流返回了operation,则需要通过crvframe中的mainframe执行这个operation
+                if(action.payload.result?.operation){
+                    state.operation=action.payload.result.operation;
                 }
             }
         });
@@ -76,7 +85,8 @@ export const debugSlice = createSlice({
 
 export const { 
     addDebugInfo,
-    clearDebugInfo
+    clearDebugInfo,
+    clearOperation
 } = debugSlice.actions
 
 export default debugSlice.reducer

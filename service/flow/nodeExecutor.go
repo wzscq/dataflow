@@ -20,6 +20,7 @@ const (
 	NODE_END = "end"
 	NODE_SAVE_MATCHED = "saveMatched"
 	NODE_SAVE_NOTMATCHED = "saveNotMatched"
+	NODE_RETURN_CRVRESULT= "retrunCRVResult"
 	NODE_LOG = "log"
 	NODE_DEBUG = "debug"
 	NODE_DELAY = "delay"
@@ -32,6 +33,7 @@ const (
 	NODE_CREATE_MATCH_RESULT="createMatchResult"
 	NODE_ESI = "esi"
 	NODE_CRV_REQUEST = "CRVRequest"
+	NODE_CRV_FORM = "CRVForm"
 	NODE_FLOW = "flow"
 )
 
@@ -156,6 +158,14 @@ func getNodeExecutor(
 			NodeConf:*node,
 			DataRepository:dataRepo,
 			Mqtt:mqtt,
+		}
+	} else if node.Type == NODE_RETURN_CRVRESULT {
+		return &nodeExecutorReturnCRVResult{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_CRV_FORM {
+		return &nodeExecutorCRVForm{
+			NodeConf:*node,
 		}
 	}
 	return nil
