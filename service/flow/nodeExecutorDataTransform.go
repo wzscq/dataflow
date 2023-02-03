@@ -24,7 +24,7 @@ type transformModel struct {
 }
 
 type dataTransformConf struct {
-	OuputType string `json:"ouputType"`
+	OutputType string `json:"outputType"`
 	Models []transformModel  `json:"models"`
 }
 
@@ -151,7 +151,26 @@ func (nodeExecutor *nodeExecutorDataTransform)TransformModelField(
 
 func (nodeExecutor *nodeExecutorDataTransform)TransformModel(
 	transModelCfg *transformModel,
-	modelData *modelDataItem)(*common.CommonError){
+	modelData *modelDataItem,
+	outputType string)(*common.CommonError){
+	
+	log.Println("****************************************************")
+	log.Println(outputType)
+	var keepFields map[string]interface{}
+	//如果只保留修改的列，则去掉未修改的列，这里注意内部使用的字段需要保留，包括：id,version,_save_type
+	if outputType==OUTPUT_TYPE_MODIFIED {
+			log.Println(keepFields)
+		  keepFields=map[string]interface{}{
+				"id":"id",
+				"version":"version",
+				"_save_type":"_save_type",
+			}
+			for _,transModelField:=range(transModelCfg.Fields){
+				keepFields[transModelField.Field]=transModelField.Field
+			}
+			log.Println(keepFields)
+			log.Println("****************************************************")
+	}
 
 	for index,_:=range(*modelData.List){
 		for _,transModelField:=range(transModelCfg.Fields){
@@ -159,6 +178,15 @@ func (nodeExecutor *nodeExecutorDataTransform)TransformModel(
 			if err!=nil {
 				return err
 			}
+		}
+
+		log.Println(keepFields)
+		if keepFields!=nil {
+			rowData:=map[string]interface{}{}
+			for field,_:=range(keepFields){
+				rowData[field]=(*modelData.List)[index][field]
+			}
+			(*modelData.List)[index]=rowData
 		}
 	}
 
@@ -179,7 +207,8 @@ func (nodeExecutor *nodeExecutorDataTransform)TransformModefied(
 							Models:[]modelDataItem{},
 						}
 					}
-					err:=nodeExecutor.TransformModel(&transModel,&modelItem)
+					log.Println(transformConf.OutputType)
+					err:=nodeExecutor.TransformModel(&transModel,&modelItem,transformConf.OutputType)
 					if err!=nil {
 						return nil,err
 					}
@@ -199,7 +228,8 @@ func (nodeExecutor *nodeExecutorDataTransform)Transform(
 		for _,transModel:=range(transformConf.Models){
 			if *modelItem.ModelID == transModel.ModelID {
 				if modelItem.List != nil && len(*modelItem.List)>=0 {
-					err:=nodeExecutor.TransformModel(&transModel,&(dataItem.Models[index]))
+					log.Println(transformConf.OutputType)
+					err:=nodeExecutor.TransformModel(&transModel,&(dataItem.Models[index]),transformConf.OutputType)
 					if err!=nil {
 						return err
 					}
@@ -244,8 +274,9 @@ func (nodeExecutor *nodeExecutorDataTransform)run(
 		GoOn:true,
 	}
 
+	log.Println(nodeCfg.OutputType)
 	var resultData []flowDataItem
-	if nodeCfg.OuputType==OUTPUT_TYPE_ALL {
+	if nodeCfg.OutputType==OUTPUT_TYPE_ALL {
 		//遍历所有数据模型，对于配置了转换逻辑的模型字段进行处理
 		//执行校验逻辑
 		resultData=make([]flowDataItem,len(*req.Data))

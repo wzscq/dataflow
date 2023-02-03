@@ -173,9 +173,11 @@ func (flow *flowInstance)runNode(
 func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
 	log.Println("start flowInstance push")
 
-	err:=flow.InstanceRepository.loadInstance(flow)
-	if err!=nil {
-		log.Println(err)
+	if flow.InstanceRepository!=nil {
+		err:=flow.InstanceRepository.loadInstance(flow)
+		if err!=nil {
+			log.Println(err)
+		}
 	}
 
 	currentNode:=flow.getCurrentNode(flowRep)
