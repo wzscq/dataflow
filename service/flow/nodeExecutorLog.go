@@ -42,7 +42,7 @@ func (nodeExecutor *nodeExecutorLog)run(
 	node.Output=node.Input
 	node.Input=nil
 	preNode.Input=nil
-	nodeExecutor.logInstanceNode(instance,preNode)
+	nodeExecutor.logInstanceNode(instance,node)
 
 	return node.Output,nil
 }
