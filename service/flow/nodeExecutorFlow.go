@@ -68,11 +68,23 @@ func (nodeExecutor *nodeExecutorFlow)run(
 	if err!=nil {
 		return result,err
 	}
-	
+
+	//将流的返回值作为节点的输出,将flow的标识替换回主流程的标识
+	if result!=nil {
+		result.FlowID=req.FlowID
+		result.FlowInstanceID=req.FlowInstanceID
+		result.Over=false //子流程结束，主流程继续执行
+
+		endTime:=time.Now().Format("2006-01-02 15:04:05")
+		node.Completed=true
+		node.EndTime=&endTime
+		node.Output=result
+		return result,nil
+	}
+
 	endTime:=time.Now().Format("2006-01-02 15:04:05")
 	node.Completed=true
 	node.EndTime=&endTime
-	node.Output=node.Input
-
-	return node.Output,nil
+	node.Output=req
+	return req,nil
 }
