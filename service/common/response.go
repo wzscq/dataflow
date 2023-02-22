@@ -15,7 +15,7 @@ type CommonError struct {
 
 const (
 	ResultSuccess = 10000000
-
+	ResultJsonDecodeError = 10000007
 	ResultSQLError=10000009
 	ResultQueryFieldNotFound=10000010
 	ResultQueryWrongPagination=10000011
@@ -35,11 +35,10 @@ const (
 	ResultLoadExcelFileError=10000040
 	ResultESIFileAlreadyImported=10000041
 	ResultExcelSheetNotExist = 10000042
-	ResultJsonEncodeError = 10000047
+	ResultJsonMarshalError = 10000043 
 
 	ResultWrongRequest = 90000001
 	ResultOpenFileError = 90000002
-	ResultJsonDecodeError = 90000003
 	ResultNoNodeOfGivenID = 90000004
 	ResultNoExecutorForNodeType = 90000005
 	ResultNodeConfigError = 90000006
@@ -197,6 +196,11 @@ var errMsg = map[int]CommonRsp{
 	ResultJsonDecodeError:CommonRsp{
 		ErrorCode:ResultJsonDecodeError,
 		Message:"解析JSON文件时发生错误，请与管理员联系处理",
+		Error:true,
+	},
+	ResultJsonMarshalError:CommonRsp{
+		ErrorCode:ResultJsonMarshalError,
+		Message:"将对象转换为JSON文本时发生错误，请与管理员联系处理",
 		Error:true,
 	},
 	ResultNoNodeOfGivenID:CommonRsp{

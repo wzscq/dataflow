@@ -54,7 +54,7 @@ func (nodeExecutor *nodeExecutorFlowAsync)copyFlowReqRsp(input *flowReqRsp)(*flo
 	jsonStr, err := json.Marshal(input)
   if err != nil {
     log.Println(err)
-		return nil,common.ResultJsonEncodeError
+		return nil,common.ResultJsonMarshalError
   }
 	output:=&flowReqRsp{}
   if err := json.Unmarshal(jsonStr, output); err != nil {
@@ -102,7 +102,7 @@ func (nodeExecutor *nodeExecutorFlowAsync)getRequestContent(
 		jsonStr, err := json.Marshal(output)
   	if err != nil {
     	log.Println(err)
-			return "",common.ResultJsonEncodeError
+			return "",common.ResultJsonMarshalError
   	}
 
 		return string(jsonStr),common.ResultSuccess
