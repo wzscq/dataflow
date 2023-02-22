@@ -59,7 +59,16 @@ func (nodeExecutor *nodeExecutorFlow)run(
 	//目前流的执行本身是没有返回值的，所以现在可以不用考虑流的返回值的处理
 	//调用时，直接使用当前节点的Input作为子流程的请求参数
 	//创建流,子流程不支持直接传递流的配置
-	flowInstance,errorCode:=createInstance(req.AppDB,nodeConf.FlowID,req.UserID,nil,instance.DebugID,nil,nil)
+	flowInstance,errorCode:=createInstance(
+		req.AppDB,
+		nodeConf.FlowID,
+		req.UserID,
+		nil,
+		instance.DebugID,
+		instance.TaskID,
+		instance.TaskStep,
+		nil,nil)
+		
 	if errorCode!=common.ResultSuccess {
 		return node.Input,common.CreateError(errorCode,params)
 	}

@@ -42,6 +42,8 @@ type MqttConf struct {
 	WSPort int `json:"wsPort"`
 	Password string `json:"password"`
 	User string `json:"user"`
+	ClientID string `json:"clientID"`
+	StartFlowTopic string `json:"startFlowTopic"`
 }
 
 type Config struct {

@@ -7,6 +7,7 @@ import (
 	"dataflow/flow"
 	"dataflow/data"
     "dataflow/test"
+    "dataflow/mqtt"
     "log"
     "time"
     "runtime"
@@ -66,6 +67,18 @@ func main() {
 		DataRepository:dataRepo,
 	}
     testController.Bind(router)
+
+    //初始化接收MQTT消息启动流客户端
+    mqttClient:=mqtt.MQTTClient{
+		Broker:conf.Mqtt.Broker,
+        Port:conf.Mqtt.Port,
+		User:conf.Mqtt.User,
+		Password:conf.Mqtt.Password,
+		StartFlowTopic:conf.Mqtt.StartFlowTopic,
+		ClientID:conf.Mqtt.ClientID,
+        Handler:flowController,
+	}
+	mqttClient.Init()
 
 	//启动监听服务
 	router.Run(conf.Service.Port)

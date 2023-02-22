@@ -9,18 +9,22 @@ import (
 )
 
 type flowInstance struct {
-	 AppDB string `json:"appDB"`
-	 FlowID string `json:"flowID"`
-	 InstanceID string `json:"instanceID"`
-	 UserID string  `json:"UserID"`
-	 FlowConf *flowConf `json:"flowConf,omitempty"`
-	 CompletedNodes []*instanceNode `json:"completedNodes"`
-	 WaitingNodes []*instanceNode `json:"waitingNodes"`
-	 Completed bool `json:"completed"`
-	 StartTime string `json:"startTime"`
-	 EndTime *string `json:"endTime,omitempty"`
-	 DebugID *string `json:"debugID,omitempty"`
-	 InstanceRepository FlowInstanceRepository
+	AppDB string `json:"appDB"`
+	FlowID string `json:"flowID"`
+	InstanceID string `json:"instanceID"`
+	//增加任务调度需要的相关属性
+	TaskID *string `json:"taskID,omitempty"`  //taskID属性标识任务，如果请求中没有提供taskID则默认和flowInstanceID一致
+	TaskStep int `json:"taskStep"`            //taskStep标识任务的步骤，默认0
+
+	UserID string  `json:"UserID"`
+	FlowConf *flowConf `json:"flowConf,omitempty"`
+	CompletedNodes []*instanceNode `json:"completedNodes"`
+	WaitingNodes []*instanceNode `json:"waitingNodes"`
+	Completed bool `json:"completed"`
+	StartTime string `json:"startTime"`
+	EndTime *string `json:"endTime,omitempty"`
+	DebugID *string `json:"debugID,omitempty"`
+	InstanceRepository FlowInstanceRepository
 }
 
 func (flow *flowInstance)getCurrentNode(flowRep* flowReqRsp)(*instanceNode){

@@ -35,6 +35,7 @@ const (
 	NODE_CRV_REQUEST = "CRVRequest"
 	NODE_CRV_FORM = "CRVForm"
 	NODE_FLOW = "flow"
+	NODE_FLOW_ASYNC = "flowAsync"
 )
 
 type nodeExecutor interface {
@@ -166,6 +167,11 @@ func getNodeExecutor(
 	} else if node.Type == NODE_CRV_FORM {
 		return &nodeExecutorCRVForm{
 			NodeConf:*node,
+		}
+	} else if node.Type == NODE_FLOW_ASYNC {
+		return &nodeExecutorFlowAsync{
+			NodeConf:*node,
+			Mqtt:mqtt,
 		}
 	}
 	return nil

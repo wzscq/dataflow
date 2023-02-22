@@ -34,6 +34,8 @@ const (
 	ResultNotDeleteData=10000036
 	ResultLoadExcelFileError=10000040
 	ResultESIFileAlreadyImported=10000041
+	ResultExcelSheetNotExist = 10000042
+	ResultJsonEncodeError = 10000047
 
 	ResultWrongRequest = 90000001
 	ResultOpenFileError = 90000002
@@ -63,7 +65,7 @@ const (
 	ResultCreateTransformFunctionError = 90000026
 	ResultNoModelField = 90000027
 	ResultFieldTypeError = 90000028
-	ResultExcelSheetNotExist = 10000042
+	
 )
 
 var errMsg = map[int]CommonRsp{

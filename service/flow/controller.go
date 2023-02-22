@@ -6,6 +6,7 @@ import (
 	"dataflow/common"
 	"dataflow/data"
 	"net/http"
+	"encoding/json"
 )
 
 type modelDataItem struct {
@@ -40,6 +41,9 @@ type CommonHeader struct {
 type flowReqRsp struct {
 	FlowID string `json:"flowID"`
 	FlowInstanceID *string `json:"flowInstanceID,omitempty"`
+	//增加任务调度需要的相关属性
+	TaskID *string `json:"taskID,omitempty"`  //taskID属性标识任务，如果请求中没有提供taskID则默认和flowInstanceID一致
+	TaskStep int `json:"taskStep"`            //taskStep标识任务的步骤，默认0
 	Stage *int `json:"stage,omitempty"`
 	DebugID *string `json:"debugID,omitempty"`
 	UserRoles string  `json:"userRoles"`
@@ -90,13 +94,47 @@ type flowReqRsp struct {
 		}
 	]
 	**/
-	Data *[]flowDataItem `json:"data,omitempty"`
+	Data *[]flowDataItem `json:"data,omitempty"`	
 }
 
 type FlowController struct {
 	DataRepository data.DataRepository
 	InstanceRepository FlowInstanceRepository
 	Mqtt common.MqttConf
+}
+
+//start flow by mqtt
+func (controller *FlowController)StartFlow(reqPayload []byte){
+	log.Println("FlowController start StartFlow")
+	var req flowReqRsp
+	if err := json.Unmarshal(reqPayload, &req); err != nil {
+		log.Println(err)
+		log.Println("FlowController end StartFlow with error")
+		return
+	}
+
+	req.GoOn=true  //这个值设置节点是否继续运行默认为true
+	req.Over=false 
+
+	//创建流
+	flowInstance,errorCode:=createInstance(
+		req.AppDB,
+		req.FlowID,
+		req.UserID,
+		req.FlowInstanceID,
+		req.DebugID,
+		req.TaskID,
+		req.TaskStep,
+		req.FlowConf,
+		controller.InstanceRepository)
+	if errorCode!=common.ResultSuccess {
+		log.Printf("create flow instance error with no %d",errorCode)
+		log.Println("FlowController end StartFlow with error")
+		return
+	}
+	//执行流
+	flowInstance.push(controller.DataRepository,&req,&controller.Mqtt)
+	log.Println("FlowController end StartFlow")
 }
 
 func (controller *FlowController)start(c *gin.Context){
@@ -131,6 +169,8 @@ func (controller *FlowController)start(c *gin.Context){
 		req.UserID,
 		req.FlowInstanceID,
 		req.DebugID,
+		req.TaskID,
+		req.TaskStep,
 		req.FlowConf,
 		controller.InstanceRepository)
 	if errorCode!=common.ResultSuccess {

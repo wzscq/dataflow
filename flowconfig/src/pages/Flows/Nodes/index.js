@@ -25,6 +25,7 @@ import {SplitExtraQuantityNode,SplitExtraQuantityParams} from './SplitExtraQuant
 import {ESINode,ESINodeParams} from './ESINode';
 import {CRVRequestNode,CRVRequestNodeParams} from './CRVRequestNode';
 import {FlowNode,FlowNodeParams} from './FlowNode';
+import {FlowAsyncNode,FlowAsyncNodeParams} from './FlowAsyncNode';
 import {RetrunCRVResultNode,RetrunCRVResultNodeParams} from './RetrunCRVResultNode';
 import {CRVFormNode,CRVFormNodeParams} from './CRVFormNode';
 
@@ -56,6 +57,7 @@ export const nodeTypes={
 	esi:ESINode,
 	CRVRequest:CRVRequestNode,
 	flow:FlowNode,
+	flowAsync:FlowAsyncNode,
 	retrunCRVResult:RetrunCRVResultNode,
 	CRVForm:CRVFormNode
 }
@@ -88,6 +90,7 @@ export const nodeParams={
 	esi:ESINodeParams,
 	CRVRequest:CRVRequestNodeParams,
 	flow:FlowNodeParams,
+	flowAsync:FlowAsyncNodeParams,
 	retrunCRVResult:RetrunCRVResultNodeParams,
 	CRVForm:CRVFormNodeParams
 }

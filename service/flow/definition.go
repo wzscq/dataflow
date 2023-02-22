@@ -117,7 +117,10 @@ func logInstanceNode(instance *flowInstance,node *instanceNode){
 	}
 }
 
-func createInstance(appDB,flowID,userID string,instanceID,debugID *string,flowCfg *flowConf,instanceRepository FlowInstanceRepository)(*flowInstance,int){
+func createInstance(
+	appDB,flowID,userID string,
+	instanceID,debugID,taskID *string,
+	taskStep int,flowCfg *flowConf,instanceRepository FlowInstanceRepository)(*flowInstance,int){
 	//允许前端直接将配置传递到后端运行，如果没有给则根据flowID从文件加载
 	if flowCfg==nil {
 		var errorCode int
@@ -130,6 +133,10 @@ func createInstance(appDB,flowID,userID string,instanceID,debugID *string,flowCf
 	if instanceID==nil {
 		instanceID=getInstanceID(appDB,flowID)
 	}
+
+	if taskID==nil {
+		taskID=instanceID
+	}
 	
 	instance:=&flowInstance{
 		AppDB:appDB,
@@ -141,6 +148,8 @@ func createInstance(appDB,flowID,userID string,instanceID,debugID *string,flowCf
 		DebugID:debugID,
 		StartTime:time.Now().Format("2006-01-02 15:04:05"),
 		InstanceRepository:instanceRepository,
+		TaskID:taskID,
+		TaskStep:taskStep,
 	}
 	
 	return instance,common.ResultSuccess

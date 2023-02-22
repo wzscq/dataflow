@@ -44,7 +44,7 @@ func (nodeExecutor *nodeExecutorDebug)getMqttClient(debugID string)(*mqtt.Client
 	port := nodeExecutor.Mqtt.Port //1983
 	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s:%d",broker,port))
-	opts.SetClientID("go_mqtt_client_"+debugID)
+	opts.SetClientID("flow_node_debug_"+debugID)
 	opts.SetUsername(nodeExecutor.Mqtt.User)
 	opts.SetPassword(nodeExecutor.Mqtt.Password)
 	opts.SetDefaultPublishHandler(nodeExecutor.messagePublishHandler)
