@@ -58,6 +58,7 @@ type flowReqRsp struct {
 	Total int `json:"total"`
 	GoOn bool   //返回当前节点是否需要继续执行后续节点，默认true，继续执行
 	Over bool   //返回是否终止流的执行，默认false
+	AlreadyResponsed  bool   //controller中是否需要构造返回结果，默认false，主要是在导入文件节点中，会将这个设置为true，因为节点会直接将文件流写回
 	//Fields *[]field `json:"fields"`
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
@@ -126,7 +127,8 @@ func (controller *FlowController)StartFlow(reqPayload []byte){
 		req.TaskID,
 		req.TaskStep,
 		req.FlowConf,
-		controller.InstanceRepository)
+		controller.InstanceRepository,
+		nil)
 	if errorCode!=common.ResultSuccess {
 		log.Printf("create flow instance error with no %d",errorCode)
 		log.Println("FlowController end StartFlow with error")
@@ -172,7 +174,9 @@ func (controller *FlowController)start(c *gin.Context){
 		req.TaskID,
 		req.TaskStep,
 		req.FlowConf,
-		controller.InstanceRepository)
+		controller.InstanceRepository,
+		c,
+	)
 	if errorCode!=common.ResultSuccess {
 		rsp:=common.CreateResponse(common.CreateError(errorCode,nil),nil)
 		c.IndentedJSON(http.StatusOK, rsp)
@@ -181,9 +185,10 @@ func (controller *FlowController)start(c *gin.Context){
 	}
 	//执行流
 	result,err:=flowInstance.push(controller.DataRepository,&req,&controller.Mqtt)
-
-	rsp:=common.CreateResponse(err,result)
-	c.IndentedJSON(http.StatusOK, rsp)
+	if result==nil || result.AlreadyResponsed == false {
+		rsp:=common.CreateResponse(err,result)
+		c.IndentedJSON(http.StatusOK, rsp)
+	}
 	log.Println("FlowController start end")
 }
 

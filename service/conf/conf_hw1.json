@@ -18,7 +18,10 @@
         "port":1983,
         "wsPort":9101,
         "user":"mosquitto",
-        "password":"123456"
+        "password":"123456",
+        "clientID":"dataflowClient1",
+        "startFlowTopic":"dataflow/start",
+        "taskNotificationTopic":"task/notification"
     },
     "service":{
         "port":"localhost:9900"

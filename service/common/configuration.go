@@ -44,6 +44,7 @@ type MqttConf struct {
 	User string `json:"user"`
 	ClientID string `json:"clientID"`
 	StartFlowTopic string `json:"startFlowTopic"`
+	TaskNotificationTopic string `json:"taskNotificationTopic"`
 }
 
 type Config struct {

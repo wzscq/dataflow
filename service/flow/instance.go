@@ -5,7 +5,7 @@ import (
 	"dataflow/common"
 	"dataflow/data"
 	"sort"
-	
+	"github.com/gin-gonic/gin"
 )
 
 type flowInstance struct {
@@ -25,6 +25,7 @@ type flowInstance struct {
 	EndTime *string `json:"endTime,omitempty"`
 	DebugID *string `json:"debugID,omitempty"`
 	InstanceRepository FlowInstanceRepository
+	GinContext *gin.Context
 }
 
 func (flow *flowInstance)getCurrentNode(flowRep* flowReqRsp)(*instanceNode){

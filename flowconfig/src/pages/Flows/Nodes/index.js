@@ -28,6 +28,8 @@ import {FlowNode,FlowNodeParams} from './FlowNode';
 import {FlowAsyncNode,FlowAsyncNodeParams} from './FlowAsyncNode';
 import {RetrunCRVResultNode,RetrunCRVResultNodeParams} from './RetrunCRVResultNode';
 import {CRVFormNode,CRVFormNodeParams} from './CRVFormNode';
+import {TaskInfoNode,TaskInfoParams} from './TaskInfoNode';
+import {ExportExcelNode,ExportExcelParams} from './ExportExcelNode';
 
 export const nodeTypes={
   start:StartNode,
@@ -59,7 +61,9 @@ export const nodeTypes={
 	flow:FlowNode,
 	flowAsync:FlowAsyncNode,
 	retrunCRVResult:RetrunCRVResultNode,
-	CRVForm:CRVFormNode
+	CRVForm:CRVFormNode,
+	taskInfo:TaskInfoNode,
+	exportExcel:ExportExcelNode,
 }
 
 export const nodeParams={
@@ -92,5 +96,7 @@ export const nodeParams={
 	flow:FlowNodeParams,
 	flowAsync:FlowAsyncNodeParams,
 	retrunCRVResult:RetrunCRVResultNodeParams,
-	CRVForm:CRVFormNodeParams
+	CRVForm:CRVFormNodeParams,
+	taskInfo:TaskInfoParams,
+	exportExcel:ExportExcelParams
 }

@@ -5,11 +5,13 @@ import (
 	"os"
 	"dataflow/common"
 	"encoding/json"
-	"github.com/rs/xid"
-    "time"
+  "time"
 	"io/ioutil"
 	"strings"
+	"github.com/gin-gonic/gin"
 )
+
+//"github.com/rs/xid"
 
 type node struct {
 	ID string `json:"id"`
@@ -81,12 +83,13 @@ func loadFlowConf(appDB,flowID string)(*flowConf,int){
 	return flowConf,common.ResultSuccess
 }
 
-func getInstanceID(appDB,flowID string)(*string){
-	guid := xid.New().String()
-	nowStr:= time.Now().Format("20060102150405")
-	instanceID:=appDB+"_"+flowID+"_"+nowStr+"_"+guid
+/*func getInstanceID(appDB,flowID string)(*string){
+	//guid := xid.New().String()
+	//nowStr:= time.Now().Format("20060102150405")
+	//instanceID:=appDB+"_"+flowID+"_"+nowStr+"_"+guid
+
 	return &instanceID
-}
+}*/
 
 func logInstance(instance *flowInstance){
 	//打印一下流的实例内容
@@ -120,7 +123,8 @@ func logInstanceNode(instance *flowInstance,node *instanceNode){
 func createInstance(
 	appDB,flowID,userID string,
 	instanceID,debugID,taskID *string,
-	taskStep int,flowCfg *flowConf,instanceRepository FlowInstanceRepository)(*flowInstance,int){
+	taskStep int,flowCfg *flowConf,instanceRepository FlowInstanceRepository,
+	c *gin.Context)(*flowInstance,int){
 	//允许前端直接将配置传递到后端运行，如果没有给则根据flowID从文件加载
 	if flowCfg==nil {
 		var errorCode int
@@ -131,7 +135,8 @@ func createInstance(
 	}
 
 	if instanceID==nil {
-		instanceID=getInstanceID(appDB,flowID)
+		newID:=GetInstanceID()
+		instanceID=&newID//getInstanceID(appDB,flowID)
 	}
 
 	if taskID==nil {
@@ -150,6 +155,7 @@ func createInstance(
 		InstanceRepository:instanceRepository,
 		TaskID:taskID,
 		TaskStep:taskStep,
+		GinContext:c,
 	}
 	
 	return instance,common.ResultSuccess

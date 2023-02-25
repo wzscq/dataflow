@@ -122,10 +122,29 @@ export const startFlowAction = createAsyncThunk(
       headers:{
         appDB:appID,
         userID:userID
-      }
+      },
+      responseType:'blob'
     }
     const response =await axios(config);
-    return response.data;
+    if(response.data.type==='application/octet-stream'){
+      let fileName=response.headers['content-disposition'];
+      if(fileName){
+        fileName=fileName.substring("attachment; filename=".length);
+      } else {
+        fileName="no_file_name"
+      }
+      return {data:response.data,download:true,fileName:fileName}
+    }
+
+    const p=new Promise((resolve) => {
+      var reader = new FileReader()
+      reader.onload = e => resolve(JSON.parse(e.target.result))
+      reader.readAsText(response.data)
+    });
+
+    const jsonData=await p;
+  
+    return jsonData;
   }
 );
 

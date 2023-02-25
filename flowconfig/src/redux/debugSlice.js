@@ -17,6 +17,18 @@ const initialState = {
     }
 }
 
+const downloadFile=({data,fileName})=>{
+    let blob=[data];
+    var a = document.createElement('a');
+    var url = window.URL.createObjectURL(new Blob(blob));
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+}
+
 export const debugSlice = createSlice({
     name: 'debug',
     initialState,
@@ -47,8 +59,10 @@ export const debugSlice = createSlice({
                     message.error(action.payload.message);
                 }
             } else {
-                //如果流返回了operation,则需要通过crvframe中的mainframe执行这个operation
-                if(action.payload.result?.operation){
+                if(action.payload.download===true){
+                    downloadFile(action.payload);
+                } else if(action.payload.result?.operation){
+                    //如果流返回了operation,则需要通过crvframe中的mainframe执行这个operation
                     state.operation=action.payload.result.operation;
                 }
             }

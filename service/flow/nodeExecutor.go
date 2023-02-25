@@ -36,6 +36,8 @@ const (
 	NODE_CRV_FORM = "CRVForm"
 	NODE_FLOW = "flow"
 	NODE_FLOW_ASYNC = "flowAsync"
+	NODE_TASK = "taskInfo"
+	NODE_EXPORT_EXCEL = "exportExcel"
 )
 
 type nodeExecutor interface {
@@ -172,6 +174,16 @@ func getNodeExecutor(
 		return &nodeExecutorFlowAsync{
 			NodeConf:*node,
 			Mqtt:mqtt,
+		}
+	} else if node.Type == NODE_TASK {
+		return &nodeExecutorTask{
+			NodeConf:*node,
+			Mqtt:mqtt,
+			DataRepository:dataRepo,
+		}
+	} else if node.Type == NODE_EXPORT_EXCEL {
+		return &nodeExecutorExportExcel{
+			NodeConf:*node,
 		}
 	}
 	return nil

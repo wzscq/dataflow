@@ -1,3 +1,5 @@
+.react-flow__node-exportExcel,
+.react-flow__node-taskInfo,
 .react-flow__node-flowAsync,
 .react-flow__node-CRVForm,
 .react-flow__node-retrunCRVResult,
@@ -41,6 +43,8 @@
     filter: invert(10%);
 }
 
+.react-flow__node-exportExcel.selectable.selected,
+.react-flow__node-taskInfo.selectable.selected,
 .react-flow__node-flowAsync.selectable.selected,
 .react-flow__node-CRVForm.selectable.selected,
 .react-flow__node-retrunCRVResult.selectable.selected,
@@ -77,6 +81,8 @@
     filter: invert(0%);
 }
 
+.react-flow__node-exportExcel.selectable:hover,
+.react-flow__node-taskInfo.selectable:hover,
 .react-flow__node-flowAsync.selectable:hover,
 .react-flow__node-CRVForm.selectable:hover,
 .react-flow__node-retrunCRVResult.selectable:hover,

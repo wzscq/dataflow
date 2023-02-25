@@ -67,7 +67,7 @@ func (nodeExecutor *nodeExecutorFlow)run(
 		instance.DebugID,
 		instance.TaskID,
 		instance.TaskStep,
-		nil,nil)
+		nil,nil,nil)
 		
 	if errorCode!=common.ResultSuccess {
 		return node.Input,common.CreateError(errorCode,params)

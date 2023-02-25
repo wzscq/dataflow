@@ -20,7 +20,7 @@ func (nodeExecutor *nodeExecutorLog)logInstanceNode(instance *flowInstance,node 
         log.Println(err)
     } else {
 
-		path := "apps/"+instance.AppDB+"/instances/"+instance.InstanceID
+		path := "apps/"+instance.AppDB+"/instances/"+instance.FlowID+"/"+instance.InstanceID
 		err := os.MkdirAll(path, os.ModePerm)
 		if err != nil {
 			log.Println(err)

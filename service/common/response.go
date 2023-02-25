@@ -64,6 +64,8 @@ const (
 	ResultCreateTransformFunctionError = 90000026
 	ResultNoModelField = 90000027
 	ResultFieldTypeError = 90000028
+	ResultNoDataForExport = 90000029
+	ResultNotSupportedNode = 90000030
 	
 )
 
@@ -71,6 +73,16 @@ var errMsg = map[int]CommonRsp{
 	ResultExcelSheetNotExist:CommonRsp{
 		ErrorCode:ResultExcelSheetNotExist,
 		Message:"读取Excel文件时指定的sheet不存在，请确认您选择的Excel文件是否正确",
+		Error:true,
+	},
+	ResultNoDataForExport:CommonRsp{
+		ErrorCode:ResultNoDataForExport,
+		Message:"没有符合条件的数据",
+		Error:true,
+	},
+	ResultNotSupportedNode:CommonRsp{
+		ErrorCode:ResultNotSupportedNode,
+		Message:"执行流程时遇到不支持的节点类型，请与管理员联系处理",
 		Error:true,
 	},
 	ResultESIFileAlreadyImported:CommonRsp{

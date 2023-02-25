@@ -12,6 +12,7 @@ const controls=[
     {type: 'retrunCRVResult',label:'Return CRV Result'},
     {type: 'CRVForm',label:'CRV Form'},
     {type: 'esi',label: 'ESI'},
+    {type: 'exportExcel',label: 'Export Excel'},
 	{type: 'fieldGroup',label: 'Group By Fields'},
     {type: 'numericGroup',label: 'Group By Numeric Field'},
     {type: 'splitExtraQuantity',label: 'Split extra quantity'},
@@ -30,6 +31,7 @@ const controls=[
     {type: 'save',label: 'Save'},
     {type: 'flow',label: 'Call Flow'},
     {type: 'flowAsync',label: 'Call Async Flow'},
+    {type: 'taskInfo',label:'Task Info'},
     {type: 'delay',label: 'Delay'},
     {type: 'log',label: 'log'},
     {type: 'debug',label: 'Debug'}
