@@ -130,8 +130,9 @@ export const startFlowAction = createAsyncThunk(
       let fileName=response.headers['content-disposition'];
       if(fileName){
         fileName=fileName.substring("attachment; filename=".length);
+        fileName=decodeURI(fileName);
       } else {
-        fileName="no_file_name"
+        fileName="no_file_name";
       }
       return {data:response.data,download:true,fileName:fileName}
     }
