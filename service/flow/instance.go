@@ -151,7 +151,8 @@ func (flow *flowInstance)getNodeConfig(id string)(node *node){
 func (flow *flowInstance)runNode(
 	dataRepo data.DataRepository,
 	node,preNode *instanceNode,
-	mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
+	mqtt *common.MqttConf,
+	redis *common.RedisConf )(*flowReqRsp,*common.CommonError){
 	//根据节点类型，找到对应的节点，然后执行节点
 	log.Printf("flowInstance runNode id: %s \n",node.ID)
 	nodeCfg:=flow.getNodeConfig(node.ID)
@@ -163,7 +164,7 @@ func (flow *flowInstance)runNode(
 		return nil,common.CreateError(common.ResultNoNodeOfGivenID,params)
 	}
 	log.Printf("flowInstance runNode id: %s type: %s \n",node.ID,nodeCfg.Type)
-	executor:=getNodeExecutor(nodeCfg,dataRepo,mqtt)
+	executor:=getNodeExecutor(nodeCfg,dataRepo,mqtt,redis)
 	if executor==nil {
 		log.Println("can not find the node executor with type: ",nodeCfg.Type)
 		params:=map[string]interface{}{
@@ -175,7 +176,11 @@ func (flow *flowInstance)runNode(
 	return executor.run(flow,node,preNode)
 }
 
-func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,mqtt *common.MqttConf)(*flowReqRsp,*common.CommonError){
+func (flow *flowInstance)push(
+	dataRepo data.DataRepository,
+	flowRep* flowReqRsp,
+	mqtt *common.MqttConf,
+	redis *common.RedisConf )(*flowReqRsp,*common.CommonError){
 	log.Println("start flowInstance push")
 
 	if flow.InstanceRepository!=nil {
@@ -194,7 +199,7 @@ func (flow *flowInstance)push(dataRepo data.DataRepository,flowRep* flowReqRsp,m
 	//循环执行所有同步的node
 	for currentNode!=nil {
 		log.Printf("flowInstance push currentNode id %s \n",currentNode.ID)
-		result,err:=flow.runNode(dataRepo,currentNode,preNode,mqtt)
+		result,err:=flow.runNode(dataRepo,currentNode,preNode,mqtt,redis)
 		if err!= nil {
 			return nil,err
 		}

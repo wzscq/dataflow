@@ -47,7 +47,8 @@ type nodeExecutor interface {
 func getNodeExecutor(
 	node *node,
 	dataRepo data.DataRepository,
-	mqtt *common.MqttConf)(nodeExecutor){
+	mqtt *common.MqttConf,
+	redis *common.RedisConf)(nodeExecutor){
 	if node.Type ==NODE_START {
 		return &nodeExecutorStart{}
 	} else if node.Type == NODE_END {
@@ -161,6 +162,7 @@ func getNodeExecutor(
 			NodeConf:*node,
 			DataRepository:dataRepo,
 			Mqtt:mqtt,
+			Redis:redis,
 		}
 	} else if node.Type == NODE_RETURN_CRVRESULT {
 		return &nodeExecutorReturnCRVResult{
@@ -179,6 +181,7 @@ func getNodeExecutor(
 		return &nodeExecutorTask{
 			NodeConf:*node,
 			Mqtt:mqtt,
+			Redis:redis,
 			DataRepository:dataRepo,
 		}
 	} else if node.Type == NODE_EXPORT_EXCEL {

@@ -16,6 +16,7 @@ type nodeExecutorFlow struct {
 	NodeConf node
 	DataRepository data.DataRepository
 	Mqtt *common.MqttConf
+	Redis *common.RedisConf
 }
 
 func (nodeExecutor *nodeExecutorFlow)getNodeConf()(*nodeFlowConf){
@@ -73,7 +74,7 @@ func (nodeExecutor *nodeExecutorFlow)run(
 		return node.Input,common.CreateError(errorCode,params)
 	}
 	//执行流
-	result,err:=flowInstance.push(nodeExecutor.DataRepository,req,nodeExecutor.Mqtt)
+	result,err:=flowInstance.push(nodeExecutor.DataRepository,req,nodeExecutor.Mqtt,nodeExecutor.Redis)
 	if err!=nil {
 		return result,err
 	}

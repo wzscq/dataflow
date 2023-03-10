@@ -59,6 +59,7 @@ func main() {
 		DataRepository:dataRepo,
         InstanceRepository:flowInstanceRepository,
         Mqtt:conf.Mqtt,
+        Redis:conf.Redis,
 	}
     flowController.Bind(router)
 

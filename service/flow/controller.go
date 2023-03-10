@@ -102,6 +102,7 @@ type FlowController struct {
 	DataRepository data.DataRepository
 	InstanceRepository FlowInstanceRepository
 	Mqtt common.MqttConf
+	Redis common.RedisConf
 }
 
 //start flow by mqtt
@@ -135,7 +136,7 @@ func (controller *FlowController)StartFlow(reqPayload []byte){
 		return
 	}
 	//执行流
-	flowInstance.push(controller.DataRepository,&req,&controller.Mqtt)
+	flowInstance.push(controller.DataRepository,&req,&controller.Mqtt,&controller.Redis)
 	log.Println("FlowController end StartFlow")
 }
 
@@ -158,9 +159,18 @@ func (controller *FlowController)start(c *gin.Context){
 		return
 	}
 
-	req.UserID=header.UserID
-	req.AppDB=header.AppDB
-	req.UserRoles=header.UserRoles
+	if req.UserID == "" {
+		req.UserID=header.UserID
+	}
+
+	if req.AppDB == "" {
+		req.AppDB=header.AppDB
+	}
+
+	if req.UserRoles == "" {
+		req.UserRoles=header.UserRoles
+	}
+
 	req.GoOn=true  //这个值设置节点是否继续运行默认为true
 	req.Over=false 
 
@@ -184,7 +194,7 @@ func (controller *FlowController)start(c *gin.Context){
 		return
 	}
 	//执行流
-	result,err:=flowInstance.push(controller.DataRepository,&req,&controller.Mqtt)
+	result,err:=flowInstance.push(controller.DataRepository,&req,&controller.Mqtt,&controller.Redis)
 	if result==nil || result.AlreadyResponsed == false {
 		rsp:=common.CreateResponse(err,result)
 		c.IndentedJSON(http.StatusOK, rsp)

@@ -2,7 +2,8 @@
     "redis":{
         "server":"121.36.192.249:6479",
         "flowInstanceDB":2,
-        "flowInstanceExpired":"600s"
+        "flowInstanceExpired":"600s",
+        "tokenDB":0
     },
     "mysql":{
         "server":"121.36.192.249:4306",

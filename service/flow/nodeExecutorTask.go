@@ -4,6 +4,7 @@ import (
   "time"
 	"dataflow/common"
 	"dataflow/data"
+	"dataflow/user"
 	"encoding/json"
 	"log"
 	"fmt"
@@ -36,6 +37,7 @@ type nodeExecutorTaskConf struct {
 type nodeExecutorTask struct {
 	NodeConf node
 	Mqtt *common.MqttConf
+	Redis *common.RedisConf
 	DataRepository data.DataRepository
 }
 
@@ -290,7 +292,11 @@ func (nodeExecutor *nodeExecutorTask)saveTask(
 	return common.ResultSuccess
 }
 
-func (nodeExecutor *nodeExecutorTask)sendNotification(instance *flowInstance,saver *data.Save){
+func (nodeExecutor *nodeExecutorTask)sendNotification(
+	instance *flowInstance,
+	saver *data.Save,
+	userToken string){
+
 	jsonStr, err := json.Marshal(saver)
 	if err != nil {
 		log.Println(err)
@@ -303,9 +309,22 @@ func (nodeExecutor *nodeExecutorTask)sendNotification(instance *flowInstance,sav
 	}
 	defer (*client).Disconnect(250)
 
-	topic:=fmt.Sprintf("%s/%s",nodeExecutor.Mqtt.TaskNotificationTopic,instance.TaskID)
+	topic:=fmt.Sprintf("%s/%s",nodeExecutor.Mqtt.TaskNotificationTopic,userToken)
 	token:=(*client).Publish(topic,0,false,string(jsonStr))
 	token.Wait()
+}
+
+func (nodeExecutor *nodeExecutorTask)getUserToken(userID string)(string){
+	//获取用户token
+	duration, _ := time.ParseDuration(nodeExecutor.Redis.TokenExpired)
+  loginCache:=&user.DefatultLoginCache{}
+  loginCache.Init(nodeExecutor.Redis.Server,nodeExecutor.Redis.TokenDB,duration,nodeExecutor.Redis.Password)
+	userToken, err := loginCache.GetUserToken(userID)
+	if err != nil {
+		log.Println(err)
+		return ""
+	}
+	return userToken
 }
 
 func (nodeExecutor *nodeExecutorTask)run(
@@ -339,8 +358,12 @@ func (nodeExecutor *nodeExecutorTask)run(
 	if errorCode != common.ResultSuccess {
 		return node.Input,common.CreateError(errorCode,params)
 	}
-	//通过MQTT发送通知消息，消息topic中携带taskID
-	nodeExecutor.sendNotification(instance,saver)
+	//通过MQTT发送通知消息给当前用户，后续需要扩展到发送给任务的相关用户，消息topic中携带用户的token
+	//首先获取当前用户的token信息
+	userToken:=nodeExecutor.getUserToken(instance.UserID)
+	if len(userToken)>0 {
+		nodeExecutor.sendNotification(instance,saver,userToken)
+	}
 
 	endTime:=time.Now().Format("2006-01-02 15:04:05")
 	node.Completed=true

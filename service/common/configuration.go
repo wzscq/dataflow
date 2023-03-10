@@ -6,8 +6,9 @@ import (
 	"encoding/json"
 )
 
-type redisConf struct {
+type RedisConf struct {
 	Server string `json:"server"`
+	TokenDB int `json:"tokenDB"`
 	TokenExpired string `json:"tokenExpired"`
 	Password string `json:"password"`
 	FlowInstanceDB int `json:"flowInstanceDB"`
@@ -48,7 +49,7 @@ type MqttConf struct {
 }
 
 type Config struct {
-	Redis  redisConf  `json:"redis"`
+	Redis  RedisConf  `json:"redis"`
 	Mysql  mysqlConf  `json:"mysql"`
 	Service serviceConf `json:"service"`
 	Runtime runtimeConf `json:"runtime"`
