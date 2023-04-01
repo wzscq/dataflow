@@ -62,10 +62,10 @@ func (nodeExecutor *nodeExecutorDebug)SendDebugMessage(instance *flowInstance,no
 	log.Println("SendDebugMessage topic: flowdebug/"+(*instance.DebugID))
 	//打印一下流的实例内容
 	jsonStr, err := json.MarshalIndent(node, "", "    ")
-    if err != nil {
-        log.Println(err)
+  if err != nil {
+    log.Println(err)
 		return
-    }
+  }
 	client:=nodeExecutor.getMqttClient(*instance.DebugID)
 	if client == nil {
 		return

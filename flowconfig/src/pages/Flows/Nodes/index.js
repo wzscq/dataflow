@@ -30,6 +30,7 @@ import {RetrunCRVResultNode,RetrunCRVResultNodeParams} from './RetrunCRVResultNo
 import {CRVFormNode,CRVFormNodeParams} from './CRVFormNode';
 import {TaskInfoNode,TaskInfoParams} from './TaskInfoNode';
 import {ExportExcelNode,ExportExcelParams} from './ExportExcelNode';
+import {CallExternalAPINodeParams,CallExternalAPINode} from './CallExternalAPINode';
 
 export const nodeTypes={
   start:StartNode,
@@ -58,12 +59,13 @@ export const nodeTypes={
 	splitExtraQuantity:SplitExtraQuantityNode,
 	esi:ESINode,
 	CRVRequest:CRVRequestNode,
-	flow:FlowNode,
-	flowAsync:FlowAsyncNode,
+	callFlow:FlowNode,
+	callFlowAsync:FlowAsyncNode,
 	retrunCRVResult:RetrunCRVResultNode,
 	CRVForm:CRVFormNode,
 	taskInfo:TaskInfoNode,
 	exportExcel:ExportExcelNode,
+	callExternalAPI:CallExternalAPINode
 }
 
 export const nodeParams={
@@ -93,10 +95,11 @@ export const nodeParams={
 	splitExtraQuantity:SplitExtraQuantityParams,
 	esi:ESINodeParams,
 	CRVRequest:CRVRequestNodeParams,
-	flow:FlowNodeParams,
-	flowAsync:FlowAsyncNodeParams,
+	callFlow:FlowNodeParams,
+	callFlowAsync:FlowAsyncNodeParams,
 	retrunCRVResult:RetrunCRVResultNodeParams,
 	CRVForm:CRVFormNodeParams,
 	taskInfo:TaskInfoParams,
-	exportExcel:ExportExcelParams
+	exportExcel:ExportExcelParams,
+	callExternalAPI:CallExternalAPINodeParams
 }

@@ -15,7 +15,6 @@ type flowInstance struct {
 	//增加任务调度需要的相关属性
 	TaskID *string `json:"taskID,omitempty"`  //taskID属性标识任务，如果请求中没有提供taskID则默认和flowInstanceID一致
 	TaskStep int `json:"taskStep"`            //taskStep标识任务的步骤，默认0
-
 	UserID string  `json:"UserID"`
 	FlowConf *flowConf `json:"flowConf,omitempty"`
 	CompletedNodes []*instanceNode `json:"completedNodes"`

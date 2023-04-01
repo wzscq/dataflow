@@ -34,10 +34,11 @@ const (
 	NODE_ESI = "esi"
 	NODE_CRV_REQUEST = "CRVRequest"
 	NODE_CRV_FORM = "CRVForm"
-	NODE_FLOW = "flow"
-	NODE_FLOW_ASYNC = "flowAsync"
 	NODE_TASK = "taskInfo"
 	NODE_EXPORT_EXCEL = "exportExcel"
+	NODE_FLOW = "callFlow"
+	NODE_FLOW_ASYNC = "callFlowAsync"
+	NODE_CALL_EXTERNAL_API= "callExternalAPI"
 )
 
 type nodeExecutor interface {
@@ -186,6 +187,10 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_EXPORT_EXCEL {
 		return &nodeExecutorExportExcel{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_CALL_EXTERNAL_API {
+		return &nodeExecutorCallExternalAPI{
 			NodeConf:*node,
 		}
 	}

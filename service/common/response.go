@@ -66,13 +66,18 @@ const (
 	ResultFieldTypeError = 90000028
 	ResultNoDataForExport = 90000029
 	ResultNotSupportedNode = 90000030
-	
+	ResultCallExternalAPIError = 90000031
 )
 
 var errMsg = map[int]CommonRsp{
 	ResultExcelSheetNotExist:CommonRsp{
 		ErrorCode:ResultExcelSheetNotExist,
 		Message:"读取Excel文件时指定的sheet不存在，请确认您选择的Excel文件是否正确",
+		Error:true,
+	},
+	ResultCallExternalAPIError:CommonRsp{
+		ErrorCode:ResultCallExternalAPIError,
+		Message:"调用外部API时发生错误，请与管理员联系处理",
 		Error:true,
 	},
 	ResultNoDataForExport:CommonRsp{

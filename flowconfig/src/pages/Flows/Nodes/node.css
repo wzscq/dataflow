@@ -1,9 +1,10 @@
+.react-flow__node-callExternalAPI,
 .react-flow__node-exportExcel,
 .react-flow__node-taskInfo,
-.react-flow__node-flowAsync,
+.react-flow__node-callFlowAsync,
 .react-flow__node-CRVForm,
 .react-flow__node-retrunCRVResult,
-.react-flow__node-flow,
+.react-flow__node-callFlow,
 .react-flow__node-CRVRequest,
 .react-flow__node-esi,
 .react-flow__node-createMatchResult,
@@ -43,12 +44,13 @@
     filter: invert(10%);
 }
 
+.react-flow__node-callExternalAPI.selectable.selected,
 .react-flow__node-exportExcel.selectable.selected,
 .react-flow__node-taskInfo.selectable.selected,
-.react-flow__node-flowAsync.selectable.selected,
+.react-flow__node-callFlowAsync.selectable.selected,
 .react-flow__node-CRVForm.selectable.selected,
 .react-flow__node-retrunCRVResult.selectable.selected,
-.react-flow__node-flow.selectable.selected,
+.react-flow__node-callFlow.selectable.selected,
 .react-flow__node-CRVRequest.selectable.selected,
 .react-flow__node-esi.selectable.selected,
 .react-flow__node-createMatchResult.selectable.selected,
@@ -81,12 +83,13 @@
     filter: invert(0%);
 }
 
+.react-flow__node-callExternalAPI.selectable:hover,
 .react-flow__node-exportExcel.selectable:hover,
 .react-flow__node-taskInfo.selectable:hover,
-.react-flow__node-flowAsync.selectable:hover,
+.react-flow__node-callFlowAsync.selectable:hover,
 .react-flow__node-CRVForm.selectable:hover,
 .react-flow__node-retrunCRVResult.selectable:hover,
-.react-flow__node-flow.selectable:hover,
+.react-flow__node-callFlow.selectable:hover,
 .react-flow__node-CRVRequest.selectable:hover,
 .react-flow__node-esi.selectable:hover,
 .react-flow__node-createMatchResult.selectable:hover,
