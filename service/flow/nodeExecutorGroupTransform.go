@@ -56,7 +56,6 @@ func (nodeExecutor *nodeExecutorGroupTransform)getNodeConf()(*groupTransformConf
 	return conf
 }
 
-
 func (nodeExecutor *nodeExecutorGroupTransform)createTransformFunction(name,body string)(goja.Callable,*common.CommonError){
 	funcStr:="function "+name+"(groupItem){"+body+"}"
 	_, err:=nodeExecutor.JSRuntime.RunString(funcStr)

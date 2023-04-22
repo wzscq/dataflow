@@ -20,7 +20,8 @@ const (
 	NODE_END = "end"
 	NODE_SAVE_MATCHED = "saveMatched"
 	NODE_SAVE_NOTMATCHED = "saveNotMatched"
-	NODE_RETURN_CRVRESULT= "retrunCRVResult"
+	NODE_RETURN_CRVRESULT= "returnCRVResult"
+	NODE_RETURN_CRVERROR= "returnCRVError"
 	NODE_LOG = "log"
 	NODE_DEBUG = "debug"
 	NODE_DELAY = "delay"
@@ -191,6 +192,10 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_CALL_EXTERNAL_API {
 		return &nodeExecutorCallExternalAPI{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_RETURN_CRVERROR {
+		return &nodeExecutorReturnCRVError{
 			NodeConf:*node,
 		}
 	}

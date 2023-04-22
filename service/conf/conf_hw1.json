@@ -1,12 +1,12 @@
 {
     "redis":{
-        "server":"121.36.192.249:6479",
+        "server":"121.37.185.248:6479",
         "flowInstanceDB":2,
         "flowInstanceExpired":"600s",
         "tokenDB":0
     },
     "mysql":{
-        "server":"121.36.192.249:4306",
+        "server":"121.37.185.248:4306",
         "password":"123456",
         "user":"root",
         "dbName":"school_sh",
@@ -15,12 +15,12 @@
         "maxIdleConns":10
     },
     "mqtt":{
-        "broker":"121.36.192.249",
+        "broker":"121.37.185.248",
         "port":1983,
         "wsPort":9101,
         "user":"mosquitto",
         "password":"123456",
-        "clientID":"dataflowClient1",
+        "clientID":"dataflowClient2",
         "startFlowTopic":"dataflow/start",
         "taskNotificationTopic":"task/notification"
     },

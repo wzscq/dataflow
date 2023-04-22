@@ -1,5 +1,4 @@
 import {Row,Col,Input} from 'antd';
-//import { PlusOutlined,PlusSquareOutlined,MinusSquareOutlined,MinusOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
 
 import { updateNodeData } from '../../../../redux/flowSlice';
@@ -15,10 +14,18 @@ export default function FlowNodeParams({node,labelWidth}){
       <>
         <Row className="param-panel-row" gutter={24}>
           <Col className="param-panel-row-label" style={{width:labelWidth}}>
-            <span>FlowID</span>
+            <span>ErrorCode</span>
           </Col>
           <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
-            <Input value={node.data?.flowID} onChange={(e)=>onNodeDataChange({...node.data,flowID:e.target.value})}/>
+            <Input value={node.data?.errorCode} onChange={(e)=>onNodeDataChange({...node.data,errorCode:e.target.value})}/>
+          </Col>
+        </Row>
+        <Row className="param-panel-row" gutter={24}>
+          <Col className="param-panel-row-label" style={{width:labelWidth}}>
+            <span>Message</span>
+          </Col>
+          <Col className="param-panel-row-input" style={{width:'calc(100% - '+labelWidth+'px)'}}>
+            <Input value={node.data?.message} onChange={(e)=>onNodeDataChange({...node.data,message:e.target.value})}/>
           </Col>
         </Row>
       </>

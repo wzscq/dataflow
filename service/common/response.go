@@ -10,6 +10,7 @@ type CommonRsp struct {
 
 type CommonError struct {
 	ErrorCode int `json:"errorCode"`
+	Message string `json:"message"`
 	Params map[string]interface{} `json:"params"`
 }
 
@@ -339,7 +340,14 @@ func CreateResponse(err *CommonError,result interface{})(*CommonRsp){
 		return &commonRsp
 	}
 
-	commonRsp:=errMsg[err.ErrorCode]
+	commonRsp,ok:=errMsg[err.ErrorCode]
+	if !ok {
+		commonRsp=CommonRsp{
+			ErrorCode:err.ErrorCode,
+			Message:err.Message,
+			Error:true,
+		}
+	}
 	commonRsp.Result=result
 	commonRsp.Params=err.Params
 	return &commonRsp

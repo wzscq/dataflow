@@ -26,7 +26,8 @@ import {ESINode,ESINodeParams} from './ESINode';
 import {CRVRequestNode,CRVRequestNodeParams} from './CRVRequestNode';
 import {FlowNode,FlowNodeParams} from './FlowNode';
 import {FlowAsyncNode,FlowAsyncNodeParams} from './FlowAsyncNode';
-import {RetrunCRVResultNode,RetrunCRVResultNodeParams} from './RetrunCRVResultNode';
+import {ReturnCRVResultNode,ReturnCRVResultNodeParams} from './ReturnCRVResultNode';
+import {ReturnCRVErrorNode,ReturnCRVErrorNodeParams} from './ReturnCRVErrorNode';
 import {CRVFormNode,CRVFormNodeParams} from './CRVFormNode';
 import {TaskInfoNode,TaskInfoParams} from './TaskInfoNode';
 import {ExportExcelNode,ExportExcelParams} from './ExportExcelNode';
@@ -61,7 +62,8 @@ export const nodeTypes={
 	CRVRequest:CRVRequestNode,
 	callFlow:FlowNode,
 	callFlowAsync:FlowAsyncNode,
-	retrunCRVResult:RetrunCRVResultNode,
+	returnCRVResult:ReturnCRVResultNode,
+	returnCRVError:ReturnCRVErrorNode,
 	CRVForm:CRVFormNode,
 	taskInfo:TaskInfoNode,
 	exportExcel:ExportExcelNode,
@@ -97,7 +99,8 @@ export const nodeParams={
 	CRVRequest:CRVRequestNodeParams,
 	callFlow:FlowNodeParams,
 	callFlowAsync:FlowAsyncNodeParams,
-	retrunCRVResult:RetrunCRVResultNodeParams,
+	returnCRVResult:ReturnCRVResultNodeParams,
+	returnCRVError:ReturnCRVErrorNodeParams,
 	CRVForm:CRVFormNodeParams,
 	taskInfo:TaskInfoParams,
 	exportExcel:ExportExcelParams,

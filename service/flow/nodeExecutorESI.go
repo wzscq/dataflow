@@ -35,16 +35,16 @@ func (nodeExecutor *nodeExecutorESI)getNodeConf()(*ESINodeConf){
 	return nodeConf
 }
 
-func (nodeExecutor *nodeExecutorESI)loadTestData(modelID string,fileField string)(*map[string]interface{}){
+func (nodeExecutor *nodeExecutorESI)loadTestData(modelID string,fileField string,data *map[string]interface{}){
 	mapData,_:=nodeExecutor.NodeConf.Data.(map[string]interface{})
 	models,ok:=mapData["models"]
 	if !ok {
-		return nil
+		return
 	}
 
 	modelList,ok:=models.([]interface{})
 	if !ok {
-		return nil
+		return
 	}
 
 	for _,modelItem:=range(modelList){
@@ -58,16 +58,12 @@ func (nodeExecutor *nodeExecutorESI)loadTestData(modelID string,fileField string
 
 			fileValue,ok:=testDataMap[fileField]
 			if !ok {
-				fileValue,ok=testDataMap["esiFile"]
-				if ok {
-					testDataMap[fileField]=fileValue
-				}
+				fileValue,ok=testDataMap["esiFile"]	
 			}
-			return &testDataMap
+			(*data)[fileField]=fileValue
+			return
 		}
 	}
-	
-	return nil
 }
 
 func (nodeExecutor *nodeExecutorESI)getImportFile(inputRowData *map[string]interface{},fileField string)(string,string,int){
@@ -196,7 +192,7 @@ func (nodeExecutor *nodeExecutorESI)ImportModel(
 		//这里考虑到导入操作
 		//如果是调试模式，择用测试数据填充List
 		if instance.DebugID!=nil && len(*instance.DebugID)>0 {
-			inputRowData=nodeExecutor.loadTestData(esiModel.ModelID,esiModel.FileField)
+			nodeExecutor.loadTestData(esiModel.ModelID,esiModel.FileField,inputRowData)
 		}
 
 		fileName,fileContent,errorCode:=nodeExecutor.getImportFile(inputRowData,esiModel.FileField)
