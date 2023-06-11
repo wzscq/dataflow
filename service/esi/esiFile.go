@@ -23,7 +23,7 @@ type esiFile struct {
 }
 
 type ContentHandler interface {
-	handleCell(lastRow,row,col int,content string)(map[string]interface{})
+	handleCell(lastRow,row,col int,content string,isLastCol bool)(map[string]interface{})
 	resetAll()
 }
 
@@ -114,7 +114,12 @@ func parseSheet(
 	lastRow:=-1
 	for rowNo, row := range rows {
 		for colNo, cellContent := range row {
-			resultRowMap:=contentHandler.handleCell(lastRow,rowNo,colNo,cellContent)
+			//判断当前列是否是最后一个列
+			isLastCol:=false
+			if colNo==len(row)-1 {
+				isLastCol=true
+			}
+			resultRowMap:=contentHandler.handleCell(lastRow,rowNo,colNo,cellContent,isLastCol)
 			if resultRowMap!=nil {
 				//保存数据行
 				err:=dataRowHandler.handleRow(resultRowMap,sheetName)

@@ -1,31 +1,28 @@
 {
     "redis":{
-        "server":"192.168.1.144:6379",
+        "server":"1.15.91.60:6379",
         "tokenExpired":"6000s",
+        "oauthTokenExpired":"60s",
+        "tokenDB":0,
+        "oauthTokenDB":4,
+        "flowInstanceDB":2,
+        "appCacheDB":1,
+        "flowInstanceExpired":"0s",
         "password":"4576_Iee0787"
     },
     "mysql":{
         "server":"1.15.91.60:3306",
         "password":"4576_Iee0787",
         "user":"root",
-        "dbName":"delivery_recon",
+        "dbName":"recon_demo",
         "connMaxLifetime":60,
         "maxOpenConns":10,
         "maxIdleConns":10
     },
-    "mqtt":{
-        "broker":"121.36.192.249",
-        "port":1983,
-        "wsPort":9101,
-        "user":"mosquitto",
-        "password":"123456",
-        "clientID":"dataflowClient1",
-        "startFlowTopic":"dataflow/start"
-    },
     "service":{
-        "port":"localhost:9900"
+        "port":"localhost:8200"
     },
-    "runtime":{
-        "goMaxProcs":10
+    "file":{
+        "root":"appfile"
     }
 }
