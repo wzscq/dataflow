@@ -14,13 +14,14 @@
         "maxIdleConns":10
     },
     "mqtt":{
-        "broker":"121.36.192.249",
+        "broker":"121.37.185.248",
         "port":1983,
         "wsPort":9101,
         "user":"mosquitto",
         "password":"123456",
-        "clientID":"dataflowClient1",
-        "startFlowTopic":"dataflow/start"
+        "clientID":"dataflowClient2",
+        "startFlowTopic":"dataflow/start",
+        "taskNotificationTopic":"task/notification"
     },
     "service":{
         "port":"localhost:9900"

@@ -1,13 +1,17 @@
 package flow
 
 import (
-    "time"
+  "time"
 	"dataflow/common"
 	"encoding/json"
 	"log"
 	"github.com/dop251/goja"
-	"github.com/rs/xid"
+	"sync"
+	//"github.com/rs/xid"
 )
+
+var g_batch_number int64
+var g_batch_number_mutex sync.Mutex
 
 type groupTransformConf struct {
 	FuncScript funcScript `json:"funcScript"`
@@ -19,8 +23,22 @@ type nodeExecutorGroupTransform struct {
 	JSRuntime *goja.Runtime
 }
 
+func GetBatchID()(string){
+	g_batch_number_mutex.Lock()
+	nowNumber:=time.Now().Unix()
+	if nowNumber>g_batch_number {
+		g_batch_number=nowNumber
+	} else {
+		g_batch_number+=1
+	}
+	t:=time.Unix(g_batch_number,0)
+	g_batch_number_mutex.Unlock()
+	return t.Format("20060102150405")
+}
+
 func (nodeExecutor *nodeExecutorGroupTransform)getBatchNumber()(string){
-	return xid.New().String()
+
+	return GetBatchID() //xid.New().String()
 }
 
 func (nodeExecutor *nodeExecutorGroupTransform)convertToFlowDataItem(
