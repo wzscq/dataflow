@@ -306,7 +306,8 @@ func (epr *patternContentHandler)removeIncompatibleCharacters(org string)(string
 
 func (epr *patternContentHandler)AddModelTableField(
 	row,col int,
-	cell string)(map[string]interface{}){
+	cell string,
+	isLastCol bool)(map[string]interface{}){
 	//获取值单元格标记
 	recLabelCell:=epr.getRecognizedValueCell(row,col)
 	if recLabelCell==nil {
@@ -319,7 +320,8 @@ func (epr *patternContentHandler)AddModelTableField(
 	epr.setTempRowValue(recLabelCell.Field,value)
 	
 	//如果当前行对应的字段存在结束行标志，则保存行数据
-	if recLabelCell.Field.EndRow == END_ROW_YES {
+	if recLabelCell.Field.EndRow == END_ROW_YES || 
+	   (isLastCol==true &&  recLabelCell.Field.ExcelRangeType==EXCEL_RANGE_TABLE && recLabelCell.Field.EndRow != END_ROW_NO) {
 		//缓存的行数据放到表格数据中
 		return epr.AddTempRowToModel()
 	}
@@ -398,12 +400,12 @@ func (epr *patternContentHandler)resetAutoEndRow(row int){
 	}
 }
 
-func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string)(map[string]interface{}){
+func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string,isLastCol bool)(map[string]interface{}){
 	if lastRow!=row {
 		if lastRow!=-1 {
 			//在处理完一个行的数据后，对行上的autolabel类型做进一步处理
 			epr.resetAutoLabel(lastRow)
-			//检查当前行最后一个标题列如果时table且endrow不是no的情况下将endrow自动设置为yes
+			//检查当前行最后一个标题列如果是table且endrow不是no的情况下将endrow自动设置为yes
 			//注意这个函数应该放在resetAutoLabel后面执行，确保先设置好列的rangetype
 			epr.resetAutoEndRow(lastRow)
 		}
@@ -422,7 +424,7 @@ func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string)(
 	}
 	
 	if epr.RecognizeFieldValueCell(row,col,content) == true {
-		return epr.AddModelTableField(row,col,content)
+		return epr.AddModelTableField(row,col,content,isLastCol)
 	}
 
 	return nil
