@@ -414,6 +414,7 @@ func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string,i
 
 	reconLabelCell:=true
 	//如果设置了header的最大行数，则仅针对之前的行做header识别
+	log.Printf("MaxHeaderRow %d row:%d\n",epr.ESIModel.Options.MaxHeaderRow,row)
 	if epr.ESIModel.Options.MaxHeaderRow>0 && row>epr.ESIModel.Options.MaxHeaderRow {
 		reconLabelCell=false
 	}

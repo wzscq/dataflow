@@ -122,8 +122,22 @@ func (nodeExecutor *nodeExecutorExportExcel)run(
 	
 	flowResult:=&flowReqRsp{
 		FlowID:req.FlowID,
+		FlowInstanceID:req.FlowInstanceID,
+		Stage:req.Stage,
+		DebugID:req.DebugID,
+		UserRoles:req.UserRoles,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		FlowConf:req.FlowConf,
+		ModelID:req.ModelID,
+		ViewID:req.ViewID,
+		FilterData:req.FilterData,
+		Filter:req.Filter,
+		List:req.List,
+		Total:req.Total,
+		SelectedRowKeys:req.SelectedRowKeys,
+		Pagination:req.Pagination,
+		Operation:req.Operation,
 		GoOn:true,
 		Over:true,
 	}
