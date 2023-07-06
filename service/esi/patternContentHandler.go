@@ -224,7 +224,7 @@ func (epr *patternContentHandler)findRecognizedLabelCell(row,col int)(*recognize
 
 	labelRow:=row-1
 	if epr.ESIModel.Options.MaxHeaderRow>0{
-		labelRow=epr.ESIModel.Options.MaxHeaderRow
+		labelRow=epr.ESIModel.Options.MaxHeaderRow-1
 	}
 	//再找上方的标题
 	for ;labelRow>=0;labelRow-- {
@@ -412,10 +412,12 @@ func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string,i
 		epr.DataRow[row]=nil
 	}
 
+	log.Printf("handleCell row: %d col: %d content: %s\n",row,col,content)
+
 	reconLabelCell:=true
 	//如果设置了header的最大行数，则仅针对之前的行做header识别
-	log.Printf("MaxHeaderRow %d row:%d\n",epr.ESIModel.Options.MaxHeaderRow,row)
-	if epr.ESIModel.Options.MaxHeaderRow>0 && row>epr.ESIModel.Options.MaxHeaderRow {
+	//这里需要注意的是MaxHeaderRow设置的时候是从1开始的，而row是从0开始的
+	if epr.ESIModel.Options.MaxHeaderRow>0 && row+1>epr.ESIModel.Options.MaxHeaderRow {
 		reconLabelCell=false
 	}
 
