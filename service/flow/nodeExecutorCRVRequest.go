@@ -83,9 +83,10 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 	}*/
 
 	//将接口传入的数据放入data中
+	modelID:=*req.ModelID
 	modelDatas:=[]modelDataItem{
 		modelDataItem{
-			ModelID:req.ModelID,
+			ModelID:&modelID,
 			Filter:req.Filter,
 			List:req.List,
 		},

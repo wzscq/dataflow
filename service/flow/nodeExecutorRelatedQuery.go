@@ -62,6 +62,13 @@ func (nodeExecutor *nodeExecutorRelatedQuery)getQueryModels()([]relatedQueryMode
 	return models
 }
 
+func (nodeExecutor *nodeExecutorRelatedQuery)updateModelsFilter(
+	input *flowReqRsp,
+	model *relatedQueryModel)(int){
+	data.ProcessFilter(model.Filter,nil,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
+	return common.ResultSuccess
+}
+
 func (nodeExecutor *nodeExecutorRelatedQuery)queryModel(
 	appDB string,modelQueryConf *relatedQueryModel)(*modelDataItem,int){
 	//过滤字段中默认增加id、version字段
@@ -194,7 +201,8 @@ func (nodeExecutor *nodeExecutorRelatedQuery)getRelatedFilter(
 func (nodeExecutor *nodeExecutorRelatedQuery)dealDataItem(
 	dataItem *flowDataItem,
 	model *relatedQueryModel,
-	appDB string)(int){
+	appDB string,
+	input *flowReqRsp)(int){
 
 	relatedFilter,errorCode:=nodeExecutor.getRelatedFilter(model,dataItem)
 	if errorCode!=common.ResultSuccess {
@@ -204,6 +212,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)dealDataItem(
 	//所以如果是用了关联查询的组件则但是又没有配置关联条件的情况下是不执行数据查询的
 	if relatedFilter!=nil {
 		model.Filter=nodeExecutor.mergeFilter(model.Filter,relatedFilter)
+		nodeExecutor.updateModelsFilter(input,model)
 		postJson,_:=json.Marshal(model)
 		log.Println(string(postJson))
 		//return flowResult,nil
@@ -261,7 +270,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)run(
 	if req.Data!=nil && len(*req.Data)>0 {
 		for index,_:=range(*req.Data){
 			for _, model := range (models) {
-				errorCode:=nodeExecutor.dealDataItem(&((*req.Data)[index]),&model,instance.AppDB)
+				errorCode:=nodeExecutor.dealDataItem(&((*req.Data)[index]),&model,instance.AppDB,req)
 				if errorCode!=common.ResultSuccess {
 					return flowResult,common.CreateError(errorCode,params)
 				}
