@@ -99,7 +99,8 @@ func (nodeExecutor *nodeExecutorGroupTransform)createTransformFunction(name,body
 }
 
 func (nodeExecutor *nodeExecutorGroupTransform)getTransformFunction(
-	transformCfg *groupTransformConf)(goja.Callable, *common.CommonError){
+	transformCfg *groupTransformConf,
+	userID string)(goja.Callable, *common.CommonError){
 	//首先判断goja的runtime是否创建，如果没有创建则创建新的runtime
 	if nodeExecutor.JSRuntime == nil {
 		nodeExecutor.JSRuntime=goja.New()
@@ -107,6 +108,7 @@ func (nodeExecutor *nodeExecutorGroupTransform)getTransformFunction(
 		nodeExecutor.JSRuntime.Set("g_BatchNumber",nodeExecutor.getBatchNumber())
 		nodeExecutor.JSRuntime.Set("g_Index",1)
 	}
+	nodeExecutor.JSRuntime.Set("g_UserID",userID)
 
 	if nodeExecutor.TransformFunc== nil {
 		funcName:="groupTransform"
@@ -122,9 +124,10 @@ func (nodeExecutor *nodeExecutorGroupTransform)getTransformFunction(
 
 func (nodeExecutor *nodeExecutorGroupTransform)Transform(
 	nodeCfg *groupTransformConf,
-	dataItem *flowDataItem)(*flowDataItem,*common.CommonError){
+	dataItem *flowDataItem,
+	userID string)(*flowDataItem,*common.CommonError){
 	
-	transFunc,err:=nodeExecutor.getTransformFunction(nodeCfg)
+	transFunc,err:=nodeExecutor.getTransformFunction(nodeCfg,userID)
 	if err!=nil {
 		return nil,err
 	}
@@ -196,7 +199,7 @@ func (nodeExecutor *nodeExecutorGroupTransform)run(
 	//这里的分组操作是在数据已经分组的基础上再次分组，分组数据不能跨原来的分组
 	//遍历每个数据分组
 	for index,item:= range (*req.Data) {
-		resultItem,err:=nodeExecutor.Transform(nodeCfg,&item)
+		resultItem,err:=nodeExecutor.Transform(nodeCfg,&item,instance.UserID)
 		if err !=nil {
 			err.Params["nodeID"]=node.ID
 			err.Params["nodeType"]=NODE_GROUP_TRANSFORM
