@@ -7,6 +7,8 @@ import (
 	"regexp"
 	"strings"
 	"fmt"
+	"reflect"
+	"log/slog"
 )
 
 type FilterDataItem struct {
@@ -22,6 +24,7 @@ type FilterDataItem struct {
 func ProcessFilter(
 	filter *map[string]interface{},
 	filterData *[]FilterDataItem,
+	globalFilterData *map[string]interface{},
 	userID string,
 	userRoles string,
 	appDB string,
@@ -31,14 +34,14 @@ func ProcessFilter(
 	var errorCode int
 
 	if filterData!=nil && len(*filterData)>0 {
-		filterDataRes,errorCode=getFilterData(filterData,userID,userRoles,appDB,dataRepository)	
+		filterDataRes,errorCode=getFilterData(filterData,globalFilterData,userID,userRoles,appDB,dataRepository)	
 		if errorCode!=common.ResultSuccess {
 			log.Println("processFilter end with error")
 			return errorCode
 		}		
 	}
 
-	replaceFilterVar(filter,filterDataRes,userID,userRoles)
+	replaceFilterVar(filter,filterDataRes,globalFilterData,userID,userRoles)
 
 	log.Println("processFilter end")
 	return common.ResultSuccess
@@ -47,6 +50,7 @@ func ProcessFilter(
 func replaceFilterVar(
 	filter *map[string]interface{},
 	filterData *map[string]interface{},
+	globalFilterData *map[string]interface{},
 	userID ,userRoles string){
 	//先将条件转换成json，然后再反序列化回对象
 	jsonStr, err := json.Marshal(filter)
@@ -56,7 +60,7 @@ func replaceFilterVar(
 	}
 
 	log.Println("jsonStr ：",string(jsonStr))
-	filterStr,replaced:=replaceFilterString(string(jsonStr),filterData,userID,userRoles)
+	filterStr,replaced:=replaceFilterString(string(jsonStr),filterData,globalFilterData,userID,userRoles)
 	log.Println("filterStr ：",filterStr)
 	if replaced==true {
 		if err := json.Unmarshal([]byte(filterStr), filter); err != nil {
@@ -66,7 +70,11 @@ func replaceFilterVar(
 	}
 }
 
-func replaceFilterString(filter string,filterData *map[string]interface{},userID ,userRoles string)(string,bool){
+func replaceFilterString(
+	filter string,
+	filterData *map[string]interface{},
+	globalFilterData *map[string]interface{},
+	userID ,userRoles string)(string,bool){
 	//识别出过滤参数中的
 	log.Printf("replaceFilterString start\n")
 	log.Println(filter)
@@ -76,7 +84,7 @@ func replaceFilterString(filter string,filterData *map[string]interface{},userID
 	if replaceItems!=nil {
 		for _,replaceItem:=range replaceItems {
 			log.Printf("replaceFilterString replaceItem:%s,%s \n",replaceItem[0],replaceItem[1])
-			repalceStr:=getReplaceString(replaceItem[1],filterData,userID ,userRoles)
+			repalceStr:=getReplaceString(replaceItem[1],filterData,globalFilterData,userID ,userRoles)
 			filter=strings.Replace(filter,replaceItem[0],repalceStr,-1)
 		}
 		replaced=true
@@ -86,7 +94,7 @@ func replaceFilterString(filter string,filterData *map[string]interface{},userID
 	return filter,replaced
 }
 
-func getReplaceString(filterItem string,filterData *map[string]interface{},userID ,userRoles string)(string){
+func getReplaceString(filterItem string,filterData,globalFilterData *map[string]interface{},userID ,userRoles string)(string){
 	filterRoles:=userRoles;
 	filterRoles=strings.Replace(filterRoles,",","\",\"",-1)
 	log.Println(filterRoles)
@@ -99,11 +107,90 @@ func getReplaceString(filterItem string,filterData *map[string]interface{},userI
 		return filterRoles
 	}
 
+	if globalFilterData!=nil {
+		pathNodes:=strings.Split(filterItem, ".")
+		if len(pathNodes)>=2 {
+			if pathNodes[0]=="globalFilterData" {
+				return getGlobalfilterDataString(filterItem,globalFilterData)
+			}
+		}
+	}
+
 	if filterData!=nil {
 		return getfilterDataString(filterItem,filterData)
 	}
 	
 	return filterItem
+}
+
+func getGlobalfilterDataString(path string,data *map[string]interface{})(string){
+	values:=[]string{}
+	pathNodes:=strings.Split(path, ".")
+	getGlobalPathData(pathNodes,1,data,&values)
+	//将value转为豆号分割的字符串
+	if len(values)>0 {
+		valueStr:=strings.Join(values, "\",\"")
+		slog.Debug("将value转为豆号分割的字符串","valueStr",valueStr)
+		return valueStr
+	}
+	return path
+}
+
+func getGlobalPathData(path []string,level int,data *map[string]interface{},values *[]string){
+	pathNode:=path[level]
+
+	dataStr, _ := json.Marshal(data)
+	slog.Debug("getPathData","pathNode",pathNode,"level",level,"data",string(dataStr))
+
+	dataNode,ok:=(*data)[pathNode]
+	if !ok {
+		slog.Debug("getPathData no pathNode ","pathNode",pathNode)
+		return
+	}
+
+	//如果当前层级为左后一层
+	if len(path)==(level+1) {
+		switch dataNode.(type) {
+			case string:
+				sVal, _ := dataNode.(string)   
+				*values=append(*values,sVal) 
+			case int64:
+				iVal,_:=dataNode.(int64)
+				sVal:=fmt.Sprintf("%d",iVal)
+				*values=append(*values,sVal) 
+			default:
+				slog.Debug("getPathData not supported value type","dataNode type", reflect.TypeOf(dataNode))
+		}
+	} else {
+		//如果不是最后一级，则数据中应该存在list属性
+		slog.Debug("getPathData","dataNode type is", reflect.TypeOf(dataNode))
+		result,ok:=dataNode.(map[string]interface{})
+		if !ok {
+			slog.Debug("getPathData dataNode is not a map[string]interface{} ")
+			return
+		}
+
+		listItem,ok:=result["list"]
+		if !ok {
+			slog.Debug("getPathData no list with data node ","pathNode",pathNode)
+			return
+		}
+		resultList,ok:=listItem.([]interface{})
+		if !ok {
+			slog.Debug("getPathData list is not a []interface{}","pathNode",pathNode)
+			return
+		}
+
+		for _,row:=range resultList {
+			rowData,ok:=row.(map[string]interface{})
+			if ok {
+				getGlobalPathData(path,level+1,&rowData,values)
+			} else {
+				slog.Debug("getPathData the row of resultList is not a map[string]interface{}","pathNode",pathNode)
+			}
+		}
+		return
+	}
 }
 
 func getfilterDataString(path string,data *map[string]interface{})(string){
@@ -198,6 +285,7 @@ func getPathData(path []string,level int,data *map[string]interface{},values *[]
 
 func getFilterData(
 	filterData *[]FilterDataItem,
+	globalFilterData *map[string]interface{},
 	userID ,userRoles,appDB string,
 	dataRepository DataRepository)(*map[string]interface{},int){
 
@@ -208,7 +296,7 @@ func getFilterData(
 	//循环查询每个filterData的数据
 	for _,item:=range(*filterData){
 		if item.Filter!= nil {
-			replaceFilterVar(item.Filter,nil,userID,userRoles)
+			replaceFilterVar(item.Filter,nil,globalFilterData,userID,userRoles)
 		}
 		//创建query查询数据
 		query:=&Query{

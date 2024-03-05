@@ -65,7 +65,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)getQueryModels()([]relatedQueryMode
 func (nodeExecutor *nodeExecutorRelatedQuery)updateModelsFilter(
 	input *flowReqRsp,
 	model *relatedQueryModel)(int){
-	data.ProcessFilter(model.Filter,nil,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
+	data.ProcessFilter(model.Filter,nil,nil,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
 	return common.ResultSuccess
 }
 
@@ -239,6 +239,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)run(
 		Stage:req.Stage,
 		DebugID:req.DebugID,
 		UserRoles:req.UserRoles,
+		GlobalFilterData:req.GlobalFilterData,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
 		FlowConf:req.FlowConf,
@@ -251,6 +252,7 @@ func (nodeExecutor *nodeExecutorRelatedQuery)run(
 		SelectedRowKeys:req.SelectedRowKeys,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
+		SelectAll:req.SelectAll,
 		GoOn:true,
 	}
 

@@ -5,12 +5,18 @@ import (
 	"dataflow/common"
 	"log"
 	"encoding/json"
+	"dataflow/data"
 )
 
 type testData struct {
 	ModelID *string `json:"modelID"`
 	Filter *map[string]interface{} `json:"filter"`
 	List *[]map[string]interface{} `json:"list"`
+	GlobalFilterData *map[string]interface{} `json:"globalFilterData"`
+	FilterData *[]data.FilterDataItem `json:"filterData"`
+	SelectedRowKeys *[]string `json:"selectedRowKeys"`
+	Pagination *data.Pagination `json:"pagination"`
+	SelectAll bool `json:"selectAll"`
 }
 
 type nodeExecutorCRVRequest struct {
@@ -53,6 +59,7 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 		DebugID:req.DebugID,
 		UserRoles:req.UserRoles,
 		UserID:req.UserID,
+		GlobalFilterData:req.GlobalFilterData,
 		AppDB:req.AppDB,
 		FlowConf:req.FlowConf,
 		ModelID:req.ModelID,
@@ -64,6 +71,7 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 		SelectedRowKeys:req.SelectedRowKeys,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
+		SelectAll:req.SelectAll,
 		GoOn:true,
 	}
 
@@ -71,9 +79,14 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 	if instance.DebugID!=nil && len(*instance.DebugID)>0 {
 		testData:=nodeExecutor.loadTestData()
 		if testData != nil {
-			req.ModelID=testData.ModelID
-			req.Filter=testData.Filter
-			req.List=testData.List
+			flowResult.ModelID=testData.ModelID
+			flowResult.Filter=testData.Filter
+			flowResult.List=testData.List
+			flowResult.GlobalFilterData=testData.GlobalFilterData
+			flowResult.FilterData=testData.FilterData
+			flowResult.SelectedRowKeys=testData.SelectedRowKeys
+			flowResult.Pagination=testData.Pagination
+			flowResult.SelectAll=testData.SelectAll
 		}
 	}
 
@@ -83,12 +96,17 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 	}*/
 
 	//将接口传入的数据放入data中
-	modelID:=*req.ModelID
+	modelID:=*flowResult.ModelID
 	modelDatas:=[]modelDataItem{
 		modelDataItem{
 			ModelID:&modelID,
-			Filter:req.Filter,
-			List:req.List,
+			Filter:flowResult.Filter,
+			List:flowResult.List,
+			GlobalFilterData:flowResult.GlobalFilterData,
+			FilterData:flowResult.FilterData,
+			SelectedRowKeys:flowResult.SelectedRowKeys,
+			Pagination:flowResult.Pagination,
+			SelectAll:flowResult.SelectAll,
 		},
 	}
 

@@ -17,6 +17,11 @@ type modelDataItem struct {
 	Fields *interface{} `json:"fields,omitempty"`
 	Sorter *interface{} `json:"sorter,omitempty"`
 	Total int `json:"total"`
+	GlobalFilterData *map[string]interface{} `json:"globalFilterData"`
+	FilterData *[]data.FilterDataItem `json:"filterData"`
+	SelectedRowKeys *[]string `json:"selectedRowKeys"`
+	Pagination *data.Pagination `json:"pagination"`
+	SelectAll bool `json:"selectAll"`
 }
 
 type verifyResultItem struct {
@@ -46,6 +51,7 @@ type flowReqRsp struct {
 	TaskStep int `json:"taskStep"`            //taskStep标识任务的步骤，默认0
 	Stage *int `json:"stage,omitempty"`
 	DebugID *string `json:"debugID,omitempty"`
+	GlobalFilterData *map[string]interface{} `json:"globalFilterData"`
 	UserRoles string  `json:"userRoles"`
 	UserID    string  `json:"userID"`
 	AppDB     string  `json:"appDB"`
@@ -63,6 +69,7 @@ type flowReqRsp struct {
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
+	SelectAll bool `json:"selectAll"`
 	Operation *map[string]interface{} `json:"operation,omitempty"`
 	/**
 	data结构示例：

@@ -1,0 +1,33 @@
+{
+    "redis":{
+        "server":"192.168.0.53:6379",
+        "flowInstanceDB":2,
+        "flowInstanceExpired":"600s",
+        "tokenDB":0
+    },
+    "mysql":{
+        "server":"192.168.0.53:3306",
+        "password":"4576_Iee0787",
+        "user":"root",
+        "dbName":"lq_busi",
+        "connMaxLifetime":60,
+        "maxOpenConns":10,
+        "maxIdleConns":10
+    },
+    "mqtt":{
+        "broker":"192.168.0.53",
+        "port":1983,
+        "wsPort":9101,
+        "user":"mosquitto",
+        "password":"123456",
+        "clientID":"dataflowClient1",
+        "startFlowTopic":"dataflow/start",
+        "taskNotificationTopic":"task/notification"
+    },
+    "service":{
+        "port":"localhost:9900"
+    },
+    "runtime":{
+        "goMaxProcs":10
+    }
+}

@@ -116,7 +116,7 @@ func (nodeExecutor *nodeExecutorRequestQuery)updateModelsFilter(
 	models *[]queryModel)(int){
 	for _,model := range (*models) {
 		log.Println(model.Filter)
-		data.ProcessFilter(model.Filter,nil,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
+		data.ProcessFilter(model.Filter,nil,input.GlobalFilterData,input.UserID,input.UserRoles,input.AppDB,nodeExecutor.DataRepository)
 	}
 	return common.ResultSuccess
 }
@@ -159,6 +159,7 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 		Stage:req.Stage,
 		DebugID:req.DebugID,
 		UserRoles:req.UserRoles,
+		GlobalFilterData:req.GlobalFilterData,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
 		FlowConf:req.FlowConf,
@@ -171,6 +172,7 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 		SelectedRowKeys:req.SelectedRowKeys,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
+		SelectAll:req.SelectAll,
 		GoOn:true,
 	}
 
@@ -191,7 +193,7 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 	nodeExecutor.updateModelsFilter(req,&models)
 
 	//update request filter
-	data.ProcessFilter(req.Filter,req.FilterData,req.UserID,req.UserRoles,req.AppDB,nodeExecutor.DataRepository)
+	data.ProcessFilter(req.Filter,req.FilterData,req.GlobalFilterData,req.UserID,req.UserRoles,req.AppDB,nodeExecutor.DataRepository)
 
 	//根据页面请求传入的查询条件更新模型的查询条件
 	if req.ModelID!=nil && (req.Filter!=nil || req.SelectedRowKeys!=nil) {

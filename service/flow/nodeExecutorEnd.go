@@ -22,6 +22,7 @@ func (nodeExecutor *nodeExecutorEnd)run(
 		Stage:req.Stage,
 		DebugID:req.DebugID,
 		UserRoles:req.UserRoles,
+		GlobalFilterData:req.GlobalFilterData,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
 		FlowConf:req.FlowConf,
@@ -34,6 +35,7 @@ func (nodeExecutor *nodeExecutorEnd)run(
 		SelectedRowKeys:req.SelectedRowKeys,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
+		SelectAll:req.SelectAll,
 		Data:req.Data,
 	}
 
