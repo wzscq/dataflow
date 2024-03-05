@@ -206,6 +206,7 @@ func (nodeExecutor *nodeExecutorSplitExtraQuantity)run(
 		GlobalFilterData:req.GlobalFilterData,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		Token:req.Token,
 		FlowConf:req.FlowConf,
 		ModelID:req.ModelID,
 		ViewID:req.ViewID,

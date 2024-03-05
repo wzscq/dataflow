@@ -107,7 +107,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)mergeResult(resultList *[]modelD
 func (nodeExecutor *nodeExecutorCallExternalAPI)callAPI(
 	requestData modelDataItem,
 	conf *CallExternalAPIConfig,
-	instance *flowInstance)(*modelDataItem,*common.CommonError){
+	flowReq *flowReqRsp)(*modelDataItem,*common.CommonError){
 	//通过http post 请求调用外部api
 	//请求数据
 	requestDataJson,err:=json.Marshal(requestData)
@@ -123,8 +123,10 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)callAPI(
 	}
 	//设置请求头
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("UserID", instance.UserID)
-	req.Header.Set("AppDB", instance.AppDB)
+	req.Header.Set("UserID", flowReq.UserID)
+	req.Header.Set("UserRoles", flowReq.UserRoles)
+	req.Header.Set("AppDB", flowReq.AppDB)
+	req.Header.Set("Token", flowReq.Token)
 	//发送请求
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -161,14 +163,13 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)callAPI(
 func (nodeExecutor *nodeExecutorCallExternalAPI)dealModelData(
 	modelData *modelDataItem,
 	conf *CallExternalAPIConfig,
-	instance *flowInstance,
 	req *flowReqRsp)(*modelDataItem,*common.CommonError){
 	requestDataList:=nodeExecutor.getRequestDataList(modelData,conf,req)
 	resultList := []modelDataItem{}
 	//调用API
 	for _,requestData:=range *requestDataList {
 		//调用API
-		result,err:=nodeExecutor.callAPI(requestData,conf,instance)
+		result,err:=nodeExecutor.callAPI(requestData,conf,req)
 		if err!=nil {
 			return nil,err
 		}
@@ -182,12 +183,11 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)dealModelData(
 func (nodeExecutor *nodeExecutorCallExternalAPI)dealItem(
 	item *flowDataItem,
 	conf *CallExternalAPIConfig,
-	instance *flowInstance,
 	req *flowReqRsp)(*common.CommonError){
 	for index,modelData:=range item.Models {
 		if *modelData.ModelID==conf.ModelID {
 			//调用API
-			result,err:=nodeExecutor.dealModelData(&modelData,conf,instance,req)
+			result,err:=nodeExecutor.dealModelData(&modelData,conf,req)
 			if err!=nil {
 				return err
 			}
@@ -226,6 +226,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)run(
 		GlobalFilterData:req.GlobalFilterData,
 		UserID:req.UserID,
 		AppDB:req.AppDB,
+		Token:req.Token,
 		FlowConf:req.FlowConf,
 		ModelID:req.ModelID,
 		ViewID:req.ViewID,
@@ -257,7 +258,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)run(
 	//对每个数据项进行调用
 	for index,item:= range (*req.Data) {
 		//处理每个数据项
-		err:=nodeExecutor.dealItem(&item,conf,instance,req)
+		err:=nodeExecutor.dealItem(&item,conf,req)
 		if err!=nil {
 			if err.Params==nil {
 				err.Params=params

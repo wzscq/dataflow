@@ -17,6 +17,7 @@ type testData struct {
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
 	SelectAll bool `json:"selectAll"`
+	Token string `json:"token"`
 }
 
 type nodeExecutorCRVRequest struct {
@@ -61,6 +62,7 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 		UserID:req.UserID,
 		GlobalFilterData:req.GlobalFilterData,
 		AppDB:req.AppDB,
+		Token:req.Token,
 		FlowConf:req.FlowConf,
 		ModelID:req.ModelID,
 		ViewID:req.ViewID,
@@ -87,6 +89,7 @@ func (nodeExecutor *nodeExecutorCRVRequest)run(
 			flowResult.SelectedRowKeys=testData.SelectedRowKeys
 			flowResult.Pagination=testData.Pagination
 			flowResult.SelectAll=testData.SelectAll
+			flowResult.Token=testData.Token
 		}
 	}
 

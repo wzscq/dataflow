@@ -55,6 +55,7 @@ type flowReqRsp struct {
 	UserRoles string  `json:"userRoles"`
 	UserID    string  `json:"userID"`
 	AppDB     string  `json:"appDB"`
+	Token     string  `json:"token"`
 	FlowConf *flowConf `json:"flowConf,omitempty"`
 	ModelID *string `json:"modelID"`
 	ViewID *string `json:"viewID"`
@@ -176,6 +177,10 @@ func (controller *FlowController)start(c *gin.Context){
 
 	if req.UserRoles == "" {
 		req.UserRoles=header.UserRoles
+	}
+
+	if req.Token == "" {
+		req.Token=header.Token
 	}
 
 	req.GoOn=true  //这个值设置节点是否继续运行默认为true
