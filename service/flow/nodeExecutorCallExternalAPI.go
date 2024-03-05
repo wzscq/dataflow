@@ -22,7 +22,7 @@ type APIResult struct {
 	Error bool `json:"error"`
 	ErrorCode int `json:"errorCode"`
 	Message string `json:"message"`
-	Result modelDataItem `json:"result"`
+	Result *modelDataItem `json:"result"`
 }
 
 //API目前仅支持POST调用，仅支持一个模型的数据，采用统一的CRV平台接口
@@ -95,6 +95,12 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)mergeResult(resultList *[]modelD
 	for index,item:=range *resultList {
 		if index==0 {
 			result.ModelID=item.ModelID
+			result.Filter=item.Filter
+			result.GlobalFilterData=item.GlobalFilterData
+			result.FilterData=item.FilterData
+			result.SelectedRowKeys=item.SelectedRowKeys
+			result.Pagination=item.Pagination
+			result.SelectAll=item.SelectAll
 		}
 		(*result.List)=append(*result.List,(*item.List)...)
 		result.Total+=item.Total
@@ -157,7 +163,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)callAPI(
 		return nil,common.CreateError(common.ResultCallExternalAPIError,params)
 	}
 
-	return &apiResult.Result,nil
+	return apiResult.Result,nil
 }
 
 func (nodeExecutor *nodeExecutorCallExternalAPI)dealModelData(
@@ -173,9 +179,15 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)dealModelData(
 		if err!=nil {
 			return nil,err
 		}
-		resultList=append(resultList,*result)
+		if result!=nil {
+			resultList=append(resultList,*result)
+		}
 	}
 	//合并结果
+	if len(resultList)==0 {
+		return nil,nil
+	}
+
 	result:=nodeExecutor.mergeResult(&resultList)
 	return result,nil
 }

@@ -21,7 +21,7 @@ type modelDataItem struct {
 	FilterData *[]data.FilterDataItem `json:"filterData"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
-	SelectAll bool `json:"selectAll"`
+	SelectAll bool `json:"selectedAll"`
 }
 
 type verifyResultItem struct {
@@ -70,7 +70,7 @@ type flowReqRsp struct {
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
-	SelectAll bool `json:"selectAll"`
+	SelectAll bool `json:"selectedAll"`
 	Operation *map[string]interface{} `json:"operation,omitempty"`
 	/**
 	data结构示例：

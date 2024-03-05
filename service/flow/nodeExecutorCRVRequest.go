@@ -16,7 +16,7 @@ type testData struct {
 	FilterData *[]data.FilterDataItem `json:"filterData"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`
-	SelectAll bool `json:"selectAll"`
+	SelectAll bool `json:"selectedAll"`
 	Token string `json:"token"`
 }
 
