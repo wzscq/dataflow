@@ -410,6 +410,8 @@ func (epr *patternContentHandler)handleCell(lastRow,row,col int,content string,i
 			epr.resetAutoEndRow(lastRow)
 		}
 		epr.DataRow[row]=nil
+		//将tempRow清空
+		epr.TempRow=map[string]string{}
 	}
 
 	log.Printf("handleCell row: %d col: %d content: %s\n",row,col,content)
