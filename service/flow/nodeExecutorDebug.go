@@ -99,6 +99,9 @@ func (nodeExecutor *nodeExecutorDebug)getSendData(data *flowReqRsp)(*flowReqRsp)
 							ModelID:modelData.ModelID,
 							List:&[]map[string]interface{}{},
 							Total:len(*modelData.List),
+							Filter:modelData.Filter,
+							SelectedRowKeys:modelData.SelectedRowKeys,
+							SelectAll:modelData.SelectAll,
 						}
 						for rowIdx,dataRow:=range(*modelData.List){
 							if rowIdx<100 {

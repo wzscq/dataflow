@@ -101,10 +101,14 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)mergeResult(resultList *[]modelD
 			result.SelectedRowKeys=item.SelectedRowKeys
 			result.Pagination=item.Pagination
 			result.SelectAll=item.SelectAll
+			result.List=&[]map[string]interface{}{}
 		}
-		(*result.List)=append(*result.List,(*item.List)...)
+		if item.List!=nil {
+			(*result.List)=append(*result.List,(*item.List)...)
+		}
 		result.Total+=item.Total
 	}
+
 	return &result
 }
 
@@ -180,6 +184,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)dealModelData(
 			return nil,err
 		}
 		if result!=nil {
+			//转为json字符串	
 			resultList=append(resultList,*result)
 		}
 	}
@@ -204,7 +209,7 @@ func (nodeExecutor *nodeExecutorCallExternalAPI)dealItem(
 				return err
 			}
 			//如果返回的模型和请求模型一样，那么需要更新原有数据
-			if result.ModelID==modelData.ModelID {
+			if (*result.ModelID)==(*modelData.ModelID) {
 				//更新原有数据
 				item.Models[index]=*result
 			} else {
