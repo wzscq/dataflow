@@ -48,6 +48,7 @@ func (nodeExecutor *nodeExecutorDebug)getMqttClient(debugID string)(*mqtt.Client
 	opts.SetUsername(nodeExecutor.Mqtt.User)
 	opts.SetPassword(nodeExecutor.Mqtt.Password)
 	opts.SetDefaultPublishHandler(nodeExecutor.messagePublishHandler)
+	opts.SetAutoReconnect(true)
 	opts.OnConnect = nodeExecutor.connectHandler
 	opts.OnConnectionLost = nodeExecutor.connectLostHandler
 	client:=mqtt.NewClient(opts)

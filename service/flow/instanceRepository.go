@@ -5,10 +5,11 @@ import (
 	"time"
 	"log"
 	"encoding/json"
+	"crypto/tls"
 )
 
 type FlowInstanceRepository interface {
-	Init(url string,db int,expire time.Duration,password string)
+	Init(url string,db int,expire time.Duration,password string,useTLS string)
 	saveInstance(instance *flowInstance)(error)
 	loadInstance(instance *flowInstance)(error)
 }
@@ -24,11 +25,19 @@ type DefaultFlowInstanceRepository struct {
 	expire time.Duration
 }
 
-func (repo *DefaultFlowInstanceRepository)Init(url string,db int,expire time.Duration,password string){
+func (repo *DefaultFlowInstanceRepository)Init(url string,db int,expire time.Duration,password string,useTLS string){
+	var tlsConf *tls.Config
+	if useTLS=="true" {
+		tlsConf=&tls.Config{
+			MinVersion: tls.VersionTLS12,
+		}
+	}
+
 	repo.client=redis.NewClient(&redis.Options{
         Addr:     url,
         Password: password, // no password set
         DB:       db,  // use default DB
+		TLSConfig:tlsConf,
     })
 	repo.expire=expire
 }

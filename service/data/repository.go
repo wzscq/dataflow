@@ -2,9 +2,10 @@ package data
 
 import (
 	"database/sql"
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"time"
+	"fmt"
 )
 
 type DataRepository interface {
@@ -90,26 +91,28 @@ func (repo *DefatultDataRepository)query(sql string)([]map[string]interface{},er
 
 func (repo *DefatultDataRepository)Connect(
 	server,user,password,dbName string,
-	connMaxLifetime,maxOpenConns,maxIdleConns int){
+	connMaxLifetime,maxOpenConns,maxIdleConns int,tls string){
 	// Capture connection properties.
-    cfg := mysql.Config{
+    /*cfg := mysql.Config{
         User:   user,
         Passwd: password,
         Net:    "tcp",
         Addr:   server,
         DBName: dbName,
 		AllowNativePasswords:true,
-    }
+    }*/
     // Get a database handle.
+	dsn:=fmt.Sprintf("%s:%s@tcp(%s)/%s?allowNativePasswords=true&tls=%s",user,password,server,dbName,tls)
+	log.Println("connect to mysql server "+dsn)
     var err error
-    repo.DB, err = sql.Open("mysql", cfg.FormatDSN())
+    repo.DB, err = sql.Open("mysql", dsn)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
     }
 
     pingErr := repo.DB.Ping()
     if pingErr != nil {
-        log.Fatal(pingErr)
+        log.Println(pingErr)
     }
 		repo.DB.SetConnMaxLifetime(time.Minute * time.Duration(connMaxLifetime))
 		repo.DB.SetMaxOpenConns(maxOpenConns)

@@ -44,6 +44,10 @@ func (mqc *MQTTClient) getClient()(mqtt.Client){
 
 func (mqc *MQTTClient) connectHandler(client mqtt.Client){
 	log.Println("MQTTClient connectHandler connect status: ",client.IsConnected())
+	if client.IsConnected() {
+		mqc.Client=client
+		client.Subscribe(mqc.StartFlowTopic,0,mqc.onStartFlow)
+	}
 }
 
 func (mqc *MQTTClient) connectLostHandler(client mqtt.Client, err error){
@@ -65,5 +69,4 @@ func (mqc *MQTTClient)onStartFlow(Client mqtt.Client, msg mqtt.Message){
 
 func (mqc *MQTTClient) Init(){
 	mqc.Client=mqc.getClient()
-	mqc.Client.Subscribe(mqc.StartFlowTopic,0,mqc.onStartFlow)
 }

@@ -49,11 +49,12 @@ func main() {
         conf.Mysql.DBName,
         conf.Mysql.ConnMaxLifetime,
         conf.Mysql.MaxOpenConns,
-        conf.Mysql.MaxIdleConns)
+        conf.Mysql.MaxIdleConns,
+        conf.Mysql.TLS)
 
     flowExpired,_:=time.ParseDuration(conf.Redis.FlowInstanceExpired)
     flowInstanceRepository:=&flow.DefaultFlowInstanceRepository{}
-    flowInstanceRepository.Init(conf.Redis.Server,conf.Redis.FlowInstanceDB,flowExpired,conf.Redis.Password)
+    flowInstanceRepository.Init(conf.Redis.Server,conf.Redis.FlowInstanceDB,flowExpired,conf.Redis.Password,conf.Redis.TLS)
 	//初始化流控制器
 	flowController:=&flow.FlowController{
 		DataRepository:dataRepo,
