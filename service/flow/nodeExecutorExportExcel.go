@@ -78,7 +78,7 @@ func (nodeExecutor *nodeExecutorExportExcel)createExcelSheet(
 	dataItem *modelDataItem)(int){
 	//创建sheet
 	sheetIndex := file.NewSheet(sheet.SheetName)
-  file.SetActiveSheet(sheetIndex)
+    file.SetActiveSheet(sheetIndex)
 	//生成header行
 	nodeExecutor.writeHeader(file,sheet)
 	//写入数据行
@@ -93,7 +93,6 @@ func (nodeExecutor *nodeExecutorExportExcel)createExcelFile(
 	dataItem *flowDataItem,
 	nodeConf *nodeExportExcelConf)(*excelize.File,int){
 		f := excelize.NewFile()
-
 		for _,sheetConf:=range nodeConf.Sheets {
 			for _,modelDataItem:=range dataItem.Models {
 				if sheetConf.ModelID == *modelDataItem.ModelID {
@@ -105,7 +104,7 @@ func (nodeExecutor *nodeExecutorExportExcel)createExcelFile(
 				}
 			}
 		}
-
+		f.DeleteSheet("Sheet1")
 		return f,common.ResultSuccess
 }
 

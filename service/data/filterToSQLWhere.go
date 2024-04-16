@@ -181,6 +181,9 @@ func convertFieldValueNull(op string,field string)(string,int){
 }
 
 func convertFieldValueString(op string,field string,value string)(string,int){
+    if op == " like " {
+		value = "%" + value + "%"
+	}
     return field+op+"'"+value+"'",common.ResultSuccess        
 }
 
