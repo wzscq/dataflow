@@ -28,6 +28,8 @@
 .react-flow__node-delay,
 .react-flow__node-saveMatched,
 .react-flow__node-saveNotMatched,
+.react-flow__node-insert,
+.react-flow__node-delete,
 .react-flow__node-start,
 .react-flow__node-end,
 .react-flow__node-form,
@@ -79,6 +81,8 @@
 .react-flow__node-end.selectable.selected,
 .react-flow__node-form.selectable.selected,
 .react-flow__node-save.selectable.selected,
+.react-flow__node-insert.selectable.selected,
+.react-flow__node-delete.selectable.selected,
 .react-flow__node-ebProcessing.selectable.selected {
     box-shadow: 0 0 0 1px #1a192b;
     border: 1px solid #AAA;
@@ -119,6 +123,8 @@
 .react-flow__node-end.selectable:hover,
 .react-flow__node-form.selectable:hover,
 .react-flow__node-save.selectable:hover,
+.react-flow__node-insert.selectable:hover,
+.react-flow__node-delete.selectable:hover,
 .react-flow__node-ebProcessing.selectable:hover {
     box-shadow: 0 0 0 1px #1a192b;
     border: 1px solid #AAA;

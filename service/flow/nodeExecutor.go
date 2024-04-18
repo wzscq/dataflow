@@ -10,6 +10,9 @@ const (
 	NODE_QUERY = "query"
 	NODE_REQUEST_QUERY = "requestQuery"
 	NODE_RELATED_QUERY = "relatedQuery"
+	NODE_SAVE = "save"
+	NODE_DELETE = "delete"
+	NODE_INSERT = "insert"
 	NODE_GROUP = "fieldGroup"
 	NODE_NUMERIC_GROUP = "numericGroup"
 	NODE_MATCH = "match"
@@ -26,7 +29,6 @@ const (
 	NODE_DEBUG = "debug"
 	NODE_DELAY = "delay"
 	NODE_EB_PROCESSING = "ebProcessing"
-	NODE_SAVE = "save"
 	NODE_DATA_TRANSFER = "dataTransfer"
 	NODE_DATA_TRANSFORM = "dataTransform"
 	NODE_GROUP_TRANSFORM = "groupTransform"
@@ -196,6 +198,16 @@ func getNodeExecutor(
 		}
 	} else if node.Type == NODE_RETURN_CRVERROR {
 		return &nodeExecutorReturnCRVError{
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_DELETE {
+		return &nodeExecutorDelete{
+			DataRepository:dataRepo,
+			NodeConf:*node,
+		}
+	} else if node.Type == NODE_INSERT {
+		return &nodeExecutorInsert{
+			DataRepository:dataRepo,
 			NodeConf:*node,
 		}
 	}

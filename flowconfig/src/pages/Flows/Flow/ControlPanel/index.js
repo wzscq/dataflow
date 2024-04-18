@@ -30,6 +30,8 @@ const controls=[
     {type: 'createMatchResult',label: 'Create Match Result'},
 	{type: 'saveNotMatched',label: 'Update Not Matched Reason'},
     {type: 'save',label: 'Save'},
+    {type: 'insert',label: 'Insert'},
+    {type: 'delete',label: 'Delete'},
     {type: 'callFlow',label: 'Call Flow'},
     {type: 'callFlowAsync',label: 'Call Async Flow'},
     {type: 'callExternalAPI',label: 'Call External API'},

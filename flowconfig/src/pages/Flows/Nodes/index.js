@@ -15,6 +15,8 @@ import {SaveMatchedNode,SaveMatchedNodeParams} from "./SaveMatchedNode";
 import {CreateMatchResultNode,CreateMatchResultParams} from "./CreateMatchResultNode";
 import SaveNotMatchedNode from "./SaveNotMatchedNode";
 import SaveNode from "./SaveNode";
+import InsertNode from "./InsertNode";
+import DeleteNode from "./DeleteNode";
 import LogNode from "./LogNode";
 import {DebugNode,DebugNodeParams} from "./DebugNode";
 import {EBProcessingNode,EBProcessingNodeParams} from "./EBProcessingNode";
@@ -54,6 +56,8 @@ export const nodeTypes={
 	debug:DebugNode,
 	ebProcessing:EBProcessingNode,
 	save:SaveNode,
+	insert:InsertNode,
+	delete:DeleteNode,
 	dataTransfer:DataTransferNode,
 	dataTransform:DataTransformNode,
 	groupTransform:GroupTransformNode,
@@ -88,9 +92,11 @@ export const nodeParams={
 	createMatchResult:CreateMatchResultParams,
 	saveNotMatched:null,
 	log:null,
+	save:null,
+	insert:null,
+	delete:null,
 	debug:DebugNodeParams,
 	ebProcessing:EBProcessingNodeParams,
-	save:null,
 	dataTransfer:DataTransferParams,
 	dataTransform:DataTransformParams,
 	groupTransform:GroupTransformParams,
