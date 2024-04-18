@@ -6,6 +6,7 @@ import (
 	"log"
 	"strings"
 	"fmt"
+	"time"
 )
 
 type BatchInsert struct {
@@ -26,9 +27,9 @@ func (insert *BatchInsert) getFields(data map[string]interface{}) ([]string) {
 	return fields
 }
 
-func (insert *BatchInsert) getRowValues(fields []string, row map[string]interface{}) (string){
+func (insert *BatchInsert) getRowValues(fields *[]string, row map[string]interface{}) (*string){
 	value:=""
-	for _,field:=range fields {
+	for _,field:=range *fields {
 		if value!="" {
 			value+=","
 		}
@@ -50,26 +51,22 @@ func (insert *BatchInsert) getRowValues(fields []string, row map[string]interfac
 			value+="null"
 		default:
 			log.Printf("getRowValues not supported value type %T!\n", vt)
-			return ""
+			return nil
 		}
 	}
-	return value
+	return &value
 }
 
-func (insert *BatchInsert) getValues(fields []string, list *[]map[string]interface{},commonFieldsValue string) (string) {
-	values:=""
+func (insert *BatchInsert) getValues(fields *[]string, list *[]map[string]interface{},commonFieldsValue string) (*[]string) {
+	values:=[]string{}
 	for _,data:=range *list {
 		value:=insert.getRowValues(fields,data)
-		if value=="" {
-			return ""
+		if value==nil {
+			return nil
 		}
-
-		if values!="" {
-			values+=","
-		}
-		values+="("+value+","+commonFieldsValue+")"
+		values=append(values,"("+*value+","+commonFieldsValue+")")
 	}
-	return values
+	return &values
 }
 
 func (insert *BatchInsert) Insert(dataRepository DataRepository, tx *sql.Tx) (int) {
@@ -80,12 +77,10 @@ func (insert *BatchInsert) Insert(dataRepository DataRepository, tx *sql.Tx) (in
 
 	commonFields,commonFieldsValue:=GetCreateCommonFieldsValues(insert.UserID)
 	fields:=insert.getFields((*insert.List)[0])
-
-	values:=insert.getValues(fields,insert.List,commonFieldsValue)
-
+	values:=insert.getValues(&fields,insert.List,commonFieldsValue)
+	valuesStr:=strings.Join(*values,",")
 	fieldsStr:=strings.Join(fields,",")
-	sql := "insert into " + insert.AppDB + "." + insert.ModelID + "("+fieldsStr+","+commonFields+") values "+values+";"
-
+	sql := "insert into " + insert.AppDB + "." + insert.ModelID + "("+fieldsStr+","+commonFields+") values "+valuesStr+";"
 	_, rowCount, err := dataRepository.execWithTx(sql, tx)
 	if err != nil {
 		log.Printf("Insert error: %s\n", err)
