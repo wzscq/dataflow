@@ -6,7 +6,6 @@ import (
 	"log"
 	"strings"
 	"fmt"
-	"time"
 )
 
 type BatchInsert struct {
