@@ -13,6 +13,7 @@ type BatchInsert struct {
 	AppDB           string    `json:"appDB"`
 	UserID string `json:"userID"`
 	List *[]map[string]interface{} `json:"list"` 
+	SQLMaxLen int `json:"sqlMaxLen"`
 }
 
 func (insert *BatchInsert) getFields(data map[string]interface{}) ([]string) {
@@ -56,16 +57,26 @@ func (insert *BatchInsert) getRowValues(fields *[]string, row map[string]interfa
 	return &value
 }
 
-func (insert *BatchInsert) getValues(fields *[]string, list *[]map[string]interface{},commonFieldsValue string) (*[]string) {
+func (insert *BatchInsert) getValues(
+	fields *[]string, 
+	list *[]map[string]interface{},
+	commonFieldsValue string,
+	startRow,valueLength int) (*[]string,int) {
 	values:=[]string{}
-	for _,data:=range *list {
+	for startRow<len(*list)&&valueLength>0 {
+		data:=(*list)[startRow]
 		value:=insert.getRowValues(fields,data)
 		if value==nil {
-			return nil
+			return nil,startRow
 		}
-		values=append(values,"("+*value+","+commonFieldsValue+")")
+		rowStr:="("+*value+","+commonFieldsValue+")"
+		valueLength=valueLength-len(rowStr)-1
+		if valueLength>=0 {
+			startRow++
+			values=append(values,"("+*value+","+commonFieldsValue+")")
+		}
 	}
-	return &values
+	return &values,startRow
 }
 
 func (insert *BatchInsert) Insert(dataRepository DataRepository, tx *sql.Tx) (int) {
@@ -76,17 +87,27 @@ func (insert *BatchInsert) Insert(dataRepository DataRepository, tx *sql.Tx) (in
 
 	commonFields,commonFieldsValue:=GetCreateCommonFieldsValues(insert.UserID)
 	fields:=insert.getFields((*insert.List)[0])
-	values:=insert.getValues(&fields,insert.List,commonFieldsValue)
-	valuesStr:=strings.Join(*values,",")
 	fieldsStr:=strings.Join(fields,",")
-	sql := "insert into " + insert.AppDB + "." + insert.ModelID + "("+fieldsStr+","+commonFields+") values "+valuesStr+";"
-	_, rowCount, err := dataRepository.execWithTx(sql, tx)
-	if err != nil {
-		log.Printf("Insert error: %s\n", err)
+	sqlPart1 := "insert into " + insert.AppDB + "." + insert.ModelID + "("+fieldsStr+","+commonFields+") values "
+	valueLength:=insert.SQLMaxLen-len(sqlPart1)
+	if valueLength<0 {
+		log.Printf("Insert error: values length is negative.\n")
 		return common.ResultSQLError
 	}
+	var startRow int = 0
+	var values *[]string
+	for startRow<len(*insert.List) {
+		values,startRow=insert.getValues(&fields,insert.List,commonFieldsValue,startRow,valueLength)
+		valuesStr:=strings.Join(*values,",")
+		sql := sqlPart1+valuesStr+";"
+		_, _, err := dataRepository.execWithTx(sql, tx)
+		if err != nil {
+			log.Printf("Insert error: %s\n", err)
+			return common.ResultSQLError
+		}
+	}
 	result := map[string]interface{}{}
-	result["count"] = rowCount
+	result["count"] = startRow
 	result["modelID"] = insert.ModelID
 
 	return common.ResultSuccess

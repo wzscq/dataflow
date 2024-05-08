@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { Handle } from 'react-flow-renderer';
 
-import './node.css';
+import '../node.css';
 
 export default memo(({ data, isConnectable,selected }) => {
   return (

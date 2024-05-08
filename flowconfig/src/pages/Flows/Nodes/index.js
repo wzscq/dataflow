@@ -15,7 +15,7 @@ import {SaveMatchedNode,SaveMatchedNodeParams} from "./SaveMatchedNode";
 import {CreateMatchResultNode,CreateMatchResultParams} from "./CreateMatchResultNode";
 import SaveNotMatchedNode from "./SaveNotMatchedNode";
 import SaveNode from "./SaveNode";
-import InsertNode from "./InsertNode";
+import {InsertNode,InsertNodeParams} from "./InsertNode";
 import DeleteNode from "./DeleteNode";
 import LogNode from "./LogNode";
 import {DebugNode,DebugNodeParams} from "./DebugNode";
@@ -93,7 +93,7 @@ export const nodeParams={
 	saveNotMatched:null,
 	log:null,
 	save:null,
-	insert:null,
+	insert:InsertNodeParams,
 	delete:null,
 	debug:DebugNodeParams,
 	ebProcessing:EBProcessingNodeParams,

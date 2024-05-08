@@ -6,26 +6,55 @@ import (
 	"dataflow/data"
 	"log"
 	"database/sql"
+	"encoding/json"
+	"strconv"
 )
+
+type InsertParams struct {
+	SQLMaxLen string `json:"sqlMaxLen"`
+}
 
 type nodeExecutorInsert struct {
 	NodeConf node
 	DataRepository data.DataRepository
 }
 
+func (nodeExecutor *nodeExecutorInsert)getNodeConfig()(*InsertParams){
+	mapData,ok:=nodeExecutor.NodeConf.Data.(map[string]interface{})
+	if !ok {
+		return nil
+	}
+
+	jsonStr, err := json.Marshal(mapData)
+    if err != nil {
+        log.Println(err)
+		return nil
+    }
+	insertParams:=&InsertParams{}
+    if err := json.Unmarshal(jsonStr, insertParams); err != nil {
+        log.Println(err)
+		return nil
+    }
+
+	return insertParams
+}
+
 func (nodeExecutor *nodeExecutorInsert)insertModels(
 	dataItem *flowDataItem,
 	tx *sql.Tx,
-	instance *flowInstance)(int){
+	instance *flowInstance,
+	insertConf *InsertParams)(int){
 
 	for _,modelData:=range (dataItem.Models) {
 		if modelData.List!=nil && len(*modelData.List)>0 {
 			log.Printf("nodeExecutorInsert insert model:%s",*modelData.ModelID)
+			sqlMaxLen,_:=strconv.ParseInt(insertConf.SQLMaxLen,0,32)
 			insert:=data.BatchInsert{
 				List:modelData.List,
 				AppDB:instance.AppDB,
 				UserID:instance.UserID,
 				ModelID:*modelData.ModelID,
+				SQLMaxLen:int(sqlMaxLen),
 			}
 			errorCode:=insert.Insert(nodeExecutor.DataRepository,tx)
 			if errorCode != common.ResultSuccess {
@@ -40,7 +69,8 @@ func (nodeExecutor *nodeExecutorInsert)insertModels(
 
 func (nodeExecutor *nodeExecutorInsert)insert(
 	dataItem *flowDataItem,
-	instance *flowInstance)(int){
+	instance *flowInstance,
+	insertConf *InsertParams)(int){
 	
 	log.Println("start nodeExecutorInsert insert")
 	
@@ -52,7 +82,7 @@ func (nodeExecutor *nodeExecutorInsert)insert(
 	}
 
 	//将分组号更新到左右表，同时更新左右表数据的匹配状态
-	errorCode:=nodeExecutor.insertModels(dataItem,tx,instance)
+	errorCode:=nodeExecutor.insertModels(dataItem,tx,instance,insertConf)
 	if errorCode!=common.ResultSuccess {
 		tx.Rollback()
 		log.Println("end nodeExecutorInsert insert with error")
@@ -110,9 +140,14 @@ func (nodeExecutor *nodeExecutorInsert)run(
 		"nodeType":NODE_INSERT,
 	}
 
+	conf:=nodeExecutor.getNodeConfig()
+	if conf==nil {
+		return flowResult,common.CreateError(common.ResultNodeConfigError,params)
+	}
+
 	//一个分组作为一个独立的事务进行保存
 	for _,item:= range (*req.Data) {
-		err:=nodeExecutor.insert(&item,instance)
+		err:=nodeExecutor.insert(&item,instance,conf)
 		if err!=common.ResultSuccess {
 			return flowResult,common.CreateError(err,params)
 		}
