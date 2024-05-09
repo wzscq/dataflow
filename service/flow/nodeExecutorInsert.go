@@ -48,7 +48,10 @@ func (nodeExecutor *nodeExecutorInsert)insertModels(
 	for _,modelData:=range (dataItem.Models) {
 		if modelData.List!=nil && len(*modelData.List)>0 {
 			log.Printf("nodeExecutorInsert insert model:%s",*modelData.ModelID)
-			sqlMaxLen,_:=strconv.ParseInt(insertConf.SQLMaxLen,0,32)
+			var sqlMaxLen int64 = 32000
+			if(insertConf.SQLMaxLen!=""){
+				sqlMaxLen,_=strconv.ParseInt(insertConf.SQLMaxLen,0,32)
+			}
 			insert:=data.BatchInsert{
 				List:modelData.List,
 				AppDB:instance.AppDB,
