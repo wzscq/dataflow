@@ -180,7 +180,7 @@ func (nodeExecutor *nodeExecutorExportExcel)run(
 	//文件流写入应答对象
 	instance.GinContext.Header("Content-Type", "application/octet-stream")
 	filename:=url.QueryEscape(nodeConf.FileName+"_"+instance.InstanceID+".xlsx")
-  instance.GinContext.Header("Content-Disposition", "attachment; filename="+filename)
+  instance.GinContext.Header("Content-Disposition", "attachment;filename="+filename)
   instance.GinContext.Header("Content-Transfer-Encoding", "binary")
 	
 	file.Write(instance.GinContext.Writer)
