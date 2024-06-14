@@ -99,6 +99,7 @@ func (nodeExecutor *nodeExecutorSave)run(
 		List:req.List,
 		Total:req.Total,
 		SelectedRowKeys:req.SelectedRowKeys,
+		Fields:req.Fields,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
 		SelectAll:req.SelectAll,

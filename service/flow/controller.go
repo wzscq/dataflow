@@ -66,7 +66,7 @@ type flowReqRsp struct {
 	GoOn bool   //返回当前节点是否需要继续执行后续节点，默认true，继续执行
 	Over bool   //返回是否终止流的执行，默认false
 	AlreadyResponsed  bool   //controller中是否需要构造返回结果，默认false，主要是在导入文件节点中，会将这个设置为true，因为节点会直接将文件流写回
-	//Fields *[]field `json:"fields"`
+	Fields *[]data.Field `json:"fields"`  //这里的fields是前端传入的字段，可用于requestQuery节点的查询字段
 	//Sorter *[]sorter `json:"sorter"`
 	SelectedRowKeys *[]string `json:"selectedRowKeys"`
 	Pagination *data.Pagination `json:"pagination"`

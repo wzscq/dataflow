@@ -128,6 +128,11 @@ func (nodeExecutor *nodeExecutorRequestQuery)updateModels(
 	for index,model := range (*models) {
 		log.Printf("nodeExecutorRequestQuery updateModels %s,%s\n",model.ModelID,*input.ModelID)
 		if model.ModelID==*input.ModelID {
+			//如果模型中没有配置字段，则使用请求中的字段
+			if model.Fields==nil || len(*model.Fields)==0 {
+				(*models)[index].Fields=input.Fields
+			}
+
 			//这里勾选数据优先，如果前端传入了勾选数据，则使用and合并前端传入的勾选数据和配置的filter
 			errorCode:=common.ResultSuccess
 			if input.SelectedRowKeys!=nil && len(*input.SelectedRowKeys)>0 {
@@ -171,6 +176,7 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 		List:req.List,
 		Total:req.Total,
 		SelectedRowKeys:req.SelectedRowKeys,
+		Fields:req.Fields,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
 		SelectAll:req.SelectAll,
@@ -193,10 +199,10 @@ func (nodeExecutor *nodeExecutorRequestQuery)run(
 	//对model filter 中的变量进行替换
 	nodeExecutor.updateModelsFilter(req,&models)
 
-	//update request filter
+	//update request filter 请求中的filter变量替换
 	data.ProcessFilter(req.Filter,req.FilterData,req.GlobalFilterData,req.UserID,req.UserRoles,req.AppDB,nodeExecutor.DataRepository)
 
-	//根据页面请求传入的查询条件更新模型的查询条件
+	//根据页面请求传入的查询条件更新模型的查询条件，同时如果模型配置中没有配置字段，则用页面请求中的字段
 	if req.ModelID!=nil && (req.Filter!=nil || req.SelectedRowKeys!=nil) {
 		log.Println("nodeExecutorRequestQuery updateModels")
 		errCode:=nodeExecutor.updateModels(req,&models)

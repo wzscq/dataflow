@@ -50,26 +50,48 @@ func (nodeExecutor *nodeExecutorExportExcel)getNodeConf()(*nodeExportExcelConf){
 
 func (nodeExecutor *nodeExecutorExportExcel)writeHeader(
 	file *excelize.File,
-	sheet *ExportExcelSheet){
-		row:=1
-		for col,field:=range sheet.Fields {
-			cellStart,_:=excelize.CoordinatesToCellName(col+1, row)
-			file.SetCellStr(sheet.SheetName,cellStart,field.Label)
-		}
+	fields *[]ExportExcelField,
+	sheetName string){
+	row:=1
+	for col,field:=range *fields {
+		cellStart,_:=excelize.CoordinatesToCellName(col+1, row)
+		file.SetCellStr(sheetName,cellStart,field.Label)
+	}
 }
 
 func (nodeExecutor *nodeExecutorExportExcel)writeDdataRow(
 	file *excelize.File,
-	sheet *ExportExcelSheet,
+	fields *[]ExportExcelField,
+	sheetName string,
 	rowNo int,
 	rowData *map[string]interface{}){
-	for col,field:=range sheet.Fields {
+	for col,field:=range *fields {
 		value,ok:=(*rowData)[field.Field]
 		if ok && value != nil {
 			cellStart,_:=excelize.CoordinatesToCellName(col+1, rowNo)
-			file.SetCellValue(sheet.SheetName,cellStart,value)
+			file.SetCellValue(sheetName,cellStart,value)
 		}
 	}
+}
+
+func (nodeExecutor *nodeExecutorExportExcel)getExportFields(
+	fields []ExportExcelField,
+	data *[]map[string]interface{})(*[]ExportExcelField){
+	if data==nil || len(*data)<=0 {
+		return &fields
+	}
+
+	//取第一行数据的字段作为导出字段
+	dataItem:=(*data)[0]
+	exportFields:=make([]ExportExcelField,0)
+	
+	for _,exportField:=range fields {
+		if _, ok := dataItem[exportField.Field]; ok {
+			exportFields=append(exportFields,exportField)
+		}
+	}
+	
+	return &exportFields
 }
 
 func (nodeExecutor *nodeExecutorExportExcel)createExcelSheet(
@@ -79,11 +101,13 @@ func (nodeExecutor *nodeExecutorExportExcel)createExcelSheet(
 	//创建sheet
 	sheetIndex := file.NewSheet(sheet.SheetName)
     file.SetActiveSheet(sheetIndex)
+	//根据数据行上的字段过滤导出字段
+	exportFields:=nodeExecutor.getExportFields(sheet.Fields,dataItem.List)
 	//生成header行
-	nodeExecutor.writeHeader(file,sheet)
+	nodeExecutor.writeHeader(file,exportFields,sheet.SheetName)
 	//写入数据行
 	for row,rowData:=range *dataItem.List {
-		nodeExecutor.writeDdataRow(file,sheet,row+2,&rowData)
+		nodeExecutor.writeDdataRow(file,exportFields,sheet.SheetName,row+2,&rowData)
 	}
 
 	return common.ResultSuccess
@@ -137,6 +161,7 @@ func (nodeExecutor *nodeExecutorExportExcel)run(
 		List:req.List,
 		Total:req.Total,
 		SelectedRowKeys:req.SelectedRowKeys,
+		Fields:req.Fields,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
 		SelectAll:req.SelectAll,

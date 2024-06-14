@@ -36,8 +36,9 @@ type nodeExecutorDataTransform struct {
 }
 
 const (
-	OUTPUT_TYPE_ALL="all"
-	OUTPUT_TYPE_MODIFIED="modified"
+	OUTPUT_TYPE_ALL="all"             //保留所有数据
+	OUTPUT_TYPE_MODIFIED="modified"   //只保留修改的数据
+	OUTPUT_TYPE_ORIGINAL="original"   //只保留原始数据
 )
 
 func (nodeExecutor *nodeExecutorDataTransform)getNodeConf()(*dataTransformConf){
@@ -154,26 +155,34 @@ func (nodeExecutor *nodeExecutorDataTransform)TransformModel(
 	modelData *modelDataItem,
 	outputType string)(*common.CommonError){
 	
-	log.Println("****************************************************")
-	log.Println(outputType)
 	var keepFields map[string]interface{}
-	//如果只保留修改的列，则去掉未修改的列，这里注意内部使用的字段需要保留，包括：id,version,_save_type
+	var orginalFields map[string]interface{}
 	if outputType==OUTPUT_TYPE_MODIFIED {
-			log.Println(keepFields)
-		  keepFields=map[string]interface{}{
-				"id":"id",
-				"version":"version",
-				"_save_type":"_save_type",
+		//如果只保留修改的列，则去掉未修改的列，这里注意内部使用的字段需要保留，包括：id,version,_save_type
+		keepFields=map[string]interface{}{
+			"id":"id",
+			"version":"version",
+			"_save_type":"_save_type",
+		}
+		for _,transModelField:=range(transModelCfg.Fields){
+			keepFields[transModelField.Field]=transModelField.Field
+		}
+	} else if outputType==OUTPUT_TYPE_ORIGINAL {
+		//从数据行的第一行中获取原始字段列表
+		if modelData.List!=nil && len(*modelData.List)>0 {
+			orginalFields=map[string]interface{}{}
+			for field,_:=range((*modelData.List)[0]){
+				orginalFields[field]=field
 			}
-			for _,transModelField:=range(transModelCfg.Fields){
-				keepFields[transModelField.Field]=transModelField.Field
-			}
-			log.Println(keepFields)
-			log.Println("****************************************************")
+		}
 	}
 
 	for index,_:=range(*modelData.List){
 		for _,transModelField:=range(transModelCfg.Fields){
+			//如果只保留原始字段，配置中的字段如果不在原始字段中，则不处理
+			if orginalFields!=nil && orginalFields[transModelField.Field]!=transModelField.Field {
+				continue
+			}
 			err:=nodeExecutor.TransformModelField(*modelData.ModelID,&transModelField,&(*modelData.List)[index])
 			if err!=nil {
 				return err
@@ -182,6 +191,7 @@ func (nodeExecutor *nodeExecutorDataTransform)TransformModel(
 
 		log.Println(keepFields)
 		if keepFields!=nil {
+			//只保留指定字段值
 			rowData:=map[string]interface{}{}
 			for field,_:=range(keepFields){
 				rowData[field]=(*modelData.List)[index][field]
@@ -285,6 +295,7 @@ func (nodeExecutor *nodeExecutorDataTransform)run(
 		List:req.List,
 		Total:req.Total,
 		SelectedRowKeys:req.SelectedRowKeys,
+		Fields:req.Fields,
 		Pagination:req.Pagination,
 		Operation:req.Operation,
 		SelectAll:req.SelectAll,

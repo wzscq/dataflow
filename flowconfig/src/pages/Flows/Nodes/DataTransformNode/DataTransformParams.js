@@ -47,6 +47,7 @@ export default function DataTransformParams({node,labelWidth}){
                 <Select value={node.data.outputType} size='small' onChange={setOutputType}>
                     <Option key='all'>All</Option>
                     <Option key='modified'>Modified</Option>
+                    <Option key='original'>Original</Option>
                 </Select>
             </Col>
         </Row>
