@@ -109,6 +109,8 @@ func (nodeExecutor *nodeExecutorGroupTransform)getTransformFunction(
 		nodeExecutor.JSRuntime.Set("g_Index",1)
 	}
 	nodeExecutor.JSRuntime.Set("g_UserID",userID)
+	//当前时间格式化
+	nodeExecutor.JSRuntime.Set("g_Now",time.Now().Format("2006-01-02 15:04:05"))
 
 	if nodeExecutor.TransformFunc== nil {
 		funcName:="groupTransform"
