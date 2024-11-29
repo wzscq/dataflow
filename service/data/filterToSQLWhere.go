@@ -1,10 +1,11 @@
 package data
 
 import (
-    "log"
-    "dataflow/common"
-    "strconv"
-    "fmt"
+	"dataflow/common"
+	"fmt"
+	"log/slog"
+	"reflect"
+	"strconv"
 )
 
 /**
@@ -60,21 +61,21 @@ import (
 */
 
 const (
-	Op_and = "Op.and"
-	Op_or  = "Op.or"
-	Op_eq  = "Op.eq"
-    Op_ne  = "Op.ne"
-	Op_is  = "Op.is"
-    Op_not = "Op.not"
-    Op_gt  = "Op.gt"
-    Op_gte = "Op.gte"
-    Op_lt  = "Op.lt"
-    Op_lte = "Op.lte"
-    Op_between = "Op.between"
-	Op_notBetween = "Op.notBetween" 
-	Op_like = "Op.like"
-	Op_in = "Op.in"
-    Op_notIn = "Op.notIn"
+	Op_and        = "Op.and"
+	Op_or         = "Op.or"
+	Op_eq         = "Op.eq"
+	Op_ne         = "Op.ne"
+	Op_is         = "Op.is"
+	Op_not        = "Op.not"
+	Op_gt         = "Op.gt"
+	Op_gte        = "Op.gte"
+	Op_lt         = "Op.lt"
+	Op_lte        = "Op.lte"
+	Op_between    = "Op.between"
+	Op_notBetween = "Op.notBetween"
+	Op_like       = "Op.like"
+	Op_in         = "Op.in"
+	Op_notIn      = "Op.notIn"
 )
 
 /*
@@ -84,209 +85,306 @@ const (
 逻辑操作符，and or
 第一层中的不同key值间的逻辑关系是and
 */
-func FilterToSQLWhere(filter *map[string]interface{})(string,int) {
-    return convertObjectFilter(filter)
+func FilterToSQLWhere(filter *map[string]interface{}, fields *[]Field, modelID string) (string, int) {
+	return convertObjectFilter(filter, fields, modelID)
 }
 
-func convertObjectFilter(filter *map[string]interface{})(string,int){
-    var str string
-    var err int
-    var where string
-    if filter != nil {
-        for key, value := range *filter {    
-            switch key {
-            case Op_or:
-                mVal,_:=value.([]interface{})
-                str,err=convertArrayFilter("or",mVal)
-            case Op_and:
-                mVal,_:=value.([]interface{})
-                str,err=convertArrayFilter("and",mVal)
-            default:
-                //字段
-                str,err=convertFieldFilter(key,value)
-            }
+func convertObjectFilter(filter *map[string]interface{}, fields *[]Field, modelID string) (string, int) {
+	var str string
+	var err int
+	var where string
+	if filter != nil {
+		for key, value := range *filter {
+			switch key {
+			case Op_or:
+				mVal, _ := value.([]interface{})
+				slog.Debug("convertObjectFilter", "key",key,"value", value)
+				str, err = convertArrayFilter("or", mVal, fields, modelID)
+			case Op_and:
+				slog.Debug("convertObjectFilter", "key",key,"value", value)
+				mVal, _ := value.([]interface{})
+				str, err = convertArrayFilter("and", mVal, fields, modelID)
+			default:
+				slog.Debug("convertObjectFilter", "key",key,"value", value)
+				//字段
+				str, err = convertFieldFilter(key, value, fields, modelID)
+			}
 
-            if err != common.ResultSuccess {
-                return "",err
-            }
+			if err != common.ResultSuccess {
+				return "", err
+			}
 
-            where=where+" ("+str+") and"
-        }
-    }
-    
-    if len(where)>0 {
-        where=where[0:len(where)-3]
-    } else {
-        where="1=1"
-    }
-    return where,common.ResultSuccess
-}
-
-func convertArrayFilter(logicOp string,value []interface{})(string,int){
-
-    log.Println(value)
-    if len(value) == 0 {
-		return "",common.ResultQueryWrongFilter
+			where = where + " (" + str + ") and"
+		}
 	}
 
-    var where string = ""
-    var str string
-    var err int
+	if len(where) > 0 {
+		where = where[0 : len(where)-3]
+	} else {
+		where = "1=1"
+	}
+	return where, common.ResultSuccess
+}
+
+func convertArrayFilter(logicOp string, value []interface{}, fields *[]Field, modelID string) (string, int) {
+
+	slog.Debug("convertArrayFilter", "logicOp",logicOp,"value", value)
+	if len(value) == 0 {
+		return "", common.ResultQueryWrongFilter
+	}
+
+	var where string = ""
+	var str string
+	var err int
 	for _, v := range value {
-        //每个行应该是一个对象
-        mVal,_:=v.(map[string]interface{})
-        str,err=convertObjectFilter(&mVal)
-        if err != common.ResultSuccess {
-            return "",err
-        }
-        where=where+" ("+str+") "+logicOp
+		//每个行应该是一个对象
+		mVal, _ := v.(map[string]interface{})
+		slog.Debug("convertArrayFilter", "mVal", mVal)
+		str, err = convertObjectFilter(&mVal, fields, modelID)
+		slog.Debug("convertArrayFilter", "str", str)
+		if err != common.ResultSuccess {
+			return "", err
+		}
+		where = where + " (" + str + ") " + logicOp
 	}
 
-	where=where[0:len(where)-len(logicOp)]
+	where = where[0 : len(where)-len(logicOp)]
 
-    return where,common.ResultSuccess
+	return where, common.ResultSuccess
 }
+
 /*
 字段类型值的过滤，字段值有三种类型的过滤条件
 {fieldname:value}  =>  fieldname=value  //直接给值，相当与Op.eq操作符
 {fieldname:[val1,val2]} => fieldname in (val1,val2)  //数据，相当于Op.in操作符
-{fieldname:{Op.gt,value}} => filename > value  //明确给出操作符，按照操作符来解析 
+{fieldname:{Op.gt,value}} => filename > value  //明确给出操作符，按照操作符来解析
 */
-func convertFieldFilter(field string,value interface{})(string,int){
-    switch v := value.(type) {
+func convertFieldFilter(field string, value interface{}, fields *[]Field, modelID string) (string, int) {
+	switch value.(type) {
 	case string:
-        sVal, _ := value.(string)
-		return convertFieldValueString(" like ",field,sVal)
-    case float64:
-        fVal,_:=value.(float64)
-        sVal:=fmt.Sprintf("%f",fVal)
-        return convertFieldValueString(" = ",field,sVal)
-    case int64:
-        fVal,_:=value.(int64)
-        sVal:=fmt.Sprintf("%d",fVal)
-        return convertFieldValueString(" = ",field,sVal)
-    case map[string]interface{}:
-        mVal,_:=value.(map[string]interface{})
-        return convertFieldValueMap(field,mVal)
-    case nil:
-        return convertFieldValueNull(" is " ,field)
+		sVal, _ := value.(string)
+		return convertFieldValueString(" like ", field, sVal)
+	case float64:
+		fVal, _ := value.(float64)
+		sVal := fmt.Sprintf("%f", fVal)
+		return convertFieldValueString(" = ", field, sVal)
+	case int64:
+		iVal, _ := value.(int64)
+		sVal := fmt.Sprintf("%d", iVal)
+		return convertFieldValueString(" = ", field, sVal)
+	case map[string]interface{}:
+		mVal, _ := value.(map[string]interface{})
+		return convertFieldValueMap(field, mVal, fields, modelID)
+	case nil:
+		return convertFieldValueNull(" is ", field)
 	default:
-        log.Printf("convertFieldFilter not supported field filter type %T!\n", v)
-		return "",common.ResultNotSupported
+		slog.Error("convertFieldFilter not supported field filter type", "type", reflect.TypeOf(value))
+		return "", common.ResultNotSupported
 	}
 }
 
-func convertFieldValueNull(op string,field string)(string,int){
-    return field+op+" null ",common.ResultSuccess
+func convertFieldValueNull(op string, field string) (string, int) {
+	return field + op + " null ", common.ResultSuccess
 }
 
-func convertFieldValueString(op string,field string,value string)(string,int){
-    if op == " like " {
+func convertFieldValueString(op string, field string, value string) (string, int) {
+	if op == " like " {
 		value = "%" + value + "%"
 	}
-    return field+op+"'"+value+"'",common.ResultSuccess        
+	return field + op + "'" + replaceApostrophe(value) + "'", common.ResultSuccess
 }
 
-func convertFieldValueStringArray(op string,field string,sliceVal []string)(string,int){
-    values:=""
-    for _,sVal:=range sliceVal {
-        values=values+"'"+sVal+"',"
-    }
-    values=values[0:len(values)-1]
-    return field+op+"("+values+")",common.ResultSuccess        
+func convertFieldValueStringArray(op string, field string, sliceVal []string) (string, int) {
+	slog.Debug("convertFieldValueStringArray", "op", op, "field", field, "sliceVal", sliceVal)
+	values := ""
+	for _, sVal := range sliceVal {
+		values = values + "'" + replaceApostrophe(sVal) + "',"
+	}
+	values = values[0 : len(values)-1]
+	return field + op + "(" + values + ")", common.ResultSuccess
 }
 
-func convertFieldValueArray(op string,field string,sliceVal []interface{})(string,int){
-    values:=""
-    for _,val:=range sliceVal {
-        log.Printf("convertFieldValueArray val type %T \n",val)
-        
-        switch val.(type) {
-        case string: 
-            sVal, _ := val.(string)           
-            values=values+"'"+sVal+"',"    
-        case float64:
-            f64Val,_:=val.(float64)
-            sVal:= strconv.FormatFloat(f64Val, 'f', -1, 64)
-            values=values+sVal+","
-        }    
-    }
+func convertFieldValueArray(op string, field string, sliceVal []interface{}) (string, int) {
+	values := ""
+	for _, val := range sliceVal {
+		slog.Debug("convertFieldValueArray val type", "val type", reflect.TypeOf(val))
 
-    if len(values)>1 {
-        values=values[0:len(values)-1]
-    }
-    return field+op+"("+values+")",common.ResultSuccess        
+		switch val.(type) {
+		case string:
+			sVal, _ := val.(string)
+			values = values + "'" + replaceApostrophe(sVal) + "',"
+		case float64:
+			f64Val, _ := val.(float64)
+			sVal := strconv.FormatFloat(f64Val, 'f', -1, 64)
+			values = values + sVal + ","
+		}
+	}
+
+	if len(values) > 1 {
+		values = values[0 : len(values)-1]
+	}
+	return field + op + "(" + values + ")", common.ResultSuccess
 }
 
-func convertFieldOpNormal(op string,field string,value interface{})(string,int){
-    switch value.(type) {
+func joinSlice(sliceVal []interface{}, split string) string {
+	values := ""
+	for _, val := range sliceVal {
+		slog.Debug("joinSlice val type", "val type", reflect.TypeOf(val))
+
+		switch val.(type) {
+		case string:
+			sVal, _ := val.(string)
+			values = values + "'" + replaceApostrophe(sVal) + "',"
+		case float64:
+			f64Val, _ := val.(float64)
+			sVal := strconv.FormatFloat(f64Val, 'f', -1, 64)
+			values = values + sVal + ","
+		}
+	}
+
+	if len(values) > 1 {
+		values = values[0 : len(values)-1]
+	}
+
+	return values
+}
+
+func convertFieldOpNormal(op string, field string, value interface{}) (string, int) {
+	switch value.(type) {
 	case string:
-        sVal, _ := value.(string)
-		return convertFieldValueString(op,field,sVal)
-    case []string:
-        sliceVal:=value.([]string)
-        return convertFieldValueStringArray(op,field,sliceVal)
-    case int64:
-        iVal,_:=value.(int64)
-        sVal:=fmt.Sprintf("%d",iVal)
-        return convertFieldValueString(op,field,sVal)
-    case float64:
-        fVal,_:=value.(float64)
-        sVal:=fmt.Sprintf("%f",fVal)
-        return convertFieldValueString(op,field,sVal)
-    case []interface{}:
-        sliceVal:=value.([]interface{})
-        return convertFieldValueArray(op,field,sliceVal)   
-    case nil:
-        return convertFieldValueNull(op,field)   
-    default:
-        log.Print("convertFieldOpNormal not supported operator %v with value type %T \n",op,value)
-		return "",common.ResultNotSupported
+		sVal, _ := value.(string)
+		return convertFieldValueString(op, field, sVal)
+	case []string:
+		sliceVal := value.([]string)
+		return convertFieldValueStringArray(op, field, sliceVal)
+	case int64:
+		iVal, _ := value.(int64)
+		sVal := fmt.Sprintf("%d", iVal)
+		return convertFieldValueString(op, field, sVal)
+	case float64:
+		fVal, _ := value.(float64)
+		sVal := fmt.Sprintf("%f", fVal)
+		return convertFieldValueString(op, field, sVal)
+	case []interface{}:
+		sliceVal := value.([]interface{})
+		return convertFieldValueArray(op, field, sliceVal)
+	case nil:
+		return convertFieldValueNull(op, field)
+	default:
+		slog.Error("convertFieldOpNormal not supported operator with value type", "op", op, "val type", reflect.TypeOf(value))
+		return "", common.ResultNotSupported
 	}
 }
 
-func convertFieldValueMap(field string,value map[string]interface{})(string,int){
-    var where string
-    var str string
-    var err int
-    var index int = 0
-    for key, value := range value {      
-        switch key {
-        case Op_eq:
-            str,err=convertFieldOpNormal(" = ",field,value)
-        case Op_ne:
-            str,err=convertFieldOpNormal(" <> ",field,value)
-        case Op_gt:
-            str,err=convertFieldOpNormal(" > ",field,value)
-        case Op_gte:
-            str,err=convertFieldOpNormal(" >= ",field,value)
-        case Op_lt:
-            str,err=convertFieldOpNormal(" < ",field,value)
-        case Op_lte:
-            str,err=convertFieldOpNormal(" <= ",field,value)
-        case Op_in:
-            str,err=convertFieldOpNormal(" in ",field,value)
-        case Op_is:
-            str,err=convertFieldOpNormal(" is ",field,value)
-        case Op_not:
-            str,err=convertFieldOpNormal(" is not ",field,value)
-        case Op_like:
-            str,err=convertFieldOpNormal(" like ",field,value)
-        default:
-            //字段
-            log.Println("convertFieldValueMap not supported operator type %v \n", key)
-		    return "",common.ResultNotSupported
-        }
+func convertOpInString(op string, field string, value string) (string, int) {
+	return field + " in (" + value + ") ", common.ResultSuccess
+}
 
-        if err != common.ResultSuccess {
-            return "",err
-        }
+func convertMany2manyValue(modelID string, field *Field, value interface{}) (string, int) {
+	if field.RelatedModelID == nil {
+		slog.Error("convertMany2manyValue the many2many field has not related model id", "field", field.Field)
+		return "", common.ResultNoRelatedModel
+	}
 
-        if index == 0 {
-            where = str
-        } else {
-            where = where + " and " + str 
-        }
-    }         
-    return where,common.ResultSuccess
+	var sVal string
+	switch value.(type) {
+	case []string:
+	case []interface{}:
+		sliceVal := value.([]interface{})
+		sVal = joinSlice(sliceVal, ",")
+	default:
+		slog.Error("convertMany2manyValue not supported value type", "val type", reflect.TypeOf(value))
+		return "", common.ResultNotSupported
+	}
+
+	//const subSelect='select '+modelID+"_id as id from "+getAssociationModelID(modelID,fieldConf.relatedModelID)+" where "+fieldConf.relatedModelID+"_id in ('"+filterValue.join("','")+"')
+	associationModelID := getRelatedModelID(modelID, *field.RelatedModelID, field.AssociationModelID)
+	subSelect := "select " + modelID + "_id as id from " + associationModelID + " where " + *field.RelatedModelID + "_id in (" + sVal + ")"
+	return subSelect, common.ResultSuccess
+}
+
+func convertFieldOpIn(op string, field string, value interface{}, fields *[]Field, modelID string) (string, int) {
+	//查看当前字段是否是many2many字段
+	if fields != nil {
+		for _, fieldItem := range *fields {
+			if fieldItem.Field == field && fieldItem.FieldType != nil && *fieldItem.FieldType == FIELDTYPE_MANY2MANY {
+				//对字段的值做转换，改为一个子查询字符串
+				var err int
+				value, err = convertMany2manyValue(modelID, &fieldItem, value)
+				if err != common.ResultSuccess {
+					return "", err
+				}
+				field = "id"
+			}
+
+			if fieldItem.Field == field && fieldItem.FieldType != nil && *fieldItem.FieldType == FIELDTYPE_ONE2MANY {
+				//对字段的值做转换，改为一个in查询
+				//一对多虚拟字段，转换为对ID的过滤
+				field = "id"
+			}
+		}
+	}
+
+	switch value.(type) {
+	case string:
+		sVal := value.(string)
+		return convertOpInString(op, field, sVal)
+	case []string:
+		sliceVal := value.([]string)
+		return convertFieldValueStringArray(op, field, sliceVal)
+	case []interface{}:
+		sliceVal := value.([]interface{})
+		return convertFieldValueArray(op, field, sliceVal)
+	default:
+		slog.Error("convertFieldOpIn not supported operator with value type", "op", op, "val type", reflect.TypeOf(value))
+		return "", common.ResultNotSupported
+	}
+}
+
+func convertFieldValueMap(field string, value map[string]interface{}, fields *[]Field, modelID string) (string, int) {
+	var where string
+	var str string
+	var err int
+	var index int = 0
+	for key, value := range value {
+		switch key {
+		case Op_eq:
+			str, err = convertFieldOpNormal(" = ", field, value)
+		case Op_ne:
+			str, err = convertFieldOpNormal(" <> ", field, value)
+		case Op_gt:
+			str, err = convertFieldOpNormal(" > ", field, value)
+		case Op_lt:
+			str, err = convertFieldOpNormal(" < ", field, value)
+		case Op_gte:
+			str, err = convertFieldOpNormal(" >= ", field, value)
+		case Op_lte:
+			str, err = convertFieldOpNormal(" <= ", field, value)
+		case Op_in:
+			str, err = convertFieldOpIn(" in ", field, value, fields, modelID)
+		case Op_is:
+			str, err = convertFieldOpNormal(" is ", field, value)
+		case Op_not:
+			str, err = convertFieldOpNormal(" is not ", field, value)
+		case Op_like:
+			str, err = convertFieldOpNormal(" like ", field, value)
+		default:
+			//字段
+			slog.Error("convertFieldValueMap not supported operator type", "operator type", key)
+			return "", common.ResultNotSupported
+		}
+
+		if err != common.ResultSuccess {
+			return "", err
+		}
+
+		if index == 0 {
+			where = str
+		} else {
+			where = where + " and " + str
+		}
+
+		index++
+	}
+	return where, common.ResultSuccess
 }
