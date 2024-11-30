@@ -101,15 +101,20 @@ func (nodeExecutor *nodeExecutorExportExcel)createExcelSheet(
 	//创建sheet
 	sheetIndex := file.NewSheet(sheet.SheetName)
     file.SetActiveSheet(sheetIndex)
-	//根据数据行上的字段过滤导出字段
-	exportFields:=nodeExecutor.getExportFields(sheet.Fields,dataItem.List)
-	//生成header行
-	nodeExecutor.writeHeader(file,exportFields,sheet.SheetName)
-	//写入数据行
-	for row,rowData:=range *dataItem.List {
-		nodeExecutor.writeDdataRow(file,exportFields,sheet.SheetName,row+2,&rowData)
-	}
 
+	//if len(*dataItem.List)>0	{
+		//根据数据行上的字段过滤导出字段
+		exportFields:=nodeExecutor.getExportFields(sheet.Fields,dataItem.List)
+
+		//生成header行
+		nodeExecutor.writeHeader(file,exportFields,sheet.SheetName)
+
+		//写入数据行
+		for row,rowData:=range *dataItem.List {
+			nodeExecutor.writeDdataRow(file,exportFields,sheet.SheetName,row+2,&rowData)
+		}
+	//}
+	
 	return common.ResultSuccess
 }
 

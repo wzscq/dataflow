@@ -95,11 +95,11 @@ func (query *Query) getQueryFields(permissionFields string)(string,int) {
 
 func (query *Query) getQueryWhere(permissionFilter *map[string]interface{})(string,int) {
 	if permissionFilter == nil {
-		return FilterToSQLWhere(query.Filter,query.Fields,query.ModelID)
+		return FilterToSQLWhere(query.Filter)
 	}
 
 	if query.Filter == nil {
-		return FilterToSQLWhere(permissionFilter,query.Fields,query.ModelID)
+		return FilterToSQLWhere(permissionFilter)
 	}
 
 	filter:=&map[string]interface{}{
@@ -109,7 +109,7 @@ func (query *Query) getQueryWhere(permissionFilter *map[string]interface{})(stri
 		},
 	}
 
-	return FilterToSQLWhere(filter,query.Fields,query.ModelID)
+	return FilterToSQLWhere(filter)
 }
 
 func (query *Query) getQueryLimit()(string,int) {

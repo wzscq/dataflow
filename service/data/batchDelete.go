@@ -30,7 +30,7 @@ func (delete *BatchDelete) getWhere() (string, int) {
 		filter=delete.Filter
 	}
 
-	return FilterToSQLWhere(filter,delete.Fields,delete.ModelID)
+	return FilterToSQLWhere(filter)
 }
 
 func (delete *BatchDelete) Delete(dataRepository DataRepository, tx *sql.Tx) (*map[string]interface{}, int) {

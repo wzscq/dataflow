@@ -129,7 +129,7 @@ func (save *Save)getRowUpdateColumnValues(row map[string]interface{},permissionF
 		case map[string]interface{}:
 			releatedField,ok:=value.(map[string]interface{})
 			if !ok {
-				log.Println("getRowUpdateColumnValues not supported value type %T!\n", v)
+				log.Printf("getRowUpdateColumnValues not supported value type %T!\n", v)
 				return "","",version,common.ResultNotSupportedValueType	
 			}
 
@@ -192,7 +192,7 @@ func (save *Save)getRowCreateColumnValues(row map[string]interface{})(string,str
 		case map[string]interface{}:
 			releatedField,ok:=value.(map[string]interface{})
 			if !ok {
-				log.Println("createRow not supported value type %T!\n", value)
+				log.Printf("createRow not supported value type %T!\n", value)
 				return "","","",common.ResultNotSupportedValueType	
 			}
 
@@ -219,7 +219,7 @@ func (save *Save)saveRelatedField(pID string,dataRepository DataRepository,tx *s
 		case map[string]interface{}:
 			releatedField,ok:=value.(map[string]interface{})
 			if !ok {
-				log.Println("createRow not supported value type %T!\n", v)
+				log.Printf("createRow not supported value type %T!\n", v)
 				return common.ResultNotSupportedValueType	
 			}
 
