@@ -18,7 +18,7 @@ func TestFilterToSQLWhere(t *testing.T) {
 	//设置log打印文件名和行号
 	log.SetFlags(log.Lshortfile | log.LstdFlags)
 
-	/*filter:=&map[string]interface{}{
+	filter:=&map[string]interface{}{
 		"Op.and": []interface{}{
 			map[string]interface{}{
 				"Op.and": []interface{}{
@@ -47,10 +47,16 @@ func TestFilterToSQLWhere(t *testing.T) {
 					"Op.gt":"0",
 				},
 			},
+			map[string]interface{}{
+				"taxfree_amount": map[string]interface{}{
+					"Op.gt":"0",
+					"Op.lt":"100",
+				},
+			},
 		},
-	}*/
+	}
 
-	filter:=&map[string]interface{}{
+	/*filter:=&map[string]interface{}{
 		"Op.and": []interface{}{
 			map[string]interface{}{
 				"hzfpxxqrdbh": map[string]interface{}{
@@ -73,7 +79,7 @@ func TestFilterToSQLWhere(t *testing.T) {
 				"is_sales_list": "1",
 				"sales_id": "%{globalFilterData.company_id.id}",
 			},
-	},}
+	},}*/
 
 
 	fields:=&[]Field{
